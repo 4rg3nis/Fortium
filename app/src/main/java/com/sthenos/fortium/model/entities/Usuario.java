@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey;
 
 import com.sthenos.fortium.model.enums.UnitMeasure;
 
+@Entity(tableName = "Usuarios")
 public class Usuario {
 
     @PrimaryKey(autoGenerate = true)

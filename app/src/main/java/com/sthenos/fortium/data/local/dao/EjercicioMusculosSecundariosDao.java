@@ -1,5 +1,6 @@
 package com.sthenos.fortium.data.local.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -37,7 +38,7 @@ public interface EjercicioMusculosSecundariosDao {
 
     // Obtiene todos los musculos secundarios registrados
     @Query("SELECT * FROM EjercicioMusculosSecundarios")
-    List<Ejercicio> getAll();
+    LiveData<List<Ejercicio>> getAll();
 
     // Busca un musculo secundario específico por su ID único
     @Query("SELECT * FROM EjercicioMusculosSecundarios WHERE id = :id LIMIT 1")
