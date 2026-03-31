@@ -7,7 +7,6 @@ import androidx.room.PrimaryKey;
 
 import com.sthenos.fortium.model.enums.UnitMeasure;
 
-@Entity(tableName = "Usuarios")
 public class Usuario {
 
     @PrimaryKey(autoGenerate = true)
@@ -75,41 +74,5 @@ public class Usuario {
 
     public UnitMeasure getUnidadmedida() {
         return unidadmedida;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setNombre(@NonNull String nombre) {
-        this.nombre = nombre;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-    public void setFechaNacimiento(String fechaNacimiento) {
-        this.fechaNacimiento = fechaNacimiento;
-    }
-
-    public void setPesoActual(String pesoActual) {
-        this.pesoActual = pesoActual;
-    }
-
-    public void setGenero(String genero) {
-        this.genero = genero;
-    }
-
-    public void setAltura(String altura) {
-        this.altura = altura;
-    }
-
-    public void setUnidadmedida(UnitMeasure unidadmedida) {
-        this.unidadmedida = unidadmedida;
     }
 }
