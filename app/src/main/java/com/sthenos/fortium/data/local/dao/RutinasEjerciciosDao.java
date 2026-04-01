@@ -1,12 +1,15 @@
 package com.sthenos.fortium.data.local.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
+import com.sthenos.fortium.model.RutinaConEjercicios;
 import com.sthenos.fortium.model.entities.Ejercicio;
 import com.sthenos.fortium.model.entities.RutinaEjercicio;
 
@@ -32,9 +35,19 @@ public interface RutinasEjerciciosDao {
 
     // Obtiene todas las relaciones de rutina-ejercicio registradas.
     @Query("SELECT * FROM RutinaEjercicios")
-    List<RutinaEjercicio> getAll();
+    LiveData<List<RutinaEjercicio>> getAll();
 
     // Busca una relación específica por su ID único.
     @Query("SELECT * FROM RutinaEjercicios WHERE id = :id LIMIT 1")
     RutinaEjercicio getById(int id);
+
+    // Obtiene una rutina específica con todos sus ejercicios precargados
+    @Transaction
+    @Query("SELECT * FROM Rutinas WHERE id = :rutinaId")
+    LiveData<RutinaConEjercicios> getRutinaConEjercicios(int rutinaId);
+
+    // Obtiene todas las rutinas con sus respectivos ejercicios
+    @Transaction
+    @Query("SELECT * FROM Rutinas")
+    LiveData<List<RutinaConEjercicios>> getAllRutinasConEjercicios();
 }

@@ -1,7 +1,9 @@
 package com.sthenos.fortium.data.local.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
+import androidx.room.Entity;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -29,7 +31,7 @@ public interface RutinasDao {
     void update(Rutina rutina);
 
 
-    // Elimina un ejercicio de la base de datos
+    // Elimina una rutina de la base de datos
     @Delete
     void delete(Rutina rutina);
 
@@ -37,7 +39,7 @@ public interface RutinasDao {
 
     // Obtiene todas las rutinas registradas.
     @Query("SELECT * FROM Rutinas")
-    List<Rutina> getAll();
+    LiveData<List<Rutina>> getAll();
 
     // Busca una rutina específica por su ID único.
     @Query("SELECT * FROM Rutinas WHERE id = :id LIMIT 1")
