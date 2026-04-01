@@ -3,11 +3,17 @@ package com.sthenos.fortium.model.entities;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 import java.time.LocalDate;
 
-@Entity(tableName = "Rutinas")
+@Entity(tableName = "Rutinas", foreignKeys = @ForeignKey(
+        entity = Usuario.class,
+        parentColumns = "id",
+        childColumns = "usuarioId",
+        onDelete = ForeignKey.CASCADE
+))
 public class Rutina {
     @PrimaryKey(autoGenerate=true)
     private int id;

@@ -3,9 +3,21 @@ package com.sthenos.fortium.model.entities;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "RutinaEjercicios")
+@Entity(tableName = "RutinaEjercicios", foreignKeys = {@ForeignKey(
+        entity = Rutina.class,
+        parentColumns = "id",
+        childColumns = "rutinaId",
+        onDelete = ForeignKey.CASCADE
+), @ForeignKey(
+        entity = Ejercicio.class,
+        parentColumns = "id",
+        childColumns = "ejercicioId",
+        onDelete = ForeignKey.CASCADE
+)}
+)
 public class RutinaEjercicio {
     @PrimaryKey(autoGenerate=true)
     private int id;
@@ -17,7 +29,6 @@ public class RutinaEjercicio {
     private int ejercicioId;
 
     @ColumnInfo(name="orden")
-    @NonNull
     private int orden;
 
     public RutinaEjercicio(int id, int rutinaId, int ejercicioId, int orden) {

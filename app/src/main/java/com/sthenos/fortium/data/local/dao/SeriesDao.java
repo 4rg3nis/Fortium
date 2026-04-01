@@ -1,5 +1,6 @@
 package com.sthenos.fortium.data.local.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -31,7 +32,7 @@ public interface SeriesDao {
 
     // Obtener todas las series registradas
     @Query("SELECT * FROM Series")
-    List<Serie> getAll();
+    LiveData<List<Serie>> getAll();
 
     // Obtener una serie específica por su ID
     @Query("SELECT * FROM Series WHERE id = :id LIMIT 1")
@@ -39,10 +40,10 @@ public interface SeriesDao {
 
     // Obtener todas las series de una sesión específica
     @Query("SELECT * FROM Series WHERE sesionId = :sesionId")
-    List<Serie> getBySesionId(int sesionId);
+    LiveData<List<Serie>> getBySesionId(int sesionId);
 
     // Obtener todas las series de un ejercicio específico
     @Query("SELECT * FROM Series WHERE ejercicioId = :ejercicioId")
-    List<Serie> getByEjercicioId(int ejercicioId);
+    LiveData<List<Serie>> getByEjercicioId(int ejercicioId);
 
 }

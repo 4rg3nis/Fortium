@@ -1,5 +1,6 @@
 package com.sthenos.fortium.data.local.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -31,9 +32,9 @@ public interface UsuariosDao {
 
     // Obtiene al usuario.
     @Query("SELECT * FROM Usuarios WHERE id = :id LIMIT 1")
-    Ejercicio getById(int id);
+    Usuario getById(int id);
 
     // Obtiene todos los usuarios registrados.
     @Query("SELECT * FROM Usuarios")
-    List<Usuario> getAll(); // en principio no usaré esta.
+    LiveData<List<Usuario>> getAll(); // en principio no usaré esta.
 }

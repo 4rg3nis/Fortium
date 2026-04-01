@@ -1,5 +1,6 @@
 package com.sthenos.fortium.data.local.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -35,7 +36,7 @@ public interface EjerciciosDao {
 
     // Obtiene todos los ejercicios registrados
     @Query("SELECT * FROM Ejercicios")
-    List<Ejercicio> getAll();
+    LiveData<List<Ejercicio>> getAll();
 
     // Busca un ejercicio específico por su ID único
     @Query("SELECT * FROM Ejercicios WHERE id = :id LIMIT 1")
@@ -43,13 +44,13 @@ public interface EjerciciosDao {
 
     // Obtiene todos los ejercicios marcados como favoritos (Room guarda los booleanos como 1 o 0)
     @Query("SELECT * FROM Ejercicios WHERE favorito = 1")
-    List<Ejercicio> getFavoritos();
+    LiveData<List<Ejercicio>> getFavoritos();
 
     // Filtra los ejercicios por un grupo muscular específico
     @Query("SELECT * FROM Ejercicios WHERE grupoMuscularPrincipal = :grupoMuscular")
-    List<Ejercicio> getByGrupoMuscular(String grupoMuscular);
+    LiveData<List<Ejercicio>> getByGrupoMuscular(String grupoMuscular);
 
     // Filtra para obtener solo los ejercicios predefinidos del sistema
     @Query("SELECT * FROM Ejercicios WHERE esPredefinido = 1")
-    List<Ejercicio> getPredefinidos();
+    LiveData<List<Ejercicio>> getPredefinidos();
 }
