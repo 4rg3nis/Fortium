@@ -3,9 +3,21 @@ package com.sthenos.fortium.model.entities;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "Sesiones")
+@Entity(tableName = "Sesiones", foreignKeys = {
+        @ForeignKey(
+                entity = Usuario.class,
+                parentColumns = "id",
+                childColumns = "usuarioId",
+                onDelete = ForeignKey.CASCADE
+        ), @ForeignKey(
+                entity = Rutina.class,
+                parentColumns = "id",
+                childColumns = "rutinaId",
+                onDelete = ForeignKey.CASCADE)
+})
 public class Sesion {
 
     @PrimaryKey(autoGenerate=true)
@@ -31,9 +43,9 @@ public class Sesion {
     private boolean recordPersonal = false;
 
     @ColumnInfo(name="comentarioGeneral")
-    private boolean comentarioGeneral;
+    private String comentarioGeneral;
 
-    public Sesion(int id, int usuarioId, int rutinaId, @NonNull String fechaInicio, String fechaFin, int cantidadSeries, boolean recordPersonal, boolean comentarioGeneral) {
+    public Sesion(int id, int usuarioId, int rutinaId, @NonNull String fechaInicio, String fechaFin, int cantidadSeries, boolean recordPersonal, String comentarioGeneral) {
         this.id = id;
         this.usuarioId = usuarioId;
         this.rutinaId = rutinaId;
@@ -44,7 +56,7 @@ public class Sesion {
         this.comentarioGeneral = comentarioGeneral;
     }
 
-    public Sesion(int usuarioId, int rutinaId, @NonNull String fechaInicio, String fechaFin, int cantidadSeries, boolean recordPersonal, boolean comentarioGeneral) {
+    public Sesion(int usuarioId, int rutinaId, @NonNull String fechaInicio, String fechaFin, int cantidadSeries, boolean recordPersonal, String comentarioGeneral) {
         this.usuarioId = usuarioId;
         this.rutinaId = rutinaId;
         this.fechaInicio = fechaInicio;
@@ -111,11 +123,11 @@ public class Sesion {
         this.recordPersonal = recordPersonal;
     }
 
-    public boolean isComentarioGeneral() {
+    public String isComentarioGeneral() {
         return comentarioGeneral;
     }
 
-    public void setComentarioGeneral(boolean comentarioGeneral) {
+    public void setComentarioGeneral(String comentarioGeneral) {
         this.comentarioGeneral = comentarioGeneral;
     }
 }

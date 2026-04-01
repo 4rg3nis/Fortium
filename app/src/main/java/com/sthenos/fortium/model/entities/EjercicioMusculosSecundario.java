@@ -3,8 +3,14 @@ package com.sthenos.fortium.model.entities;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
-@Entity(tableName = "EjercicioMusculosSecundarios")
+@Entity(tableName = "EjercicioMusculosSecundarios", foreignKeys = @ForeignKey(
+        entity = Ejercicio.class,
+        parentColumns = "id",
+        childColumns = "ejercicioId",
+        onDelete = ForeignKey.CASCADE
+))
 public class EjercicioMusculosSecundario {
 
     @PrimaryKey(autoGenerate = true)

@@ -2,11 +2,23 @@ package com.sthenos.fortium.model.entities;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 import com.sthenos.fortium.model.enums.TipoSerie;
 
-@Entity(tableName = "Series")
+@Entity(tableName = "Series", foreignKeys = {
+        @ForeignKey(
+                entity = Sesion.class,
+                parentColumns = "id",
+                childColumns = "sesionId",
+                onDelete = ForeignKey.CASCADE)
+        , @ForeignKey(
+                entity = Ejercicio.class,
+                parentColumns = "id",
+                childColumns = "ejercicioId",
+                onDelete = ForeignKey.CASCADE)
+})
 public class Serie {
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -18,13 +30,13 @@ public class Serie {
     private int ejercicioId;
 
     @ColumnInfo(name="peso")
-    private int peso; // REAL???????????
+    private float peso;
 
     @ColumnInfo(name="repeticiones")
     private int repeticiones;
 
     @ColumnInfo(name="rpe_rir")
-    private int rpeRir; // REAL???????????
+    private float rpeRir;
 
     @ColumnInfo(name="tipoSerie")
     private TipoSerie tipoSerie;
@@ -32,10 +44,10 @@ public class Serie {
     @ColumnInfo(name="tiempoDescanso")
     private int tiempoDescanso; // Segundos
 
-    @ColumnInfo(name="ordenSesiontSerie")
-    private int ordenSesiontSerie;
+    @ColumnInfo(name="ordenEnSesion")
+    private int ordenEnSesion;
 
-    public Serie(int id, int sesionId, int ejercicioId, int peso, int repeticiones, int rpeRir, TipoSerie tipoSerie, int tiempoDescanso, int ordenSesiontSerie) {
+    public Serie(int id, int sesionId, int ejercicioId, int peso, int repeticiones, int rpeRir, TipoSerie tipoSerie, int tiempoDescanso, int ordenEnSesion) {
         this.id = id;
         this.sesionId = sesionId;
         this.ejercicioId = ejercicioId;
@@ -44,10 +56,10 @@ public class Serie {
         this.rpeRir = rpeRir;
         this.tipoSerie = tipoSerie;
         this.tiempoDescanso = tiempoDescanso;
-        this.ordenSesiontSerie = ordenSesiontSerie;
+        this.ordenEnSesion = ordenEnSesion;
     }
 
-    public Serie(int sesionId, int ejercicioId, int peso, int repeticiones, int rpeRir, TipoSerie tipoSerie, int tiempoDescanso, int ordenSesiontSerie) {
+    public Serie(int sesionId, int ejercicioId, int peso, int repeticiones, int rpeRir, TipoSerie tipoSerie, int tiempoDescanso, int ordenEnSesion) {
         this.sesionId = sesionId;
         this.ejercicioId = ejercicioId;
         this.peso = peso;
@@ -55,7 +67,7 @@ public class Serie {
         this.rpeRir = rpeRir;
         this.tipoSerie = tipoSerie;
         this.tiempoDescanso = tiempoDescanso;
-        this.ordenSesiontSerie = ordenSesiontSerie;
+        this.ordenEnSesion = ordenEnSesion;
     }
 
     public int getId() {
@@ -122,11 +134,11 @@ public class Serie {
         this.tiempoDescanso = tiempoDescanso;
     }
 
-    public int getOrdenSesiontSerie() {
-        return ordenSesiontSerie;
+    public int getOrdenEnSesion() {
+        return ordenEnSesion;
     }
 
-    public void setOrdenSesiontSerie(int ordenSesiontSerie) {
-        this.ordenSesiontSerie = ordenSesiontSerie;
+    public void setOrdenEnSesion(int ordenEnSesion) {
+        this.ordenEnSesion = ordenEnSesion;
     }
 }
