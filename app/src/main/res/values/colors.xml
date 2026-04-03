@@ -3,4 +3,18 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="mainColor">#1E1E1E</color>
+
+    <color name="welcome_bg_dark">#1E1E1E</color>
+    <color name="welcome_bg_black">#000000</color>
+
+    <color name="fortium_primary">#007BFF</color>
+    <color name="fortium_primary_dark">#0150AB</color>
+    <color name="fortium_primary_alpha_20">#33007BFF</color>
+
+    <color name="text_white">#FFFFFF</color>
+    <color name="text_blue_radiant">#04f</color>
+    <color name="text_gray_400">#9CA3AF</color>
+    <color name="border_dark">#333333</color>
+
+    <color name="accent_emerald">#34D399</color>
 </resources>

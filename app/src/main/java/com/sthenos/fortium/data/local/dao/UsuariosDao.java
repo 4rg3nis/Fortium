@@ -8,7 +8,6 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.sthenos.fortium.model.entities.Ejercicio;
 import com.sthenos.fortium.model.entities.Usuario;
 
 import java.util.List;
@@ -18,6 +17,7 @@ public interface UsuariosDao {
     // OPERACIONES BÁSICAS (CRUD).
 
     // Inserta un nuevo usuario.
+    @ Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Usuario usuario);
 
     // Actualiza los datos del usuario existente.
