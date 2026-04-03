@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Fortium</string>
     <string name="registro">Registro</string>
+    <string name="fortium">Fortium</string>
+    <string name="text_welcome1">Welcome to your</string>
+    <string name="text_welcome2">Peak Performance</string>
+    <string name="text_welcome3">Let\'s set up your profile to track your strength journey.</string>
+    <string name="text_buttom_setUp">Set Up My Profile</string>
+    <string name="import_data">Import Data</string>
 </resources>

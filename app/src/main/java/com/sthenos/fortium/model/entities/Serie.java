@@ -94,7 +94,7 @@ public class Serie {
         this.ejercicioId = ejercicioId;
     }
 
-    public int getPeso() {
+    public float getPeso() {
         return peso;
     }
 
@@ -110,7 +110,7 @@ public class Serie {
         this.repeticiones = repeticiones;
     }
 
-    public int getRpeRir() {
+    public float getRpeRir() {
         return rpeRir;
     }
 

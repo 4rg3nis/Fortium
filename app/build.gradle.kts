@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "com.sthenos.fortium"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.sthenos.fortium"
