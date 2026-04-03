@@ -6,14 +6,19 @@ import com.sthenos.fortium.data.local.FortiumDatabase;
 import com.sthenos.fortium.data.local.dao.UsuariosDao;
 import com.sthenos.fortium.model.entities.Usuario;
 
-public class UsuarioRepository {
-    private final UsuariosDao usuariosDao;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+public class UsuarioRepository {
+    private  final UsuariosDao usuariosDao;
+    private  final ExecutorService executorService;
     private static UsuarioRepository instance;
 
     private UsuarioRepository(Application application){
         FortiumDatabase db = FortiumDatabase.getInstance(application);
         usuariosDao = db.usuariosDao();
+        executorService = Executors.newFixedThreadPool(2);
     }
 
     public UsuarioRepository getInstance(Application application){
@@ -24,6 +29,10 @@ public class UsuarioRepository {
             }
         }
         return instance;
+    }
+
+    public void insert(Usuario usuario){
+        executorService.execute(() -> usuariosDao.insert(usuario));
     }
 
 
