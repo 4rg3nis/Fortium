@@ -15,13 +15,18 @@ import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
 import com.sthenos.fortium.R;
+import com.sthenos.fortium.model.entities.Usuario;
+import com.sthenos.fortium.model.enums.Genero;
+import com.sthenos.fortium.model.enums.UnidadMedida;
+import com.sthenos.fortium.ui.ViewModels.UsuarioViewModel;
 
 public class CreateUserActivity extends AppCompatActivity {
 
-    private TextInputEditText etDate, etWeight, etHeight, etName, tilWeight, tilHeight, tilName, tilDate;
+    private TextInputEditText etDate, etWeight, etHeight, etName, tilWeight, tilHeight, tilName, tilDate, tilLastName, etLastName;
     private MaterialButtonToggleGroup toggleWeight, toggleGender;
     private ImageButton btnBack;
     private MaterialButton btnSaveContinue;
+    private UsuarioViewModel usuarioViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,15 +56,23 @@ public class CreateUserActivity extends AppCompatActivity {
     private boolean validarFormulario() {
         boolean isValido = true;
         String nombre = etName.getText().toString().trim();
+        String apellidos = etLastName.getText().toString().trim();
         String fecha = etDate.getText().toString().trim();
-        int peso = Integer.parseInt(etWeight.getText().toString());
-        int altura = Integer.parseInt(etHeight.getText().toString());
+        double peso = Double.parseDouble(etWeight.getText().toString());
+        double altura = Double.parseDouble(etHeight.getText().toString());
 
         if(nombre.isEmpty()){
             tilName.setError("Full name is required");
             isValido = false;
         } else{
             tilName.setError(null);
+        }
+
+        if(apellidos.isEmpty()){
+            tilLastName.setError("Last name is required");
+            isValido = false;
+        } else{
+            tilLastName.setError(null);
         }
 
         if(fecha.isEmpty()){
@@ -96,6 +109,23 @@ public class CreateUserActivity extends AppCompatActivity {
     }
 
     private void guardarDatosYContinuar() {
+        String nombre = etName.getText().toString().trim();
+        String apellidos = etLastName.getText().toString().trim();
+        String fecha = etDate.getText().toString().trim();
+        double peso = Double.parseDouble(etWeight.getText().toString());
+        double altura = Double.parseDouble(etHeight.getText().toString());
+        Genero genero = Genero.Otros;
+        int selectedGenderId = toggleGender.getCheckedButtonId();
+        if (selectedGenderId == R.id.btnMale) genero = Genero.Masculino;
+        else if (selectedGenderId == R.id.btnFemale) genero = Genero.Femenino;
+
+        UnidadMedida medida = UnidadMedida.LB;
+        int selectedWeightId = toggleWeight.getCheckedButtonId();
+        if (selectedWeightId == R.id.btn_kg) medida = UnidadMedida.KG;
+
+        usuarioViewModel.guardarUsuario(new Usuario(nombre, apellidos, fecha, peso, altura, genero, medida));
+
+
     }
 
     private void setDate() {
@@ -121,6 +151,7 @@ public class CreateUserActivity extends AppCompatActivity {
     }
 
     private void initComponents() {
+        usuarioViewModel = new UsuarioViewModel(getApplication());
         etDate = findViewById(R.id.etDate);
         etWeight = findViewById(R.id.etWeight);
         etHeight = findViewById(R.id.etHeight);
@@ -133,5 +164,7 @@ public class CreateUserActivity extends AppCompatActivity {
         tilHeight = findViewById(R.id.tilHeight);
         tilName = findViewById(R.id.tilName);
         tilDate = findViewById(R.id.tilDate);
+        tilLastName = findViewById(R.id.tilLastName);
+        etLastName = findViewById(R.id.etLastName);
     }
 }

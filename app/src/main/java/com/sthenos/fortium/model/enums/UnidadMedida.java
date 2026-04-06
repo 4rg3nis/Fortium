@@ -1,6 +1,6 @@
 package com.sthenos.fortium.model.enums;
 
-public enum UnitMeasure {
-    KB,
+public enum UnidadMedida {
+    KG,
     LB
 }

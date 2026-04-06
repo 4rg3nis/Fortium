@@ -5,7 +5,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.sthenos.fortium.model.enums.UnitMeasure;
+import com.sthenos.fortium.model.enums.UnidadMedida;
+import com.sthenos.fortium.model.enums.Genero;
 
 @Entity(tableName = "Usuarios")
 public class Usuario {
@@ -22,13 +23,13 @@ public class Usuario {
     @ColumnInfo(name="pesoActual")
     private double pesoActual;
     @ColumnInfo(name="genero")
-    private String genero;
+    private Genero genero;
     @ColumnInfo(name="altura")
     private double altura;
     @ColumnInfo(name="unidadMedida")
-    private UnitMeasure unidadmedida;
+    private UnidadMedida unidadmedida;
 
-    public Usuario(int uid, String nombre, String apellido, String fechaNacimiento, double pesoActual, String genero, double altura, UnitMeasure unidadmedida) {
+    public Usuario(int uid, String nombre, String apellido, String fechaNacimiento, double pesoActual, Genero genero, double altura, UnidadMedida unidadmedida) {
         this.id = uid;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -39,7 +40,7 @@ public class Usuario {
         this.unidadmedida = unidadmedida;
     }
 
-    public Usuario(String nombre, String apellido, String fechaNacimiento, double pesoActual, String genero, double altura, UnitMeasure unidadmedida) {
+    public Usuario(String nombre, String apellido, String fechaNacimiento, double pesoActual, double altura, Genero genero, UnidadMedida unidadmedida) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.fechaNacimiento = fechaNacimiento;
@@ -65,7 +66,7 @@ public class Usuario {
         return pesoActual;
     }
 
-    public String getGenero() {
+    public Genero getGenero() {
         return genero;
     }
 
@@ -73,7 +74,7 @@ public class Usuario {
         return altura;
     }
 
-    public UnitMeasure getUnidadmedida() {
+    public UnidadMedida getUnidadmedida() {
         return unidadmedida;
     }
 }
