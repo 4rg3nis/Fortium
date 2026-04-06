@@ -21,7 +21,7 @@ public class UsuarioRepository {
         executorService = Executors.newFixedThreadPool(2);
     }
 
-    public UsuarioRepository getInstance(Application application){
+    public static UsuarioRepository getInstance(Application application){
         if(instance == null){
             synchronized (UsuarioRepository.class){
                 if(instance == null)
