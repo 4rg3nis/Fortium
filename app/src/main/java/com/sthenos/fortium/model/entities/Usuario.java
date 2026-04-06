@@ -3,6 +3,7 @@ package com.sthenos.fortium.model.entities;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.sthenos.fortium.model.enums.UnidadMedida;
@@ -29,8 +30,8 @@ public class Usuario {
     @ColumnInfo(name="unidadMedida")
     private UnidadMedida unidadmedida;
 
-    public Usuario(int uid, String nombre, String apellido, String fechaNacimiento, double pesoActual, Genero genero, double altura, UnidadMedida unidadmedida) {
-        this.id = uid;
+    public Usuario(int id, String nombre, String apellido, String fechaNacimiento, double pesoActual, Genero genero, double altura, UnidadMedida unidadmedida) {
+        this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
         this.fechaNacimiento = fechaNacimiento;
@@ -40,6 +41,7 @@ public class Usuario {
         this.unidadmedida = unidadmedida;
     }
 
+    @Ignore
     public Usuario(String nombre, String apellido, String fechaNacimiento, double pesoActual, double altura, Genero genero, UnidadMedida unidadmedida) {
         this.nombre = nombre;
         this.apellido = apellido;
@@ -76,5 +78,9 @@ public class Usuario {
 
     public UnidadMedida getUnidadmedida() {
         return unidadmedida;
+    }
+
+    public int getId() {
+        return id;
     }
 }

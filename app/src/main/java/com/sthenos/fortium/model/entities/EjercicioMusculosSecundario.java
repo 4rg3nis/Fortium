@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 @Entity(tableName = "EjercicioMusculosSecundarios", foreignKeys = @ForeignKey(
         entity = Ejercicio.class,
@@ -23,12 +24,13 @@ public class EjercicioMusculosSecundario {
     @NonNull
     private String nombreMusculo;
 
-    public EjercicioMusculosSecundario(int uid, int ejercicioId, String nombreMusculo) {
-        this.id = uid;
+    public EjercicioMusculosSecundario(int id, int ejercicioId, String nombreMusculo) {
+        this.id = id;
         this.ejercicioId = ejercicioId;
         this.nombreMusculo = nombreMusculo;
     }
 
+    @Ignore
     public EjercicioMusculosSecundario(int ejercicioId, String nombreMusculo) {
         this.ejercicioId = ejercicioId;
         this.nombreMusculo = nombreMusculo;

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "RutinaEjercicios", foreignKeys = {@ForeignKey(
@@ -38,6 +39,7 @@ public class RutinaEjercicio {
         this.orden = orden;
     }
 
+    @Ignore
     public RutinaEjercicio(int rutinaId, int ejercicioId, int orden) {
         this.rutinaId = rutinaId;
         this.ejercicioId = ejercicioId;

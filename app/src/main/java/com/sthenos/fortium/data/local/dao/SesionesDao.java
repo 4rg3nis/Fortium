@@ -3,6 +3,8 @@ package com.sthenos.fortium.data.local.dao;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
+import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -16,6 +18,7 @@ public interface SesionesDao {
     // OPERACIONES BÁSICAS (CRUD)
 
     // Insertar una nueva sesión
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Sesion sesion);
 
     // Actualizar los datos de una sesion existente

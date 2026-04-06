@@ -3,6 +3,7 @@ package com.sthenos.fortium.model.entities;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.sthenos.fortium.model.enums.TipoSerie;
@@ -47,7 +48,7 @@ public class Serie {
     @ColumnInfo(name="ordenEnSesion")
     private int ordenEnSesion;
 
-    public Serie(int id, int sesionId, int ejercicioId, int peso, int repeticiones, int rpeRir, TipoSerie tipoSerie, int tiempoDescanso, int ordenEnSesion) {
+    public Serie(int id, int sesionId, int ejercicioId, float peso, int repeticiones, float rpeRir, TipoSerie tipoSerie, int tiempoDescanso, int ordenEnSesion) {
         this.id = id;
         this.sesionId = sesionId;
         this.ejercicioId = ejercicioId;
@@ -59,7 +60,8 @@ public class Serie {
         this.ordenEnSesion = ordenEnSesion;
     }
 
-    public Serie(int sesionId, int ejercicioId, int peso, int repeticiones, int rpeRir, TipoSerie tipoSerie, int tiempoDescanso, int ordenEnSesion) {
+    @Ignore
+    public Serie(int sesionId, int ejercicioId, float peso, int repeticiones, float rpeRir, TipoSerie tipoSerie, int tiempoDescanso, int ordenEnSesion) {
         this.sesionId = sesionId;
         this.ejercicioId = ejercicioId;
         this.peso = peso;
