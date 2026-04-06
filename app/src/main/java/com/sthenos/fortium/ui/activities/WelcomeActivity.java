@@ -1,4 +1,4 @@
-package com.sthenos.fortium.ui.main;
+package com.sthenos.fortium.ui.activities;
 
 import android.content.Intent;
 import android.graphics.LinearGradient;
