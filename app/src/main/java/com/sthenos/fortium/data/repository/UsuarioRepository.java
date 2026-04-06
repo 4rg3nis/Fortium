@@ -36,4 +36,7 @@ public class UsuarioRepository {
     }
 
 
+    public void deleteAll() {
+        executorService.execute(() -> usuariosDao.deleteAll());
+    }
 }

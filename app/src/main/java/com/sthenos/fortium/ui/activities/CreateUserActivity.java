@@ -1,6 +1,7 @@
 package com.sthenos.fortium.ui.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -42,6 +43,7 @@ public class CreateUserActivity extends AppCompatActivity {
             return insets;
         });
         initComponents();
+        //usuarioViewModel.borrarTodos();
         setListeners();
     }
 
@@ -130,11 +132,18 @@ public class CreateUserActivity extends AppCompatActivity {
         if (selectedWeightId == R.id.btn_kg) medida = UnidadMedida.KG;
 
         usuarioViewModel.guardarUsuario(new Usuario(nombre, apellidos, fecha, peso, altura, genero, medida));
+        guardarBooleanSharPref();
         cambiarActividad();
 
     }
 
+    private void guardarBooleanSharPref() {
+        SharedPreferences prefs = getSharedPreferences("FortiumApp", MODE_PRIVATE);
+        prefs.edit().putBoolean("perfilCreado", true).apply();
+    }
+
     private void cambiarActividad() {
+
         Intent intent = new Intent(CreateUserActivity.this, MainActivity.class);
         startActivity(intent);
         finish();

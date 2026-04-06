@@ -20,4 +20,8 @@ public class UsuarioViewModel extends AndroidViewModel {
     public void guardarUsuario(Usuario usuario){
         usuarioRepository.insert(usuario);
     }
+
+    public void borrarTodos(){
+        usuarioRepository.deleteAll();
+    }
 }
