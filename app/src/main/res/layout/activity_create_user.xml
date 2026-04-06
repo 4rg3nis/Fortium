@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="Create Your Profile"
+                android:text="@string/crearPerfil_titulo"
                 android:textColor="@color/text_white"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -46,14 +46,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Step 1 of 2"
+                android:text="@string/crearPerfil_pasos"
                 android:textColor="@color/text_gray_400"
                 android:textSize="12sp" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:text="50%"
+                android:text="@string/crearPerfil_porcentaje"
                 android:textColor="@color/fortium_primary"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -88,7 +88,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:text="Name"
+                android:text="@string/crearPerfil_nombre_campo_nombre"
                 android:textColor="@color/text_gray_400"
                 android:textSize="14sp" />
 
@@ -97,7 +97,7 @@
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter your name"
+                android:hint="@string/crearPerfil_hint_introducir_nombre"
                 app:boxCornerRadiusBottomEnd="28dp"
                 app:boxCornerRadiusBottomStart="28dp"
                 app:boxCornerRadiusTopEnd="28dp"
@@ -118,7 +118,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:text="Last Name"
+                android:text="@string/crearPerfil_nombre_campo_apellido"
                 android:textColor="@color/text_gray_400"
                 android:textSize="14sp" />
 
@@ -127,7 +127,7 @@
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter your last name"
+                android:hint="@string/crearPerfil_hint_campo_apellido"
                 app:boxCornerRadiusBottomEnd="28dp"
                 app:boxCornerRadiusBottomStart="28dp"
                 app:boxCornerRadiusTopEnd="28dp"
@@ -148,7 +148,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:text="Birth Date"
+                android:text="@string/crearPerfil_nombre_campo_fecha"
                 android:textColor="@color/text_gray_400"
                 android:textSize="14sp" />
 
@@ -180,7 +180,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:text="Gender"
+                android:text="@string/crearPerfil_nombre_campo_genero"
                 android:textColor="@color/text_gray_400"
                 android:textSize="14sp" />
 
@@ -200,7 +200,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Male"
+                    android:text="@string/crearPerfil_nombre_toggle_masculino"
                     android:textColor="@color/white"/>
 
                 <com.google.android.material.button.MaterialButton
@@ -209,7 +209,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Female"
+                    android:text="@string/crearPerfil_nombre_toggle_feminino"
                     android:textColor="@color/white"/>
 
                 <com.google.android.material.button.MaterialButton
@@ -218,7 +218,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Other"
+                    android:text="@string/crearPerfil_nombre_toggle_otros"
                     android:textColor="@color/white"/>
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
@@ -233,7 +233,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:layout_marginStart="4dp"
-                    android:text="Current Weight"
+                    android:text="@string/_nombre_campo_peso"
                     android:textColor="@color/text_gray_400"
                     android:textSize="14sp" />
 
@@ -251,14 +251,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
-                        android:text="KG" />
+                        android:text="@string/crearPerfil_nombre_toggle_kg" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_lb"
                         style="@style/Widget.Material3.Button.OutlinedButton.Icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="LB" />
+                        android:text="@string/crearPerfil_nombre_toggle_lb" />
 
                 </com.google.android.material.button.MaterialButtonToggleGroup>
 
@@ -269,7 +269,7 @@
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="E.g. 170"
+                android:hint="@string/crearPerfil_hint_campo_peso"
                 app:boxCornerRadiusBottomEnd="28dp"
                 app:boxCornerRadiusBottomStart="28dp"
                 app:boxCornerRadiusTopEnd="28dp"
@@ -294,7 +294,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:layout_marginStart="4dp"
-                android:text="Height"
+                android:text="@string/crearPerfil_nombre_campo_altura"
                 android:textColor="@color/text_gray_400"
                 android:textSize="14sp" />
 
@@ -303,7 +303,7 @@
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="E.g. 180"
+                android:hint="@string/crearPerfil_hint_campo_altura"
                 app:boxCornerRadiusBottomEnd="28dp"
                 app:boxCornerRadiusBottomStart="28dp"
                 app:boxCornerRadiusTopEnd="28dp"
@@ -341,7 +341,7 @@
             android:id="@+id/btnSaveContinue"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:text="Save &amp; Continue"
+            android:text="@string/crearPerfil_boton_guardar_continuar"
             android:textAllCaps="false"
             android:textSize="16sp"
             android:textStyle="bold"
