@@ -62,8 +62,10 @@ public class CreateUserActivity extends AppCompatActivity {
         String nombre = etName.getText().toString().trim();
         String apellidos = etLastName.getText().toString().trim();
         String fecha = etDate.getText().toString().trim();
-        double peso = Double.parseDouble(etWeight.getText().toString());
-        double altura = Double.parseDouble(etHeight.getText().toString());
+        String strPeso = etWeight.getText().toString();
+        String strHeight = etHeight.getText().toString();
+        double peso = strPeso.isEmpty() ? 0 : Double.parseDouble(strPeso);
+        double altura = strHeight.isEmpty() ? 0 : Double.parseDouble(strHeight);
 
         if(nombre.isEmpty()){
             tilName.setError("Full name is required");
