@@ -1,5 +1,6 @@
 package com.sthenos.fortium.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -14,6 +15,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.model.entities.Usuario;
 import com.sthenos.fortium.model.enums.Genero;
@@ -22,7 +24,8 @@ import com.sthenos.fortium.ui.ViewModels.UsuarioViewModel;
 
 public class CreateUserActivity extends AppCompatActivity {
 
-    private TextInputEditText etDate, etWeight, etHeight, etName, tilWeight, tilHeight, tilName, tilDate, tilLastName, etLastName;
+    private TextInputEditText etDate, etWeight, etHeight, etName, etLastName;
+    private TextInputLayout tilWeight, tilHeight, tilName, tilDate, tilLastName;
     private MaterialButtonToggleGroup toggleWeight, toggleGender;
     private ImageButton btnBack;
     private MaterialButton btnSaveContinue;
@@ -39,12 +42,13 @@ public class CreateUserActivity extends AppCompatActivity {
             return insets;
         });
         initComponents();
-        setDate();
         setListeners();
     }
 
     private void setListeners() {
-        etDate.setOnClickListener(v -> setDate());
+        etDate.setOnClickListener(v -> {
+            setDate();
+        });
         btnBack.setOnClickListener(v -> finish());
         btnSaveContinue.setOnClickListener(v -> {
             if(validarFormulario()){
@@ -124,8 +128,14 @@ public class CreateUserActivity extends AppCompatActivity {
         if (selectedWeightId == R.id.btn_kg) medida = UnidadMedida.KG;
 
         usuarioViewModel.guardarUsuario(new Usuario(nombre, apellidos, fecha, peso, altura, genero, medida));
+        cambiarActividad();
 
+    }
 
+    private void cambiarActividad() {
+        Intent intent = new Intent(CreateUserActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void setDate() {
