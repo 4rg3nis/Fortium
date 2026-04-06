@@ -4,7 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="mainColor">#1E1E1E</color>
 
-    <color name="welcome_bg_dark">#1E1E1E</color>
+    <color name="bg_dark">#1E1E1E</color>
     <color name="welcome_bg_black">#000000</color>
 
     <color name="fortium_primary">#007BFF</color>

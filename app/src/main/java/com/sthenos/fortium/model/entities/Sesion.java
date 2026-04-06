@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "Sesiones", foreignKeys = {
@@ -56,6 +57,7 @@ public class Sesion {
         this.comentarioGeneral = comentarioGeneral;
     }
 
+    @Ignore
     public Sesion(int usuarioId, int rutinaId, @NonNull String fechaInicio, String fechaFin, int cantidadSeries, boolean recordPersonal, String comentarioGeneral) {
         this.usuarioId = usuarioId;
         this.rutinaId = rutinaId;
@@ -129,5 +131,9 @@ public class Sesion {
 
     public void setComentarioGeneral(String comentarioGeneral) {
         this.comentarioGeneral = comentarioGeneral;
+    }
+
+    public String getComentarioGeneral() {
+        return comentarioGeneral;
     }
 }

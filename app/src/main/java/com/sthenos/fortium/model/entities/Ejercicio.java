@@ -3,6 +3,7 @@ package com.sthenos.fortium.model.entities;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.sthenos.fortium.model.enums.Equipo;
@@ -45,8 +46,8 @@ public class Ejercicio {
     @ColumnInfo(name="favorito")
     private boolean favorito = false;
 
-    public Ejercicio(int uid, String nombre, String grupoMuscularPrincipal, boolean esPredefinido, String descripcionTecnica, TipoMedida tipoMedida, Equipo equipo, boolean unilateral, String urlMultimedia, String imagenPath, boolean favorito) {
-        this.id = uid;
+    public Ejercicio(int id, String nombre, String grupoMuscularPrincipal, boolean esPredefinido, String descripcionTecnica, TipoMedida tipoMedida, Equipo equipo, boolean unilateral, String urlMultimedia, String imagenPath, boolean favorito) {
+        this.id = id;
         this.nombre = nombre;
         this.grupoMuscularPrincipal = grupoMuscularPrincipal;
         this.esPredefinido = esPredefinido;
@@ -59,6 +60,7 @@ public class Ejercicio {
         this.favorito = favorito;
     }
 
+    @Ignore
     public Ejercicio(String nombre, String grupoMuscularPrincipal, boolean esPredefinido, String descripcionTecnica, TipoMedida tipoMedida, Equipo equipo, boolean unilateral, String urlMultimedia, String imagenPath, boolean favorito) {
         this.nombre = nombre;
         this.grupoMuscularPrincipal = grupoMuscularPrincipal;

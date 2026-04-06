@@ -5,7 +5,7 @@ import androidx.room.TypeConverter;
 import com.sthenos.fortium.model.enums.Equipo;
 import com.sthenos.fortium.model.enums.TipoMedida;
 import com.sthenos.fortium.model.enums.TipoSerie;
-import com.sthenos.fortium.model.enums.UnitMeasure;
+import com.sthenos.fortium.model.enums.UnidadMedida;
 
 /**
  * Clase para convertir tipos enumerados a cadenas y viceversa.
@@ -42,12 +42,12 @@ public class Converters {
     }
 
     @TypeConverter
-    public static String fromUnitMeasure(UnitMeasure unitMeasure){
+    public static String fromUnitMeasure(UnidadMedida unitMeasure){
         return unitMeasure == null ? null : unitMeasure.name();
     }
 
     @TypeConverter
-    public static UnitMeasure toUnitMeasure(String value){
-        return value == null ? null : UnitMeasure.valueOf(value);
+    public static UnidadMedida toUnitMeasure(String value){
+        return value == null ? null : UnidadMedida.valueOf(value);
     }
 }

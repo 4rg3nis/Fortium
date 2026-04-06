@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.time.LocalDate;
@@ -39,6 +40,7 @@ public class Rutina {
         this.fechaCreacion = fechaCreacion;
     }
 
+    @Ignore
     public Rutina(int usuarioId, String nombre, String descripcion, String fechaCreacion) {
         this.usuarioId = usuarioId;
         this.nombre = nombre;
