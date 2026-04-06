@@ -258,7 +258,8 @@
                         style="@style/Widget.Material3.Button.OutlinedButton.Icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/crearPerfil_nombre_toggle_lb" />
+                        android:text="@string/crearPerfil_nombre_toggle_lb"
+                        android:textColor="@color/white"/>
 
                 </com.google.android.material.button.MaterialButtonToggleGroup>
 
