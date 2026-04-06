@@ -161,7 +161,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-
                 app:singleSelection="true"
                 app:selectionRequired="true">
 
@@ -209,7 +208,7 @@
                     android:textSize="14sp" />
 
                 <com.google.android.material.button.MaterialButtonToggleGroup
-                    android:id="@+id/toggleGroup"
+                    android:id="@+id/toggleWeight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:checkedButton="@+id/btn_lb"
@@ -240,13 +239,13 @@
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="E.g."
+                android:hint="E.g. 170"
                 app:boxCornerRadiusBottomEnd="28dp"
                 app:boxCornerRadiusBottomStart="28dp"
                 app:boxCornerRadiusTopEnd="28dp"
                 app:boxCornerRadiusTopStart="28dp"
                 app:errorEnabled="true"
-                app:startIconDrawable="@drawable/ic_calendar">
+                app:startIconDrawable="@drawable/ic_balance">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etWeight"
@@ -254,6 +253,7 @@
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:focusable="false"
+                    android:inputType="number"
                     android:textColor="@color/text_white"
                     android:paddingStart="48dp"
                     />
@@ -273,13 +273,13 @@
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="E.g."
+                android:hint="E.g. 180"
                 app:boxCornerRadiusBottomEnd="28dp"
                 app:boxCornerRadiusBottomStart="28dp"
                 app:boxCornerRadiusTopEnd="28dp"
                 app:boxCornerRadiusTopStart="28dp"
                 app:errorEnabled="true"
-                app:startIconDrawable="@drawable/ic_calendar">
+                app:startIconDrawable="@drawable/ic_height">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etHeight"
@@ -288,6 +288,7 @@
                     android:clickable="true"
                     android:focusable="false"
                     android:textColor="@color/text_white"
+                    android:inputType="number"
                     android:paddingStart="48dp"
                     />
             </com.google.android.material.textfield.TextInputLayout>
