@@ -17,4 +17,6 @@
     <color name="border_dark">#333333</color>
 
     <color name="accent_emerald">#34D399</color>
+
+    <color name="button_text_color">#121212</color>
 </resources>
