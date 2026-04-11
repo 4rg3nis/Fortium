@@ -139,7 +139,6 @@ public class CreateUserActivity extends AppCompatActivity {
     private void guardarDatosSharedPref(String name) {
         SharedPreferences prefs = getSharedPreferences("FortiumApp", MODE_PRIVATE);
         prefs.edit().putBoolean("perfilCreado", true).apply();
-        prefs.edit().putString("userName", name).apply();
     }
 
     private void cambiarActividad() {
