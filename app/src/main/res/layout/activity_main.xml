@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/main"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#121212">
+    android:background="@color/button_text_color">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -23,8 +24,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp">
+                android:layout_height="wrap_content">
 
                 <!--
                 <com.google.android.material.imageview.ShapeableImageView
@@ -42,11 +42,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tvGreetingName"
+                        android:id="@+id/tvSaludo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/main_texto_saludo"
@@ -67,13 +66,13 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    app:cardBackgroundColor="#1E1E1E"
+                    app:cardBackgroundColor="@color/bg_dark"
                     app:cardCornerRadius="16dp"
-                    app:strokeColor="#333333"
+                    app:strokeColor="@color/border_dark"
                     app:strokeWidth="1dp">
 
                     <TextView
-                        android:id="@+id/tvHeaderWeight"
+                        android:id="@+id/tvPeso"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="12dp"
@@ -116,7 +115,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/main_texto_volumen_semanal"
                                 android:textColor="@color/text_gray_400"
-                                android:textSize="14sp"
+                                android:textSize="12sp"
                                 android:drawableStart="@drawable/ic_activity"
                                 android:drawablePadding="8dp"
                                 android:drawableTint="@color/fortium_primary"/>
@@ -141,11 +140,12 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/main_texto_rm"
                                 android:textColor="@color/text_gray_400"
-                                android:textSize="14sp"
+                                android:textSize="12sp"
                                 android:drawableStart="@drawable/ic_trending"
                                 android:drawablePadding="8dp"
                                 android:drawableTint="@color/fortium_primary"/>
                             <TextView
+                                android:id="@+id/tvRm"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/main_texto_ej_rm"
@@ -164,7 +164,7 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnStartWorkout"
+                android:id="@+id/btnEmpezarEntrenamiento"
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
                 android:layout_marginTop="24dp"
@@ -207,7 +207,7 @@
             </RelativeLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvRoutines"
+                android:id="@+id/rvRutinas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"

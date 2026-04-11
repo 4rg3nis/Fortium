@@ -19,4 +19,7 @@
     <color name="accent_emerald">#34D399</color>
 
     <color name="button_text_color">#121212</color>
+    <color name="item_routine_btn_bg">#3327272A</color>
+    <color name="itemRoutine_mcv_bg">#26FF9800</color>
+    <color name="itemRoutine_mcv_sc">#803F3F46</color>
 </resources>

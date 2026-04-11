@@ -41,4 +41,7 @@ public interface UsuariosDao {
     // Borra todos los usuarios de la base de datos.
     @Query("DELETE FROM Usuarios")
     void deleteAll();
+
+    @Query("SELECT * FROM Usuarios LIMIT 1")
+    LiveData<Usuario> getUsuarioActual();
 }

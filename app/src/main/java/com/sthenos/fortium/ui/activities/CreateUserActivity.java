@@ -21,7 +21,7 @@ import com.sthenos.fortium.R;
 import com.sthenos.fortium.model.entities.Usuario;
 import com.sthenos.fortium.model.enums.Genero;
 import com.sthenos.fortium.model.enums.UnidadMedida;
-import com.sthenos.fortium.ui.ViewModels.UsuarioViewModel;
+import com.sthenos.fortium.ui.viewmodels.UsuarioViewModel;
 
 public class CreateUserActivity extends AppCompatActivity {
 
@@ -133,6 +133,7 @@ public class CreateUserActivity extends AppCompatActivity {
 
         usuarioViewModel.guardarUsuario(new Usuario(nombre, apellidos, fecha, peso, altura, genero, medida));
         guardarDatosSharedPref(nombre);
+        Toast.makeText(this, "Usuario creado correctamente", Toast.LENGTH_SHORT).show();
         cambiarActividad();
     }
 

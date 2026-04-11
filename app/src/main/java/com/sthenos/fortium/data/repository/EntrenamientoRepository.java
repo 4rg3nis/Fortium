@@ -29,7 +29,7 @@ public class EntrenamientoRepository {
         executorService = Executors.newFixedThreadPool(2);
     }
 
-    public EntrenamientoRepository getInstance(Application application){
+    public static EntrenamientoRepository getInstance(Application application){
         if(instance == null){
             synchronized (EntrenamientoRepository.class){
                 if(instance == null)
