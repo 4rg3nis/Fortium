@@ -24,6 +24,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         SharedPreferences prefs = getSharedPreferences("FortiumApp", MODE_PRIVATE);
         if(prefs.getBoolean("perfilCreado", false)){
@@ -33,7 +34,6 @@ public class WelcomeActivity extends AppCompatActivity {
             return; // Para que no ejecute lo de abajo.
         }
 
-        super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_welcome);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
