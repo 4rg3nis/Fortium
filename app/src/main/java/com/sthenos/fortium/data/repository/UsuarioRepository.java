@@ -2,6 +2,8 @@ package com.sthenos.fortium.data.repository;
 
 import android.app.Application;
 
+import androidx.lifecycle.LiveData;
+
 import com.sthenos.fortium.data.local.FortiumDatabase;
 import com.sthenos.fortium.data.local.dao.UsuariosDao;
 import com.sthenos.fortium.model.entities.Usuario;
@@ -36,4 +38,11 @@ public class UsuarioRepository {
     }
 
 
+    public void deleteAll() {
+        executorService.execute(() -> usuariosDao.deleteAll());
+    }
+
+    public LiveData<Usuario> getUsuarioActual(){
+        return usuariosDao.getUsuarioActual();
+    }
 }
