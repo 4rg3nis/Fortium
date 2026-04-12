@@ -30,7 +30,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
-                android:src="@drawable/logo_app_v3"
+                android:src="@drawable/logo_app"
                 />
         </com.google.android.material.card.MaterialCardView>
 
@@ -97,7 +97,7 @@
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/logo_app_v3"/>
+                    android:src="@drawable/logo_app"/>
             </com.google.android.material.card.MaterialCardView>
         </FrameLayout>
 
