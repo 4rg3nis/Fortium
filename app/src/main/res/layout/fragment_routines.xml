@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_800">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="100dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="32dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fragmentRutina_tv_titulo"
+                android:textColor="@color/white"
+                android:textSize="34sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:boxBackgroundColor="@color/gray_850"
+                    app:boxCornerRadiusBottomEnd="24dp"
+                    app:boxCornerRadiusBottomStart="24dp"
+                    app:boxCornerRadiusTopEnd="24dp"
+                    app:boxCornerRadiusTopStart="24dp"
+                    app:boxStrokeWidth="0dp"
+                    app:boxStrokeWidthFocused="0dp"
+                    app:hintEnabled="false"
+                    app:startIconDrawable="@drawable/ic_search"
+                    app:startIconTint="@color/white_66">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etSearchRoutines"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/fragmentRutina_tv_buscar"
+                        android:inputType="text"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white_66" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="12dp"
+                    app:cardBackgroundColor="#2C2C2E"
+                    app:cardCornerRadius="24dp"
+                    app:strokeColor="@color/white_alpha_10"
+                    app:strokeWidth="1dp">
+
+                    <ImageButton
+                        android:id="@+id/btnFilter"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="?attr/selectableItemBackground"
+                        android:src="@drawable/ic_filter"
+                        app:tint="@color/white_alpha_80" />
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:id="@+id/btnImportJSON"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/bg_chip_blue_translucent"
+                    android:drawableStart="@drawable/ic_download"
+                    android:drawablePadding="8dp"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="10dp"
+                    android:text="@string/fragmentRutina_tv_importar"
+                    android:textColor="@color/blue_400"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:drawableTint="@color/blue_400" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutEmptyState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="64dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <ImageView
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:background="@drawable/bg_circle_dark"
+                    android:padding="24dp"
+                    android:src="@drawable/ic_dumbbell"
+                    app:tint="@color/white_alpha_20" />
+
+                <TextView
+                    android:layout_width="260dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:gravity="center"
+                    android:text="@string/fragmentRutina_tv_vacio"
+                    android:textColor="@color/white_alpha_60"
+                    android:textSize="17sp" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvLibraryRoutines"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:nestedScrollingEnabled="false"
+                tools:itemCount="4"
+                tools:listitem="@layout/item_routine_library" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fabCreateRoutine"
+        android:layout_width="wrap_content"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/fragmentRutina_tv_crear"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/blue_400"
+        app:icon="@drawable/ic_plus"
+        app:iconTint="@color/white" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
