@@ -44,4 +44,6 @@
     <string name="rutinaDetalle_tv_estructura">Estructura</string>
     <string name="rutinaDetalle_boton_tv_add">Añadir ejercicios</string>
     <string name="rutinaDetalle_tv_reordenar">Reordenar</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
