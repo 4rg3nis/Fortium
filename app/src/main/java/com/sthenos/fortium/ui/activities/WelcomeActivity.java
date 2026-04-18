@@ -61,8 +61,8 @@ public class WelcomeActivity extends AppCompatActivity {
         tvRadiant.post(new Runnable() {
             @Override
             public void run() {
-                int colorInicio = ContextCompat.getColor(WelcomeActivity.this, R.color.fortium_primary_dark);
-                int colorFin = ContextCompat.getColor(WelcomeActivity.this, R.color.fortium_primary);
+                int colorInicio = ContextCompat.getColor(WelcomeActivity.this, R.color.blue_800);
+                int colorFin = ContextCompat.getColor(WelcomeActivity.this, R.color.blue_400);
                 Shader shader = new LinearGradient(
                         0,0,tvRadiant.getWidth(),0,
                         colorInicio, colorFin,
