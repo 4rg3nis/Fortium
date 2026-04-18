@@ -2,10 +2,12 @@ package com.sthenos.fortium.data.local;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.sthenos.fortium.data.local.dao.EjercicioMusculosSecundariosDao;
 import com.sthenos.fortium.data.local.dao.EjerciciosDao;
@@ -21,7 +23,12 @@ import com.sthenos.fortium.model.entities.RutinaEjercicio;
 import com.sthenos.fortium.model.entities.Serie;
 import com.sthenos.fortium.model.entities.Sesion;
 import com.sthenos.fortium.model.entities.Usuario;
+import com.sthenos.fortium.model.enums.Equipo;
+import com.sthenos.fortium.model.enums.TipoMedida;
 import com.sthenos.fortium.utils.Converters;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Clase que representa la base de datos de la aplicación.
@@ -43,6 +50,9 @@ public abstract class FortiumDatabase extends RoomDatabase {
     // Patrón Singleton
     private static volatile FortiumDatabase INSTANCE;
 
+    private static final ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(4);
+
+
     // Patrón Singleton seguro para hilos (Thread-safe)
     public static FortiumDatabase getInstance(final Context context) {
         if (INSTANCE == null) {
@@ -51,6 +61,7 @@ public abstract class FortiumDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                                     FortiumDatabase.class, "fortium_database")
                             .fallbackToDestructiveMigration() // Útil en desarrollo para no manejar migraciones manuales (ESTO BORRA LOS DATOS DE LAS TABLAS)
+                            .addCallback(rommCallBack)
                             .build();
                 }
             }
@@ -58,5 +69,31 @@ public abstract class FortiumDatabase extends RoomDatabase {
         return INSTANCE;
     }
 
+    /**
+     * Inserta datos al iniciar por primera vez en el aplicación, si ya se tiene la aplicacion estos no se podran insertar
+     */
+    private static RoomDatabase.Callback rommCallBack = new RoomDatabase.Callback() {
+        @Override
+        public void onCreate(@NonNull SupportSQLiteDatabase db) {
+            super.onCreate(db);
+
+            databaseWriteExecutor.execute(() -> {
+                EjerciciosDao ejerciciosDao = INSTANCE.ejerciciosDao();
+
+                Ejercicio sentadilla = new Ejercicio("Sentadilla con Barra", "Piernas", true, "Flexión de rodillas con barra en la espalda", TipoMedida.PESO, Equipo.PESO_LIBRE, false, "", "", false);
+                Ejercicio pressBanca = new Ejercicio("Press de Banca", "Pecho", true, "Empuje horizontal con barra en banco plano", TipoMedida.PESO, Equipo.PESO_LIBRE, false, "", "", false);
+                Ejercicio pesoMuerto = new Ejercicio("Peso Muerto", "Espalda/Piernas", true, "Levantamiento de barra desde el suelo", TipoMedida.PESO, Equipo.PESO_LIBRE, false, "", "",false);
+                Ejercicio dominadas = new Ejercicio("Dominadas", "Espalda", true, "Tracción vertical con peso corporal", TipoMedida.PESO_CORPORAL, Equipo.PESO_CORPORAL, false, "", "",false);
+                Ejercicio pressMilitar = new Ejercicio("Press Militar", "Hombros", true, "Empuje vertical con barra o mancuernas", TipoMedida.PESO, Equipo.PESO_LIBRE, false, "", "",false);
+
+                ejerciciosDao.insert(sentadilla);
+                ejerciciosDao.insert(pressBanca);
+                ejerciciosDao.insert(pesoMuerto);
+                ejerciciosDao.insert(dominadas);
+                ejerciciosDao.insert(pressMilitar);
+            });
+        }
+
+    };
 
 }
