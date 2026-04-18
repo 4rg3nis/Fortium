@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/button_text_color">
+    android:background="@color/gray_900">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -49,7 +49,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/main_texto_saludo"
-                        android:textColor="@color/text_white"
+                        android:textColor="@color/white"
                         android:textSize="22sp"
                         android:textStyle="bold" />
 
@@ -57,7 +57,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/main_texto_empezar"
-                        android:textColor="@color/text_gray_400"
+                        android:textColor="@color/gray_400"
                         android:textSize="14sp" />
                 </LinearLayout>
 
@@ -66,9 +66,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    app:cardBackgroundColor="@color/bg_dark"
+                    app:cardBackgroundColor="@color/gray_800"
                     app:cardCornerRadius="16dp"
-                    app:strokeColor="@color/border_dark"
+                    app:strokeColor="@color/gray_700"
                     app:strokeWidth="1dp">
 
                     <TextView
@@ -78,7 +78,7 @@
                         android:paddingHorizontal="12dp"
                         android:paddingVertical="6dp"
                         android:text="@string/main_texto_ej_peso"
-                        android:textColor="@color/fortium_primary"
+                        android:textColor="@color/blue_400"
                         android:textSize="14sp"
                         android:textStyle="bold" />
                 </com.google.android.material.card.MaterialCardView>
@@ -88,10 +88,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                app:cardBackgroundColor="@color/bg_dark"
+                app:cardBackgroundColor="@color/gray_800"
                 app:cardCornerRadius="28dp"
                 app:cardElevation="8dp"
-                app:strokeColor="@color/border_dark"
+                app:strokeColor="@color/gray_700"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
@@ -114,16 +114,16 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/main_texto_volumen_semanal"
-                                android:textColor="@color/text_gray_400"
+                                android:textColor="@color/gray_400"
                                 android:textSize="12sp"
                                 android:drawableStart="@drawable/ic_activity"
                                 android:drawablePadding="8dp"
-                                android:drawableTint="@color/fortium_primary"/>
+                                android:drawableTint="@color/blue_400"/>
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/main_texto_ej_volumne_semanal"
-                                android:textColor="@color/text_white"
+                                android:textColor="@color/white"
                                 android:textSize="28sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
@@ -139,17 +139,17 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/main_texto_rm"
-                                android:textColor="@color/text_gray_400"
+                                android:textColor="@color/gray_400"
                                 android:textSize="12sp"
                                 android:drawableStart="@drawable/ic_trending"
                                 android:drawablePadding="8dp"
-                                android:drawableTint="@color/fortium_primary"/>
+                                android:drawableTint="@color/blue_400"/>
                             <TextView
                                 android:id="@+id/tvRm"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/main_texto_ej_rm"
-                                android:textColor="@color/text_white"
+                                android:textColor="@color/white"
                                 android:textSize="28sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
@@ -170,13 +170,13 @@
                 android:layout_marginTop="24dp"
                 android:text="@string/main_boton_texto_empezar_ejercicio"
                 android:textAllCaps="false"
-                android:textColor="@color/text_white"
+                android:textColor="@color/white"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                app:backgroundTint="@color/fortium_primary"
+                app:backgroundTint="@color/blue_400"
                 app:cornerRadius="32dp"
                 app:icon="@drawable/ic_play"
-                app:iconTint="@color/text_white"
+                app:iconTint="@color/white"
                 app:iconGravity="textStart"
                 app:iconSize="24dp" />
 
@@ -190,7 +190,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/main_texto_rutinas"
-                    android:textColor="@color/text_white"
+                    android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -201,7 +201,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:text="@string/main_funcion_texto_ver_todas"
-                    android:textColor="@color/fortium_primary"
+                    android:textColor="@color/blue_400"
                     android:textSize="14sp"
                     android:textStyle="bold" />
             </RelativeLayout>
