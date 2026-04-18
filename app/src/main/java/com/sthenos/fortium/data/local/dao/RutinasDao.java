@@ -43,7 +43,7 @@ public interface RutinasDao {
 
     // Busca una rutina específica por su ID único.
     @Query("SELECT * FROM Rutinas WHERE id = :id LIMIT 1")
-    Rutina getById(int id);
+    LiveData<Rutina> getById(int id);
 
 
 

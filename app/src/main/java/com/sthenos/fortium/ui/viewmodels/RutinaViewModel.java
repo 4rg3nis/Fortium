@@ -28,4 +28,8 @@ public class RutinaViewModel extends AndroidViewModel {
     public LiveData<List<Rutina>> getAllRutinas() {
         return allRutinas;
     }
+
+    public LiveData<Rutina> getRutinaById(int id) {
+        return repository.getRutinaById(id);
+    }
 }
