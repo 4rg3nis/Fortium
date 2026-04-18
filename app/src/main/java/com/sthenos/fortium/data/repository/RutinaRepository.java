@@ -46,4 +46,8 @@ public class RutinaRepository {
     public void insert(Rutina rutina) {
         executorService.execute(() -> rutinasDao.insert(rutina));
     }
+
+    public LiveData<Rutina> getRutinaById(int id) {
+        return rutinasDao.getById(id);
+    }
 }

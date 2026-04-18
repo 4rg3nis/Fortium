@@ -40,6 +40,8 @@
     <string name="main_boton_texto_empezar_ejercicio">Empezar entrenamiento</string>
     <string name="main_texto_rutinas">Mi rutinas</string>
     <string name="main_funcion_texto_ver_todas">Ver todas</string>
-    <string name="itemRoutine_tv_desc_texto">6 exercises • Last: Yesterday</string>
-    <string name="itemRoutine_tv_nombre_texto">Leg Day</string>
+    <string name="rutinaDetalle_tv_gestionar">Gestionar Rutina</string>
+    <string name="rutinaDetalle_tv_estructura">Estructura</string>
+    <string name="rutinaDetalle_boton_tv_add">Añadir ejercicios</string>
+    <string name="rutinaDetalle_tv_reordenar">Reordenar</string>
 </resources>

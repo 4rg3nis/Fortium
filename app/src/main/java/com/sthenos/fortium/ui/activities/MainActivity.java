@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 int numeroAleatorio = (int) (Math.random() * 100);
                 Rutina nuevaRutina = new Rutina(
-                        2, // usuarioId simulado
+                        1, // usuarioId simulado
                         "Rutina " + numeroAleatorio,
                         "Creada para demostración de base de datos",
                         "2023-11-11"

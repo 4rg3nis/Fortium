@@ -1,25 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="mainColor">#1E1E1E</color>
+    <color name="black_900">#000000</color>
 
-    <color name="bg_dark">#1E1E1E</color>
-    <color name="welcome_bg_black">#000000</color>
+    <color name="white">#FFFFFF</color>
 
-    <color name="fortium_primary">#007BFF</color>
-    <color name="fortium_primary_dark">#0150AB</color>
-    <color name="fortium_primary_alpha_20">#33007BFF</color>
+    <color name="gray_700">#333333</color>
+    <color name="gray_800">#1E1E1E</color>
+    <color name="gray_400">#9CA3AF</color>
+    <color name="gray_900">#121212</color>
 
-    <color name="text_white">#FFFFFF</color>
-    <color name="text_blue_radiant">#04f</color>
-    <color name="text_gray_400">#9CA3AF</color>
-    <color name="border_dark">#333333</color>
+    <color name="gray_outline">#803F3F46</color>
 
-    <color name="accent_emerald">#34D399</color>
+    <color name="blue_400">#007BFF</color>
+    <color name="blue_800">#0150AB</color>
+    <color name="blue_500">#04f</color>
 
-    <color name="button_text_color">#121212</color>
-    <color name="item_routine_btn_bg">#3327272A</color>
-    <color name="itemRoutine_mcv_bg">#26FF9800</color>
-    <color name="itemRoutine_mcv_sc">#803F3F46</color>
+    <color name="blue_900_alpha33">#33007BFF</color>
+    <color name="white_66">#66FFFFFF</color>
+
+    <color name="emerald_500">#34D399</color>
+
+    <color name="black_alpha20">#3327272A</color>
+    <color name="orange_alpha15">#26FF9800</color>
+
+    <color name="blue_500_alpha_10">#1A007BFF</color>
+    
+    <color name="blue_400_alpha_40">#66007BFF</color>
+
+    <color name="gray_850">#2C2C2E</color>
+
+    <color name="white_alpha_10">#1AFFFFFF</color>
 </resources>
