@@ -135,7 +135,7 @@
                 android:layout_marginTop="16dp"
                 android:nestedScrollingEnabled="false"
                 tools:itemCount="4"
-                tools:listitem="@layout/item_routine_library" />
+                tools:listitem="@layout/item_routine" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

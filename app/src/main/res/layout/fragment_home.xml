@@ -208,7 +208,7 @@
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false"
             tools:itemCount="3"
-            tools:listitem="@layout/item_routine" />
+            tools:listitem="@layout/item_routine_antiguo" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,18 +32,21 @@ public class RutinaAdapter extends RecyclerView.Adapter<RutinaAdapter.RutinaView
     public void onBindViewHolder(@NonNull RutinaAdapter.RutinaViewHolder holder, int position) {
         Rutina rutinaActual = rutinasList.get(position);
 
-        holder.tvRoutineName.setText(rutinaActual.getNombre());
-        // Como es una versión simplificada, mostramos la descripción en lugar de la cuenta de ejercicios
-        holder.tvRoutineDesc.setText(rutinaActual.getDescripcion());
+        holder.tvRoutineTitle.setText(rutinaActual.getNombre());
 
-        // Añadimos el clic a la tarjeta entera (itemView)
+        holder.tvRoutineSubtitle.setText(rutinaActual.getDescripcion());
+
+        holder.tvRoutineDate.setText("Creada: " + rutinaActual.getFechaCreacion());
+
         holder.itemView.setOnClickListener(v -> {
-            // Creamos un Intent para viajar a la nueva Activity
             Intent intent = new Intent(v.getContext(), RutinaDetalleActivity.class);
-
             intent.putExtra("rutinaId", rutinaActual.getId());
-
             v.getContext().startActivity(intent);
+        });
+
+        holder.btnRoutineOptions.setOnClickListener(v -> {
+            // Por ahora ponemos un Toast, en el futuro aquí abriremos un PopupMenu
+            Toast.makeText(v.getContext(), "Opciones de: " + rutinaActual.getNombre(), Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -50,20 +55,23 @@ public class RutinaAdapter extends RecyclerView.Adapter<RutinaAdapter.RutinaView
         return rutinasList.size();
     }
 
-    // Método vital: el ViewModel llama a este método cuando detecta cambios en la BBDD
     public void setRutinas(List<Rutina> rutinas) {
         this.rutinasList = rutinas;
         notifyDataSetChanged();
     }
 
     class RutinaViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvRoutineName;
-        private TextView tvRoutineDesc;
+        private TextView tvRoutineTitle;
+        private TextView tvRoutineSubtitle;
+        private TextView tvRoutineDate;
+        private ImageButton btnRoutineOptions;
 
         public RutinaViewHolder(View itemView) {
             super(itemView);
-            tvRoutineName = itemView.findViewById(R.id.tvRoutineName);
-            tvRoutineDesc = itemView.findViewById(R.id.tvRoutineDesc);
+            tvRoutineTitle = itemView.findViewById(R.id.tvRoutineTitle);
+            tvRoutineSubtitle = itemView.findViewById(R.id.tvRoutineSubtitle);
+            tvRoutineDate = itemView.findViewById(R.id.tvRoutineDate);
+            btnRoutineOptions = itemView.findViewById(R.id.btnRoutineOptions);
         }
     }
 }
