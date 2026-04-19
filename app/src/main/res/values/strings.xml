@@ -44,4 +44,10 @@
     <string name="rutinaDetalle_tv_estructura">Estructura</string>
     <string name="rutinaDetalle_boton_tv_add">Añadir ejercicios</string>
     <string name="rutinaDetalle_tv_reordenar">Reordenar</string>
+    <string name="fragmentRutina_tv_titulo">Mi biblioteca</string>
+    <string name="fragmentRutina_tv_buscar">Buscar rutinas...</string>
+    <string name="fragmentRutina_tv_importar">Importar JSON</string>
+    <string name="fragmentRutina_tv_vacio">Tu biblioteca esta vacía. Comienza tu camino creando una rutina.</string>
+    <string name="fragmentRutina_tv_crear">Crear Rutina</string>
+
 </resources>
