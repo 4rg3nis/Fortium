@@ -1,6 +1,9 @@
 package com.sthenos.fortium.data.repository;
 
 import android.app.Application;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -43,6 +46,25 @@ public class RutinaRepository {
         return rutinasDao.getAll();
     }
 
+    public void insert(Rutina rutina, OnRutinaCreadaListener listener) {
+        executorService.execute(() -> {
+            // Guardamos en Room.
+            long idLong = rutinasDao.insert(rutina);
+            int idGenerado = (int) idLong;
+
+            // Volvemos al Hilo Principal (Main Thread) para que la UI pueda viajar a la nueva Activity
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if (listener != null && idGenerado > 0) {
+                    Log.d("RutinaRepository", "Guardado correctamente");
+                    listener.onSuccess(idGenerado);
+                } else {
+                    Log.e("RutinaRepository", "Error al insertar la rutina en la base de datos");
+                }
+            });
+
+        });
+    }
+
     public void insert(Rutina rutina) {
         executorService.execute(() -> rutinasDao.insert(rutina));
     }
@@ -50,4 +72,10 @@ public class RutinaRepository {
     public LiveData<Rutina> getRutinaById(int id) {
         return rutinasDao.getById(id);
     }
+
+    public interface OnRutinaCreadaListener {
+        void onSuccess(int rutinaId);
+    }
+
+
 }
