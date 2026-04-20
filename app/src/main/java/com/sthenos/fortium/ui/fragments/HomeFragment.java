@@ -1,6 +1,7 @@
 package com.sthenos.fortium.ui.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,6 @@ import com.google.android.material.button.MaterialButton;
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.data.repository.EntrenamientoRepository;
 import com.sthenos.fortium.model.entities.Rutina;
-import com.sthenos.fortium.ui.activities.MainActivity;
 import com.sthenos.fortium.ui.adapters.RutinaAdapter;
 import com.sthenos.fortium.ui.viewmodels.RutinaViewModel;
 import com.sthenos.fortium.ui.viewmodels.UsuarioViewModel;
@@ -29,7 +29,7 @@ public class HomeFragment extends Fragment {
     private RutinaViewModel rutinaViewModel;
     private MaterialButton btnEmpezarEntrenamiento;
     private UsuarioViewModel usuarioViewModel;
-    private int idUsuairo = -1;
+    private int idUsuario = -1;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -66,9 +66,14 @@ public class HomeFragment extends Fragment {
             ((RutinaAdapter) rvRutinas.getAdapter()).setRutinas(rutinas);
         });
         usuarioViewModel.getUsuarioActual().observe(getViewLifecycleOwner(), usuario -> {
-            idUsuairo = usuario.getId();
-            setPeso(usuario.getPesoActual());
-            setSaludo(usuario.getNombre());
+            if (usuario != null) {
+                idUsuario = usuario.getId(); // Ahora es seguro llamar a getId()
+                setPeso(usuario.getPesoActual());
+                setSaludo(usuario.getNombre());
+                Log.d("DEBUG_FORTIUM", "Usuario cargado con ID: " + idUsuario);
+            } else {
+                Log.d("DEBUG_FORTIUM", "Esperando a que el usuario se cargue...");
+            }
         });
     }
 
@@ -78,7 +83,7 @@ public class HomeFragment extends Fragment {
             public void onClick(View view) {
                 int numeroAleatorio = (int) (Math.random() * 100);
                 Rutina nuevaRutina = new Rutina(
-                        idUsuairo, // usuarioId simulado
+                        idUsuario, // usuarioId simulado
                         "Rutina " + numeroAleatorio,
                         "Creada para demostración de base de datos",
                         "2023-11-11"

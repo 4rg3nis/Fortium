@@ -32,4 +32,8 @@ public class RutinaViewModel extends AndroidViewModel {
     public LiveData<Rutina> getRutinaById(int id) {
         return repository.getRutinaById(id);
     }
+
+    public void insert(Rutina rutina, RutinaRepository.OnRutinaCreadaListener listener) {
+        repository.insert(rutina, listener);
+    }
 }
