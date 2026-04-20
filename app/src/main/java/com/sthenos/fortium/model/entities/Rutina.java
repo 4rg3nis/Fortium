@@ -32,8 +32,8 @@ public class Rutina {
     @ColumnInfo(name="fechaCreacion")
     private String fechaCreacion;
 
-    public Rutina(int uid, int usuarioId, String nombre, String descripcion, String fechaCreacion) {
-        this.id = uid;
+    public Rutina(int id, int usuarioId, String nombre, String descripcion, String fechaCreacion) {
+        this.id = id;
         this.usuarioId = usuarioId;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -48,6 +48,7 @@ public class Rutina {
         this.fechaCreacion = fechaCreacion;
     }
 
+    @Ignore
     public Rutina(int usuarioId, String nombre, String descripcion) {
         this.usuarioId = usuarioId;
         this.nombre = nombre;
