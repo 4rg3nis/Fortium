@@ -49,5 +49,10 @@
     <string name="fragmentRutina_tv_importar">Importar JSON</string>
     <string name="fragmentRutina_tv_vacio">Tu biblioteca esta vacía. Comienza tu camino creando una rutina.</string>
     <string name="fragmentRutina_tv_crear">Crear Rutina</string>
+    <string name="dialogCrearRutina_boton_crear">Crear</string>
+    <string name="dialogCrearRutina_boton_cancelar">Cancelar</string>
+    <string name="dialogCrearRutina_tiet_descripcion">Descripcion (opcional)</string>
+    <string name="dialogCrearRutina_tiet_nombre">Nombre de la rutina (e.g. Dia de pierna)</string>
+    <string name="dialogCrearRutina_tv_titulo">Nueva rutina</string>
 
 </resources>
