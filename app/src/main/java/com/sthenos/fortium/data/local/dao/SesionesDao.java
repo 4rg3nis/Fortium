@@ -18,7 +18,7 @@ public interface SesionesDao {
     // OPERACIONES BÁSICAS (CRUD)
 
     // Insertar una nueva sesión
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Sesion sesion);
 
     // Actualizar los datos de una sesion existente

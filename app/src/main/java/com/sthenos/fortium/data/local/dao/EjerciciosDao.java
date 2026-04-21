@@ -17,7 +17,7 @@ public interface EjerciciosDao {
     // OPERACIONES BÁSICAS (CRUD)
 
     // Inserta un nuevo ejercicio. Si ya existe uno con el mismo ID, lo reemplaza.
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Ejercicio ejercicio);
 
     // Permite insertar una lista completa de ejercicios (útil para la carga inicial)
