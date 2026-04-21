@@ -9,18 +9,9 @@ import androidx.room.PrimaryKey;
 
 import java.time.LocalDate;
 
-@Entity(tableName = "Rutinas", foreignKeys = @ForeignKey(
-        entity = Usuario.class,
-        parentColumns = "id",
-        childColumns = "usuarioId",
-        onDelete = ForeignKey.CASCADE
-))
 public class Rutina {
     @PrimaryKey(autoGenerate=true)
     private int id;
-
-    @ColumnInfo(name="usuarioId")
-    private int usuarioId;
 
     @ColumnInfo(name="nombre")
     @NonNull
@@ -32,25 +23,22 @@ public class Rutina {
     @ColumnInfo(name="fechaCreacion")
     private String fechaCreacion;
 
-    public Rutina(int id, int usuarioId, String nombre, String descripcion, String fechaCreacion) {
+    public Rutina(int id,String nombre, String descripcion, String fechaCreacion) {
         this.id = id;
-        this.usuarioId = usuarioId;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.fechaCreacion = fechaCreacion;
     }
 
     @Ignore
-    public Rutina(int usuarioId, String nombre, String descripcion, String fechaCreacion) {
-        this.usuarioId = usuarioId;
+    public Rutina(String nombre, String descripcion, String fechaCreacion) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.fechaCreacion = fechaCreacion;
     }
 
     @Ignore
-    public Rutina(int usuarioId, String nombre, String descripcion) {
-        this.usuarioId = usuarioId;
+    public Rutina(String nombre, String descripcion) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.fechaCreacion = now();
@@ -67,14 +55,6 @@ public class Rutina {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getUsuarioId() {
-        return usuarioId;
-    }
-
-    public void setUsuarioId(int usuarioId) {
-        this.usuarioId = usuarioId;
     }
 
     @NonNull
