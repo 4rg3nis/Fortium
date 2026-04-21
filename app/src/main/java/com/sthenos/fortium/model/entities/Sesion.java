@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "Sesiones", foreignKeys = {
@@ -12,15 +13,18 @@ import androidx.room.PrimaryKey;
                 entity = Rutina.class,
                 parentColumns = "id",
                 childColumns = "rutinaId",
-                onDelete = ForeignKey.CASCADE)
-})
+                onDelete = ForeignKey.SET_NULL) // En caso de que la rutin ase borre, esto sigue.
+        },
+        indices = {@Index("rutinaId")} // Para optimizar las consultas de rutina
+)
 public class Sesion {
 
     @PrimaryKey(autoGenerate=true)
     private int id;
 
+    // En esta se usa integer para que pueda ser nulo.
     @ColumnInfo(name="rutinaId")
-    private int rutinaId;
+    private Integer rutinaId;
 
     @ColumnInfo(name="fechaInicio")
     @NonNull
