@@ -9,6 +9,7 @@ import androidx.room.PrimaryKey;
 
 import java.time.LocalDate;
 
+@Entity(tableName="Rutinas")
 public class Rutina {
     @PrimaryKey(autoGenerate=true)
     private int id;
