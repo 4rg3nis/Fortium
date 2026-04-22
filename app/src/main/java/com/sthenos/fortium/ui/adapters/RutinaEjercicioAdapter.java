@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.model.entities.EjercicioConDetalles;
+import com.sthenos.fortium.model.entities.RutinaEjercicio;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.List;
  */
 public class RutinaEjercicioAdapter extends RecyclerView.Adapter<RutinaEjercicioAdapter.ViewHolder> {
     private List<EjercicioConDetalles> ejerciciosList = new ArrayList<>();
+    private OnEjercicioDeleteListener deleteListener;
 
     @NonNull
     @Override
@@ -42,7 +44,10 @@ public class RutinaEjercicioAdapter extends RecyclerView.Adapter<RutinaEjercicio
         // Por ahora dejamos la foto por defecto, en caso de que se quiera poner usar Picasso
 
         holder.btnDelete.setOnClickListener(v -> {
-            // TODO incluirlo mas adelante
+            if (deleteListener != null) {
+                // Le pasamos el objeto exacto que hay que borrar a la Activity
+                deleteListener.onDeleteClick(ejercicio.rutinaEjercicio);
+            }
         });
     }
 
@@ -55,6 +60,14 @@ public class RutinaEjercicioAdapter extends RecyclerView.Adapter<RutinaEjercicio
     public void setEjercicios(List<EjercicioConDetalles> ejercicios) {
         this.ejerciciosList = ejercicios;
         notifyDataSetChanged(); // Refresca la interfaz
+    }
+
+    /**
+     * Establece un listener para cuando se haga clic en el botón de eliminar.
+     * @param listener Listener a establecer.
+     */
+    public void setOnDeleteListener(OnEjercicioDeleteListener listener) {
+        this.deleteListener = listener;
     }
 
     /**
@@ -72,4 +85,13 @@ public class RutinaEjercicioAdapter extends RecyclerView.Adapter<RutinaEjercicio
             btnDelete = itemView.findViewById(R.id.btnDeleteExercise);
         }
     }
+
+    /**
+     * Interfaz para gestionar el evento de eliminación de un ejercicio.
+     * Como el adapter no tiene que saber nada de la base de datos, se utiliza esta interfaz para notificar el evento.
+     */
+    public interface OnEjercicioDeleteListener {
+        void onDeleteClick(RutinaEjercicio rutinaEjercicio);
+    }
+
 }

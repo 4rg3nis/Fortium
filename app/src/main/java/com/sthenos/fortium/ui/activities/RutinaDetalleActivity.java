@@ -104,6 +104,13 @@ public class RutinaDetalleActivity extends AppCompatActivity {
             // Mostramos el BottomSheet.
             bottomSheet.show(getSupportFragmentManager(), "ExerciseSheet");
         });
+
+        // Establecemos el listener para cuando se elimine un ejercicio de la rutina.
+        rutinaEjercicioAdapter.setOnDeleteListener(ejercicio -> {
+            rutinaViewModel.deleteEjercioFromRutina(ejercicio);
+            Toast.makeText(this, "Ejercicio eliminado", android.widget.Toast.LENGTH_SHORT).show();
+            ejercicioCount--;
+        });
     }
 
     /**

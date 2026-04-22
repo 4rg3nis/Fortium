@@ -103,6 +103,16 @@ public class RutinaRepository {
         return rutinasEjerciciosDao.getEjerciciosDeRutina(rutinaId);
     }
 
+    public void deleteEjercioFromRutina(RutinaEjercicio rutinaEjercicio){
+        executorService.execute(() -> {
+            rutinasEjerciciosDao.delete(rutinaEjercicio);
+
+            // Actualizamos el orden de los ejercicios.
+            rutinasEjerciciosDao.actualizarOrdenes(rutinaEjercicio.getRutinaId(), rutinaEjercicio.getOrden());
+
+        });
+    }
+
     /**
      * Interfaz de callback para notificar la creación exitosa de una rutina.
      */
