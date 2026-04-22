@@ -11,6 +11,7 @@ import androidx.room.Update;
 
 import com.sthenos.fortium.model.RutinaConEjercicios;
 import com.sthenos.fortium.model.entities.Ejercicio;
+import com.sthenos.fortium.model.entities.EjercicioConDetalles;
 import com.sthenos.fortium.model.entities.RutinaEjercicio;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public interface RutinasEjerciciosDao {
 
     // Inserta una nueva relación entre una rutina y un ejercicio.
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(RutinaEjercicio rutinaEjercicio);
+    long insert(RutinaEjercicio rutinaEjercicio);
 
     // Actualiza los datos de una relación existente.
     @Update
@@ -41,13 +42,9 @@ public interface RutinasEjerciciosDao {
     @Query("SELECT * FROM RutinaEjercicios WHERE id = :id LIMIT 1")
     RutinaEjercicio getById(int id);
 
-    // Obtiene una rutina específica con todos sus ejercicios precargados
+    // Busca un ejercicio específico por su ID. Se usa transaction porque room tiene que hacer
+    // varias consultas internas para unir dos tablas y con esto se garantiza la integridad.
     @Transaction
-    @Query("SELECT * FROM Rutinas WHERE id = :rutinaId")
-    LiveData<RutinaConEjercicios> getRutinaConEjercicios(int rutinaId);
-
-    // Obtiene todas las rutinas con sus respectivos ejercicios
-    @Transaction
-    @Query("SELECT * FROM Rutinas")
-    LiveData<List<RutinaConEjercicios>> getAllRutinasConEjercicios();
+    @Query("SELECT * FROM RutinaEjercicios WHERE rutinaId = :rutinaId")
+    LiveData<List<EjercicioConDetalles>> getEjerciciosDeRutina(int rutinaId);
 }

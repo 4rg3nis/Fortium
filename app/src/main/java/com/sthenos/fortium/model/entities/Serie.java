@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import com.sthenos.fortium.model.enums.TipoSerie;
@@ -18,8 +19,13 @@ import com.sthenos.fortium.model.enums.TipoSerie;
                 entity = Ejercicio.class,
                 parentColumns = "id",
                 childColumns = "ejercicioId",
-                onDelete = ForeignKey.CASCADE)
-})
+                onDelete = ForeignKey.RESTRICT) // Previene borrar el ejercicio si hay series asociadas.
+        },
+        indices = {
+                @Index(value = "sesionId"),    // Búsqueda rápida al cargar la pantalla de sesión
+                @Index(value = "ejercicioId")  // Búsqueda rápida al calcular volúmenes o 1RM
+        }
+)
 public class Serie {
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -100,7 +106,7 @@ public class Serie {
         return peso;
     }
 
-    public void setPeso(int peso) {
+    public void setPeso(float peso) {
         this.peso = peso;
     }
 

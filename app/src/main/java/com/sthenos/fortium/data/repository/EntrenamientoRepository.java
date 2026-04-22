@@ -57,10 +57,6 @@ public class EntrenamientoRepository {
         return peso * (1.0 + (reps / 30.0));
     }
 
-    public LiveData<List<Sesion>> getHistorialSesionesUsuario(int usuarioId) {
-        return sesionesDao.getByUsuarioId(usuarioId);
-    }
-
     public LiveData<List<Serie>> getSeriesDeSesion(int sesionId) {
         return seriesDao.getBySesionId(sesionId);
     }

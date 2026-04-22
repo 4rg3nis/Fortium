@@ -29,20 +29,36 @@ public class RutinaEjercicio {
     @ColumnInfo(name="ejercicioId")
     private int ejercicioId;
 
+    @ColumnInfo(name="seriesObjetivo")
+    private int seriesObjetivo;
+
+    @ColumnInfo(name="repeticionesObjetivo")
+    private int repeticionesObjetivo;
+
+    @ColumnInfo(name="notas")
+    private String notas;
+
     @ColumnInfo(name="orden")
     private int orden;
 
-    public RutinaEjercicio(int id, int rutinaId, int ejercicioId, int orden) {
+    public RutinaEjercicio(int id, int rutinaId, int ejercicioId, int seriesObjetivo, int repeticionesObjetivo, String notas, int orden) {
         this.id = id;
         this.rutinaId = rutinaId;
         this.ejercicioId = ejercicioId;
+        this.seriesObjetivo = seriesObjetivo;
+        this.repeticionesObjetivo = repeticionesObjetivo;
+        this.notas = notas;
         this.orden = orden;
     }
 
     @Ignore
-    public RutinaEjercicio(int rutinaId, int ejercicioId, int orden) {
+    public RutinaEjercicio(int rutinaId, int ejercicioId, int seriesObjetivo, int repeticionesObjetivo, String notas, int orden) {
+        this.id = id;
         this.rutinaId = rutinaId;
         this.ejercicioId = ejercicioId;
+        this.seriesObjetivo = seriesObjetivo;
+        this.repeticionesObjetivo = repeticionesObjetivo;
+        this.notas = notas;
         this.orden = orden;
     }
 
@@ -68,6 +84,30 @@ public class RutinaEjercicio {
 
     public void setEjercicioId(int ejercicioId) {
         this.ejercicioId = ejercicioId;
+    }
+
+    public int getSeriesObjetivo() {
+        return seriesObjetivo;
+    }
+
+    public void setSeriesObjetivo(int seriesObjetivo) {
+        this.seriesObjetivo = seriesObjetivo;
+    }
+
+    public int getRepeticionesObjetivo() {
+        return repeticionesObjetivo;
+    }
+
+    public void setRepeticionesObjetivo(int repeticionesObjetivo) {
+        this.repeticionesObjetivo = repeticionesObjetivo;
+    }
+
+    public String getNotas() {
+        return notas;
+    }
+
+    public void setNotas(String notas) {
+        this.notas = notas;
     }
 
     public int getOrden() {

@@ -5,30 +5,26 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "Sesiones", foreignKeys = {
         @ForeignKey(
-                entity = Usuario.class,
-                parentColumns = "id",
-                childColumns = "usuarioId",
-                onDelete = ForeignKey.CASCADE
-        ), @ForeignKey(
                 entity = Rutina.class,
                 parentColumns = "id",
                 childColumns = "rutinaId",
-                onDelete = ForeignKey.CASCADE)
-})
+                onDelete = ForeignKey.SET_NULL) // En caso de que la rutin ase borre, esto sigue.
+        },
+        indices = {@Index("rutinaId")} // Para optimizar las consultas de rutina
+)
 public class Sesion {
 
     @PrimaryKey(autoGenerate=true)
     private int id;
 
-    @ColumnInfo(name="usuarioId")
-    private int usuarioId;
-
+    // En esta se usa integer para que pueda ser nulo.
     @ColumnInfo(name="rutinaId")
-    private int rutinaId;
+    private Integer rutinaId;
 
     @ColumnInfo(name="fechaInicio")
     @NonNull
@@ -46,9 +42,8 @@ public class Sesion {
     @ColumnInfo(name="comentarioGeneral")
     private String comentarioGeneral;
 
-    public Sesion(int id, int usuarioId, int rutinaId, @NonNull String fechaInicio, String fechaFin, int cantidadSeries, boolean recordPersonal, String comentarioGeneral) {
+    public Sesion(int id, int rutinaId, @NonNull String fechaInicio, String fechaFin, int cantidadSeries, boolean recordPersonal, String comentarioGeneral) {
         this.id = id;
-        this.usuarioId = usuarioId;
         this.rutinaId = rutinaId;
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
@@ -58,8 +53,7 @@ public class Sesion {
     }
 
     @Ignore
-    public Sesion(int usuarioId, int rutinaId, @NonNull String fechaInicio, String fechaFin, int cantidadSeries, boolean recordPersonal, String comentarioGeneral) {
-        this.usuarioId = usuarioId;
+    public Sesion( int rutinaId, @NonNull String fechaInicio, String fechaFin, int cantidadSeries, boolean recordPersonal, String comentarioGeneral) {
         this.rutinaId = rutinaId;
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
@@ -74,14 +68,6 @@ public class Sesion {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getUsuarioId() {
-        return usuarioId;
-    }
-
-    public void setUsuarioId(int usuarioId) {
-        this.usuarioId = usuarioId;
     }
 
     public int getRutinaId() {

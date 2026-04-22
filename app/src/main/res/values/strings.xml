@@ -54,5 +54,10 @@
     <string name="dialogCrearRutina_tiet_descripcion">Descripcion (opcional)</string>
     <string name="dialogCrearRutina_tiet_nombre">Nombre de la rutina (e.g. Dia de pierna)</string>
     <string name="dialogCrearRutina_tv_titulo">Nueva rutina</string>
+    <string name="dialogConfigureExcersice_tv_titulo">Configurar Ejercicio</string>
+    <string name="dialogConfigureExcersice_tiet_series">Nº Series</string>
+    <string name="dialogConfigureExcersice_tiet_reps">Reps. Objetivo</string>
+    <string name="dialogConfigureExcersice_btn_add">Añadir a Rutina</string>
+    <string name="dialogConfigureExcersice_boton_cancelar">Cancelar</string>
 
 </resources>

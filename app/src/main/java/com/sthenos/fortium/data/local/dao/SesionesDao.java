@@ -18,7 +18,7 @@ public interface SesionesDao {
     // OPERACIONES BÁSICAS (CRUD)
 
     // Insertar una nueva sesión
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Sesion sesion);
 
     // Actualizar los datos de una sesion existente
@@ -38,7 +38,4 @@ public interface SesionesDao {
     // Obtener una sesión específica por su ID
     @Query("SELECT * FROM Sesiones WHERE id = :id LIMIT 1")
     Sesion getById(int id);
-
-    @Query("SELECT * FROM Sesiones WHERE usuarioId = :usuarioId LIMIT 1")
-    LiveData<List<Sesion>> getByUsuarioId(int usuarioId);
 }

@@ -17,7 +17,7 @@ public interface RutinasDao {
     // OPERACIONES BÁSICAS (CRUD)
 
     // Inserta una nueva rutina. Si ya existe una con el mismo ID, lo reemplaza.
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     long insert(Rutina rutina);
 
     // Permite insertar una lista completa de rutinas (útil para la carga inicial).
