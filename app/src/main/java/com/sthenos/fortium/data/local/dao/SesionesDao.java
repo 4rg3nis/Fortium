@@ -38,7 +38,4 @@ public interface SesionesDao {
     // Obtener una sesión específica por su ID
     @Query("SELECT * FROM Sesiones WHERE id = :id LIMIT 1")
     Sesion getById(int id);
-
-    @Query("SELECT * FROM Sesiones WHERE usuarioId = :usuarioId LIMIT 1")
-    LiveData<List<Sesion>> getByUsuarioId(int usuarioId);
 }
