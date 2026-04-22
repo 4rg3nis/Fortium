@@ -18,27 +18,43 @@ import com.sthenos.fortium.model.entities.Ejercicio;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Crea una pequeña ventana en el que muestra el listado de los ejercicios para poder meterlos, en la rutina
+ * @author Argenis
+ */
 public class ExerciseSelectionBottomSheet extends BottomSheetDialogFragment {
 
-    // Interfaz de comunicacion
+    /**
+     * Interfaz para gestionar el evento de selección de un ejercicio.
+     */
     public interface OnExerciseSelectedListener {
+        /**
+         * Se dispara cuando el usuario toca un ejercicio de la lista.
+         * @param ejercicio El objeto Ejercicio seleccionado.
+         */
         void onExerciseSelected(Ejercicio ejercicio);
     }
 
     private OnExerciseSelectedListener listener;
     private RecyclerView rvExercises;
     private SelectableExerciseAdapter adapter;
-
-    // Lista temporal para probar (luego la conectaremos a la BBDD)
     private List<Ejercicio> ejerciciosDisponibles = new ArrayList<>();
 
     // Constructor vacío requerido por Android
     public ExerciseSelectionBottomSheet() {}
 
+    /**
+     * Establece un listener para cuando se seleccione un ejercicio.
+     * @param listener Listener a establecer.
+     */
     public void setListener(OnExerciseSelectedListener listener) {
         this.listener = listener;
     }
 
+    /**
+     * Actualiza la fuente de datos del adaptador y refresca la vista.
+     * @param ejercicios Lista de objetos {@link Ejercicio} a mostrar.
+     */
     public void setEjercicios(List<Ejercicio> ejercicios) {
         this.ejerciciosDisponibles = ejercicios;
         if (adapter != null) {
@@ -63,6 +79,9 @@ public class ExerciseSelectionBottomSheet extends BottomSheetDialogFragment {
         rvExercises.setAdapter(adapter);
     }
 
+    /**
+     * Adaptador para el listado de ejercicios.
+     */
     private class SelectableExerciseAdapter extends RecyclerView.Adapter<SelectableExerciseAdapter.ViewHolder> {
 
         @NonNull
@@ -78,12 +97,12 @@ public class ExerciseSelectionBottomSheet extends BottomSheetDialogFragment {
             holder.tvName.setText(ejercicio.getNombre());
             holder.tvMuscle.setText(ejercicio.getGrupoMuscularPrincipal());
 
-            // Cuando el usuario toca el ejercicio...
+            // Establecer el listener para cuando se seleccione un ejercicio en el listado.
             holder.itemView.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onExerciseSelected(ejercicio);
                 }
-                dismiss();
+                dismiss(); // Cerramos la vista
             });
         }
 
@@ -92,6 +111,9 @@ public class ExerciseSelectionBottomSheet extends BottomSheetDialogFragment {
             return ejerciciosDisponibles.size();
         }
 
+        /**
+         * ViewHolder para el listado de ejercicios.
+         */
         class ViewHolder extends RecyclerView.ViewHolder {
             TextView tvName, tvMuscle;
 

@@ -7,7 +7,9 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.sthenos.fortium.data.repository.RutinaRepository;
+import com.sthenos.fortium.model.entities.EjercicioConDetalles;
 import com.sthenos.fortium.model.entities.Rutina;
+import com.sthenos.fortium.model.entities.RutinaEjercicio;
 
 import java.util.List;
 
@@ -36,4 +38,13 @@ public class RutinaViewModel extends AndroidViewModel {
     public void insert(Rutina rutina, RutinaRepository.OnRutinaCreadaListener listener) {
         repository.insert(rutina, listener);
     }
+
+    public void insertRutinaEjercicio(RutinaEjercicio rutinaEjercicio, Runnable onSuccess){
+        repository.insertRutinaEjercicio(rutinaEjercicio, onSuccess);
+    }
+
+    public LiveData<List<EjercicioConDetalles>> getEjerciciosDeRutina(int rutinaId) {
+        return repository.getEjerciciosDeRutina(rutinaId);
+    }
+
 }
