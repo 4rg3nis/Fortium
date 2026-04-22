@@ -104,7 +104,13 @@ public class RutinaRepository {
     }
 
     public void deleteEjercioFromRutina(RutinaEjercicio rutinaEjercicio){
-        executorService.execute(() -> rutinasEjerciciosDao.delete(rutinaEjercicio));
+        executorService.execute(() -> {
+            rutinasEjerciciosDao.delete(rutinaEjercicio);
+
+            // Actualizamos el orden de los ejercicios.
+            rutinasEjerciciosDao.actualizarOrdenes(rutinaEjercicio.getRutinaId(), rutinaEjercicio.getOrden());
+
+        });
     }
 
     /**

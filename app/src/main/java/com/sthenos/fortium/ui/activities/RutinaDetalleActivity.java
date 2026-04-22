@@ -110,7 +110,6 @@ public class RutinaDetalleActivity extends AppCompatActivity {
             rutinaViewModel.deleteEjercioFromRutina(ejercicio);
             Toast.makeText(this, "Ejercicio eliminado", android.widget.Toast.LENGTH_SHORT).show();
             ejercicioCount--;
-            // TODO: Hacer que el orden este bien
         });
     }
 
