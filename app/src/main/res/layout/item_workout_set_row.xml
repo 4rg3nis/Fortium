@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="8dp">
+
+    <TextView
+        android:id="@+id/tvSetNumber"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        tools:text="1"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvPreviousSet"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        tools:text="-"
+        android:textColor="@color/gray_400"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/etWeightInput"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:background="@drawable/bg_input_dark"
+        android:gravity="center"
+        android:hint="@string/workoutSetRow_et_kg"
+        android:inputType="numberDecimal"
+        android:textColor="@color/white"
+        android:textColorHint="@color/gray_400"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/etRepsInput"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/bg_input_dark"
+        android:gravity="center"
+        android:hint="@string/workoutSetRow_et_reps"
+        android:inputType="number"
+        android:textColor="@color/white"
+        android:textColorHint="@color/gray_400"
+        android:textSize="16sp" />
+
+
+    <EditText
+        android:id="@+id/etRpeInput"
+        android:layout_width="40dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="4dp"
+        android:background="@drawable/bg_input_dark"
+        android:gravity="center"
+        android:hint="@string/workoutSetRow_et_rpe"
+        android:inputType="numberDecimal"
+        android:textColor="@color/white"
+        android:textColorHint="@color/gray_400"
+        android:textSize="14sp" />
+
+    <ToggleButton
+        android:id="@+id/btnCheckSet"
+        android:layout_width="48dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/bg_check_toggle"
+        android:textOff=""
+        android:textOn=""
+        android:textColor="@android:color/transparent" />
+
+</LinearLayout>

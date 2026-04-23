@@ -59,5 +59,16 @@
     <string name="dialogConfigureExcersice_tiet_reps">Reps. Objetivo</string>
     <string name="dialogConfigureExcersice_btn_add">Añadir a Rutina</string>
     <string name="dialogConfigureExcersice_boton_cancelar">Cancelar</string>
+    <string name="workoutSetRow_et_kg">kg</string>
+    <string name="workoutSetRow_et_reps">reps</string>
+    <string name="workout_boton_finalizar">Finalizar</string>
+    <string name="workout_boton_add">+ Añadir Ejercicio</string>
+    <string name="workoutActive_tv_add">+ Añadir Serie</string>
+    <string name="workoutActiveExcersice_tv_set">Set</string>
+    <string name="workoutActiveExcersice_tv_anterior">Anterior</string>
+    <string name="workoutActiveExcersice_tv_kg">kg</string>
+    <string name="workoutActiveExcersice_tv_reps">Reps</string>
+    <string name="workoutActiveExcersice_tv_rpe">RPE</string>
+    <string name="workoutSetRow_et_rpe">-</string>
 
 </resources>
