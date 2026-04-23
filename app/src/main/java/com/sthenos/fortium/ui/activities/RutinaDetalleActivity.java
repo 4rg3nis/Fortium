@@ -1,5 +1,6 @@
 package com.sthenos.fortium.ui.activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -48,7 +49,7 @@ public class RutinaDetalleActivity extends AppCompatActivity {
     private EjercicioViewModel ejercicioViewModel;
     private List<Ejercicio> ejerciciosDisponibles = new ArrayList<>();
     private ImageButton btnBack;
-    private MaterialButton btnAddEjercicio;
+    private MaterialButton btnAddEjercicio, btnStartWorkout;
 
 
     @Override
@@ -110,6 +111,12 @@ public class RutinaDetalleActivity extends AppCompatActivity {
             rutinaViewModel.deleteEjercioFromRutina(ejercicio);
             Toast.makeText(this, "Ejercicio eliminado", android.widget.Toast.LENGTH_SHORT).show();
             ejercicioCount--;
+        });
+
+        btnStartWorkout.setOnClickListener(v -> {
+            Intent intent = new Intent(this, WorkoutActivity.class);
+            intent.putExtra("rutinaId", rutinaId);
+            startActivity(intent);
         });
     }
 
@@ -231,6 +238,7 @@ public class RutinaDetalleActivity extends AppCompatActivity {
         tvRoutineDate = findViewById(R.id.tvRoutineDate);
         btnBack = findViewById(R.id.btnBack);
         btnAddEjercicio = findViewById(R.id.btnAddEjercicio);
+        btnStartWorkout = findViewById(R.id.btnStartWorkout);
 
         rvEjerciciosRutina = findViewById(R.id.rvEjerciciosRutina);
         rvEjerciciosRutina.setLayoutManager(new LinearLayoutManager(this));
