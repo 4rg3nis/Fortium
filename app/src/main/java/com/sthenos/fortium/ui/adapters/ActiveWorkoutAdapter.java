@@ -164,6 +164,21 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
         notifyDataSetChanged();
     }
 
+    public void addEjercicioEnVivo(EjercicioConDetalles nuevoEjercicio) {
+        if (listaEjercicios == null) {
+            listaEjercicios = new ArrayList<>();
+        }
+
+        listaEjercicios.add(nuevoEjercicio);
+        int nuevaPosicion = listaEjercicios.size() - 1;
+
+        // Le ponemos 90 segundos de descanso por defecto al nuevo ejercicio
+        tiemposDescanso.put(nuevaPosicion, 90);
+
+        // Avisamos al RecyclerView de que se ha insertado un elemento nuevo al final
+        notifyItemInserted(nuevaPosicion);
+    }
+
     @Override
     public int getItemCount() {
         if (listaEjercicios == null) {

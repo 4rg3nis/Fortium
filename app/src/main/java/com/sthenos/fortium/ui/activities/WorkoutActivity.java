@@ -21,8 +21,15 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.sthenos.fortium.R;
+import com.sthenos.fortium.model.entities.Ejercicio;
+import com.sthenos.fortium.model.entities.EjercicioConDetalles;
+import com.sthenos.fortium.model.entities.RutinaEjercicio;
 import com.sthenos.fortium.ui.adapters.ActiveWorkoutAdapter;
+import com.sthenos.fortium.ui.fragments.ExerciseSelectionBottomSheet;
+import com.sthenos.fortium.ui.viewmodels.EjercicioViewModel;
 import com.sthenos.fortium.ui.viewmodels.RutinaViewModel;
+
+import java.util.List;
 
 public class WorkoutActivity extends AppCompatActivity {
 
@@ -37,6 +44,9 @@ public class WorkoutActivity extends AppCompatActivity {
     private CountDownTimer countDownTimer;
     private BottomSheetDialog restDialog;
 
+    private List<Ejercicio> ejerciciosDisponibles;
+
+    private EjercicioViewModel ejercicioViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +78,12 @@ public class WorkoutActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Error: No se encontró la rutina", Toast.LENGTH_SHORT).show();
         }
+
+        ejercicioViewModel.getAllEjercicios().observe(this, ejercicios -> {
+            if (ejercicios != null) {
+                ejerciciosDisponibles = ejercicios;
+            }
+        });
     }
 
     private void setupListeners() {
@@ -85,7 +101,44 @@ public class WorkoutActivity extends AppCompatActivity {
         // Añadir nuevo ejercicio "al vuelo" estos no estarán visible en la parte del detalle de la rutina
         btnAddExercise.setOnClickListener(v -> {
             // Aquí abriríamos el mismo BottomSheet de ejercicios que en detalle rutina
-            Toast.makeText(this, "Abrir catálogo de ejercicios...", Toast.LENGTH_SHORT).show();
+
+            if (ejerciciosDisponibles.isEmpty()) {
+                Toast.makeText(this, "Cargando catálogo de ejercicios...", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Creamos el menú desplegable
+            ExerciseSelectionBottomSheet bottomSheet = new ExerciseSelectionBottomSheet();
+
+            // Le pasamos todos los ejercicios
+            bottomSheet.setEjercicios(ejerciciosDisponibles);
+
+            // Escuchamos cuál elige el usuario
+            bottomSheet.setListener(ejercicioSeleccionado -> {
+
+                EjercicioConDetalles ejercicioExtra = new EjercicioConDetalles();
+                ejercicioExtra.ejercicio = ejercicioSeleccionado;
+
+                int nuevoOrden = adapter.getItemCount() + 1;
+
+                // Le creamos un enlace ficticio: 1 serie y 0 reps por defecto
+                ejercicioExtra.rutinaEjercicio = new com.sthenos.fortium.model.entities.RutinaEjercicio(
+                        rutinaId,
+                        ejercicioSeleccionado.getId(),
+                        1,
+                        0,
+                        "",
+                        nuevoOrden
+                );
+
+
+                adapter.addEjercicioEnVivo(ejercicioExtra);
+
+                Toast.makeText(this, ejercicioSeleccionado.getNombre() + " añadido", Toast.LENGTH_SHORT).show();
+            });
+
+            // 4. Lo mostramos
+            bottomSheet.show(getSupportFragmentManager(), "ExerciseSheet");
         });
     }
 
@@ -121,6 +174,10 @@ public class WorkoutActivity extends AppCompatActivity {
             iniciarTemporizadorDescanso(tiempoDescansoSegundos);
         });
         rvActiveExercises.setAdapter(adapter);
+
+        ejerciciosDisponibles = new java.util.ArrayList<>();
+
+        ejercicioViewModel = new ViewModelProvider(this).get(EjercicioViewModel.class);
     }
 
     private void iniciarTemporizadorDescanso(int tiempoDescansoSegundos) {
