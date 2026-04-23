@@ -1,9 +1,11 @@
 package com.sthenos.fortium.ui.activities;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -15,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.sthenos.fortium.R;
@@ -30,6 +33,9 @@ public class WorkoutActivity extends AppCompatActivity {
     private RutinaViewModel rutinaViewModel;
     private ActiveWorkoutAdapter adapter;
     private int rutinaId = -1;
+
+    private CountDownTimer countDownTimer;
+    private BottomSheetDialog restDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +117,82 @@ public class WorkoutActivity extends AppCompatActivity {
         rvActiveExercises = findViewById(R.id.rvWorkoutActive);
         rvActiveExercises.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new ActiveWorkoutAdapter(this);
+        adapter = new ActiveWorkoutAdapter(this, tiempoDescansoSegundos -> {
+            iniciarTemporizadorDescanso(tiempoDescansoSegundos);
+        });
         rvActiveExercises.setAdapter(adapter);
+    }
+
+    private void iniciarTemporizadorDescanso(int tiempoDescansoSegundos) {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+
+        // Preparamos el panel
+        if (restDialog == null) {
+            restDialog = new BottomSheetDialog(this);
+            restDialog.setContentView(R.layout.bottom_sheet_rest_timer);
+        }
+
+        TextView tvTime = restDialog.findViewById(R.id.tvRestTimerBig);
+        MaterialButton btnSkip = restDialog.findViewById(R.id.btnSkipRest);
+        MaterialButton btnAdd = restDialog.findViewById(R.id.btnAdd15s);
+        MaterialButton btnLess = restDialog.findViewById(R.id.btnLess15s);
+
+
+        // Lógica de los botones del panel
+        btnSkip.setOnClickListener(v -> {
+            if (countDownTimer != null) countDownTimer.cancel();
+            restDialog.dismiss();
+        });
+
+        btnAdd.setOnClickListener(v -> {
+            if (countDownTimer != null) countDownTimer.cancel();
+            restDialog.dismiss();
+            iniciarTemporizadorDescanso(tiempoDescansoSegundos + 15);
+        });
+
+        btnLess.setOnClickListener(v -> {
+            if (countDownTimer != null) countDownTimer.cancel();
+            restDialog.dismiss();
+            iniciarTemporizadorDescanso(tiempoDescansoSegundos - 15);
+        });
+
+        restDialog.show();
+
+        // Arrancamos el cronómetro de Android. Multiplicamos por 1000 porque funciona en milisegundos
+        countDownTimer = new CountDownTimer(tiempoDescansoSegundos * 1000L, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                // Esto se ejecuta CADA SEGUNDO
+                long segundosRestantes = millisUntilFinished / 1000;
+                long minutos = segundosRestantes / 60;
+                long segundos = segundosRestantes % 60;
+
+                // Formateamos para que se vea como "01:30"
+                String tiempoFormateado = String.format("%02d:%02d", minutos, segundos);
+                if (tvTime != null) {
+                    tvTime.setText(tiempoFormateado);
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                // Cuando el tiempo se acaba
+                if (restDialog != null && restDialog.isShowing()) {
+                    restDialog.dismiss();
+                }
+                // Opcional: Hacer vibrar el móvil
+                // android.os.Vibrator v = (android.os.Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                // if (v != null) v.vibrate(500);
+            }
+        }.start();
+    }
+
+    // Es vital cancelar el cronómetro si el usuario cierra la app de golpe
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (countDownTimer != null) countDownTimer.cancel();
     }
 }

@@ -22,11 +22,12 @@ import java.util.List;
 public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdapter.ExerciseViewHolder> {
     private final Context context;
     // Asumiremos que tienes 3 ejercicios cargados para probar
-    private int cantidadEjercicios = 3;
+    private OnSetActionListener listener;
     private List<EjercicioConDetalles> listaEjercicios = new ArrayList<>();
 
-    public ActiveWorkoutAdapter(Context context) {
+    public ActiveWorkoutAdapter(Context context, OnSetActionListener listener) {
         this.context = context;
+        this.listener = listener;
     }
 
     @NonNull
@@ -83,6 +84,10 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
             if (isChecked) {
                 // El usuario completó la serie
                 // Aquí podrías leer el peso y reps de los EditText y guardarlos en un modelo temporal
+                // Por ahora ponemos 90 segundos de descanso.
+                if (listener != null) {
+                    listener.onSetCompleted(90);
+                }
             }
         });
 
@@ -114,5 +119,11 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
             layoutSetsContainer = itemView.findViewById(R.id.layoutSetsContainer);
             btnAddSet = itemView.findViewById(R.id.btnAddSet);
         }
+    }
+
+    // Creamos la interfaz
+    public interface OnSetActionListener {
+        // Le pasaremos los segundos que debe descansar (ej: 90)
+        void onSetCompleted(int tiempoDescansoSegundos);
     }
 }

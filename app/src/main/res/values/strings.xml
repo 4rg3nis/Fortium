@@ -70,5 +70,9 @@
     <string name="workoutActiveExcersice_tv_reps">Reps</string>
     <string name="workoutActiveExcersice_tv_rpe">RPE</string>
     <string name="workoutSetRow_et_rpe">-</string>
+    <string name="sheetRestTimer_boton_saltar">Saltar</string>
+    <string name="sheetRestTimer_boton_mas15">+ 15s</string>
+    <string name="sheetRestTimer_boton_menos15">- 15s</string>
+    <string name="sheetRestTimer_tv_titulo">Tiempo de Descanso</string>
 
 </resources>
