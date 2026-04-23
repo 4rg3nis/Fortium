@@ -152,7 +152,7 @@ public class RoutinesFragment extends Fragment {
             String fechaHoy = new java.text.SimpleDateFormat("dd-MM-yyyy", java.util.Locale.getDefault()).format(new java.util.Date());
 
 
-            Rutina nuevaRutina = new Rutina(idUsuario, title, desc, fechaHoy);
+            Rutina nuevaRutina = new Rutina(title, desc, fechaHoy);
 
             // Aqui insertamos la rutina, y como todavía sqlite no creó la rutina y el id es '0' pues directamente hacemos
             // aqui el cambio de activity
