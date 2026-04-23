@@ -1,6 +1,7 @@
 package com.sthenos.fortium.ui.adapters;
 
 import android.content.Context;
+import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,19 +12,22 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.model.entities.EjercicioConDetalles;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdapter.ExerciseViewHolder> {
     private final Context context;
-    // Asumiremos que tienes 3 ejercicios cargados para probar
     private OnSetActionListener listener;
     private List<EjercicioConDetalles> listaEjercicios = new ArrayList<>();
+
+    // Memoria para los tiempos de descanso para cada ejercicio.
+    private SparseIntArray tiemposDescanso = new SparseIntArray();
+
+    private static final int TIEMPO_DESCANSO_INICIAL_DEFAULT = 90;
 
     public ActiveWorkoutAdapter(Context context, OnSetActionListener listener) {
         this.context = context;
@@ -42,25 +46,77 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
         EjercicioConDetalles item = listaEjercicios.get(position);
         holder.tvExerciseName.setText(item.ejercicio.getNombre());
 
+        // Pongo el texto formateado en el botón.
+        int tiempoActualSegundos = tiemposDescanso.get(position);
+        holder.btnRestTimerConfig.setText(formatearTiempo(tiempoActualSegundos));
+
+        // Lógica del botón "Configurar tiempo de descanso" para cada ejercicio.
+        holder.btnRestTimerConfig.setOnClickListener(v -> {
+            mostrarSelectorDeTiempo(position, holder.btnRestTimerConfig);
+        });
+
+        // Limpia el contenedor para evitar que se dupliquen o mezclen series al reciclar la vista
         holder.layoutSetsContainer.removeAllViews();
 
         // Creamos tantas filas como el usuario configuró en la plantilla
         int seriesObjetivo = item.rutinaEjercicio.getSeriesObjetivo();
-
         for (int i = 1; i <= seriesObjetivo; i++) {
-            agregarFilaSerie(holder.layoutSetsContainer, i, item.rutinaEjercicio.getRepeticionesObjetivo());
+            agregarFilaSerie(holder.layoutSetsContainer, i, item.rutinaEjercicio.getRepeticionesObjetivo(), position);
         }
 
         // Lógica del botón "+ Añadir Serie"
         holder.btnAddSet.setOnClickListener(v -> {
             int nuevaSerieNum = holder.layoutSetsContainer.getChildCount() + 1;
             // TODO: Hacer que siga el mismo patron que los otros y poner que las repeticiones sea igual que el ultimo?
-            agregarFilaSerie(holder.layoutSetsContainer, nuevaSerieNum, 0);
+            agregarFilaSerie(holder.layoutSetsContainer, nuevaSerieNum, 0, position);
         });
 
     }
 
-    private void agregarFilaSerie(LinearLayout container, int numeroSerie, int repeticionesObjetivo) {
+    /**
+     * Muestra un selector de tiempo de descanso para el ejercicio actual. El usuario puede seleccionar el tiempo
+     * que quiere para este ejercicio sin que afecte a los otros. Vienen unos por defectos que suelen ser los 'normales'
+     * a la hora de descansar. Dependiendo del tipo de entrenamienteo que sea, 'fuerza', 'hipertrofia', etc...
+     * @param position La posición del ejercicio en la lista
+     * @param btnRestTimerConfig El botón que contiene el tiempo de descanso actual del ejercicio en cuestión (para actualizarlo)
+     */
+    private void mostrarSelectorDeTiempo(int position, TextView btnRestTimerConfig) {
+        String[] opcionesTxt = {"30 seg", "1 min", "1 min 30 seg", "2 min", "2 min 30 seg", "3 min", "5 min"};
+        // El valor real en segundos de cada opción
+        int[] opcionesSeg = {30, 60, 90, 120, 150, 180, 300};
+
+        new MaterialAlertDialogBuilder(context)
+                .setTitle("Descanso para este ejercicio")
+                .setItems(opcionesTxt, (dialog, which) -> {
+                    // Guardamos el nuevo tiempo en la memoria
+                    int nuevoTiempo = opcionesSeg[which];
+                    tiemposDescanso.put(position, nuevoTiempo);
+
+                    // Actualizamos el botón visualmente con el nuevo tiempo formateado.
+                    btnRestTimerConfig.setText(formatearTiempo(nuevoTiempo));
+                })
+                .show();
+    }
+
+    /**
+     * Formateamos el tiempo en minutos y segundos para que se vea como "01:30"
+     * @param tiempoActualSegundos El tiempo en segundos que queremos formatear
+     * @return El tiempo formateado en formato "01:30" o "00:00" si es 0
+     */
+    private String formatearTiempo(int tiempoActualSegundos) {
+        int minutos = tiempoActualSegundos / 60;
+        int segundos = tiempoActualSegundos % 60;
+        return String.format("%02d:%02d", minutos, segundos);
+    }
+
+    /**
+     * Agrega la fila de serie, en el ejercicio correspondiente, al contenedor de series.
+     * @param container EL contenedor de series del ejercicio
+     * @param numeroSerie El numero del orden de la serie
+     * @param repeticionesObjetivo EL numero de repeticiones
+     * @param positionEjercicio La posicion del ejercicio para saber el tiempo de descanso correspondiente a ese ejercicio.
+     */
+    private void agregarFilaSerie(LinearLayout container, int numeroSerie, int repeticionesObjetivo, int positionEjercicio) {
         // Inflamos el XML de la fila individual
         View filaView = LayoutInflater.from(context).inflate(R.layout.item_workout_set_row, container, false);
 
@@ -79,15 +135,12 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
             return true;
         });
 
-        // Cambiar comportamiento al marcar el Check (Ej: Iniciar temporizador de descanso)
+        // Cambiar comportamiento al marcar el Check
         btnCheck.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                // El usuario completó la serie
-                // Aquí podrías leer el peso y reps de los EditText y guardarlos en un modelo temporal
-                // Por ahora ponemos 90 segundos de descanso.
-                if (listener != null) {
-                    listener.onSetCompleted(90);
-                }
+            if (isChecked && listener != null) {
+                // En caso de que se le de al Check, saltará el cronómetro.
+                int tiempoParaEsteEjercicio = tiemposDescanso.get(positionEjercicio);
+                listener.onSetCompleted(tiempoParaEsteEjercicio);
             }
         });
 
@@ -95,9 +148,19 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
         container.addView(filaView);
     }
 
-    // En ActiveWorkoutAdapter.java
+    /**
+     * Actualiza la lista de ejercicios con los nuevos datos. Tambien limpia el mapa de tiempos de descanso y
+     * le asigna los 90 segundos por defecto a cada ejercicio.
+     * @param ejercicios La lista de ejercicio qeu se quiere que se muestre en el adaptador.
+     */
     public void setEjercicios(List<EjercicioConDetalles> ejercicios) {
         this.listaEjercicios = ejercicios;
+
+        // Asignamos 90 segundos por defecto a cada ejercicio al cargar
+        tiemposDescanso.clear();
+        for (int i = 0; i < ejercicios.size(); i++) {
+            tiemposDescanso.put(i, TIEMPO_DESCANSO_INICIAL_DEFAULT);
+        }
         notifyDataSetChanged();
     }
 
@@ -109,8 +172,11 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
         return listaEjercicios.size();
     }
 
+    /**
+     * ViewHolder del adaptador de {@link ActiveWorkoutAdapter}
+     */
     class ExerciseViewHolder extends RecyclerView.ViewHolder {
-        TextView tvExerciseName, btnAddSet;
+        TextView tvExerciseName, btnAddSet, btnRestTimerConfig;
         LinearLayout layoutSetsContainer;
 
         ExerciseViewHolder(View itemView) {
@@ -118,10 +184,11 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
             tvExerciseName = itemView.findViewById(R.id.tvActiveExerciseName);
             layoutSetsContainer = itemView.findViewById(R.id.layoutSetsContainer);
             btnAddSet = itemView.findViewById(R.id.btnAddSet);
+            btnRestTimerConfig = itemView.findViewById(R.id.btnRestTimerConfig);
         }
     }
 
-    // Creamos la interfaz
+    // Creamos la interfaz, que actua como túnel.
     public interface OnSetActionListener {
         // Le pasaremos los segundos que debe descansar (ej: 90)
         void onSetCompleted(int tiempoDescansoSegundos);
