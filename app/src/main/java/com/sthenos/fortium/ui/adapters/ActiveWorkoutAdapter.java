@@ -5,6 +5,7 @@ import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -122,11 +123,15 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
 
         // Buscamos los elementos dentro de ESA fila específica
         TextView tvSetNumber = filaView.findViewById(R.id.tvSetNumber);
-        TextView etRepsInput = filaView.findViewById(R.id.etRepsInput);
+        TextView tvRepsInput = filaView.findViewById(R.id.etRepsInput);
         ToggleButton btnCheck = filaView.findViewById(R.id.btnCheckSet);
 
         tvSetNumber.setText(String.valueOf(numeroSerie));
-        etRepsInput.setHint(String.valueOf(repeticionesObjetivo));
+        tvRepsInput.setHint(String.valueOf(repeticionesObjetivo));
+
+        EditText etWeightInput = filaView.findViewById(R.id.etWeightInput);
+        EditText etRpeInput = filaView.findViewById(R.id.etRpeInput);
+        EditText etRepsInput = filaView.findViewById(R.id.etRepsInput);
 
         // Borrar serie al mantener pulsado el número
         tvSetNumber.setOnLongClickListener(v -> {
@@ -135,12 +140,57 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
             return true;
         });
 
-        // Cambiar comportamiento al marcar el Check
+        // Cambiar comportamiento al marcar el Check, en la que se guardará la serie en la memoria temporal para que se pueda
+        // borrar cuando se quiera.
         btnCheck.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked && listener != null) {
-                // En caso de que se le de al Check, saltará el cronómetro.
-                int tiempoParaEsteEjercicio = tiemposDescanso.get(positionEjercicio);
-                listener.onSetCompleted(tiempoParaEsteEjercicio);
+            if (isChecked) {
+                // Leemos lo que ha escrito el usuario (Si está vacío, ponemos un 0)
+                String pesoStr = etWeightInput.getText().toString();
+                String repsStr = etRepsInput.getText().toString();
+                String rpeStr = etRpeInput.getText().toString();
+
+                float peso = pesoStr.isEmpty() ? 0.0f : Float.parseFloat(pesoStr);
+                int reps = repsStr.isEmpty() ? 0 : Integer.parseInt(repsStr);
+                float rpe = rpeStr.isEmpty() ? 0.0f : Float.parseFloat(rpeStr);
+
+                if (rpe > 10.0f) {
+                    android.widget.Toast.makeText(context, "El RPE máximo es 10", android.widget.Toast.LENGTH_SHORT).show();
+                    btnCheck.setChecked(false); // Desmarcamos el botón automáticamente
+                    return; // Cortamos la ejecución aquí, no se guarda nada
+                }
+
+                // Bloqueamos los campos para que no pueda editarlos mientras está en check
+                etWeightInput.setEnabled(false);
+                etRepsInput.setEnabled(false);
+                etRpeInput.setEnabled(false);
+
+                // Avisamos a la Activity para que guarde esta serie en la memoria temporal
+                if (listener != null) {
+                    int tiempoParaEsteEjercicio = tiemposDescanso.get(positionEjercicio);
+
+                    int idEjercicioReaL = listaEjercicios.get(positionEjercicio).ejercicio.getId();
+
+                    listener.onSetCompleted(tiempoParaEsteEjercicio, idEjercicioReaL, peso, reps, rpe);
+                }
+            } else {
+                // Si DESMARCA la serie
+
+                // Desbloqueamos los campos
+                etWeightInput.setEnabled(true);
+                etRepsInput.setEnabled(true);
+                etRpeInput.setEnabled(true);
+
+                // Avisamos a la Activity para que borre esta serie de la memoria temporal
+                if (listener != null) {
+                    String pesoStr = etWeightInput.getText().toString();
+                    String repsStr = etRepsInput.getText().toString();
+
+                    float peso = pesoStr.isEmpty() ? 0.0f : Float.parseFloat(pesoStr);
+                    int reps = repsStr.isEmpty() ? 0 : Integer.parseInt(repsStr);
+                    int idEjercicioReaL = listaEjercicios.get(positionEjercicio).ejercicio.getId();
+
+                    listener.onSetUnchecked(idEjercicioReaL, peso, reps);
+                }
             }
         });
 
@@ -164,6 +214,10 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
         notifyDataSetChanged();
     }
 
+    /**
+     * Añade un nuevo ejercicio a la lista de ejercicios.
+     * @param nuevoEjercicio El nuevo ejercicio a añadir
+     */
     public void addEjercicioEnVivo(EjercicioConDetalles nuevoEjercicio) {
         if (listaEjercicios == null) {
             listaEjercicios = new ArrayList<>();
@@ -207,5 +261,11 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
     public interface OnSetActionListener {
         // Le pasaremos los segundos que debe descansar (ej: 90)
         void onSetCompleted(int tiempoDescansoSegundos);
+
+        // Pasamos todos los datos que el usuario ha escrito
+        void onSetCompleted(int tiempoDescanso, int ejercicioId, float peso, int reps, float rpe);
+
+        // Necesitamos saber si el usuario se arrepiente y desmarca la serie
+        void onSetUnchecked(int ejercicioId, float peso, int reps);
     }
 }

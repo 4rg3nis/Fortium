@@ -20,6 +20,9 @@ public interface SeriesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Serie serie);
 
+    @Insert
+    void insertAll(List<Serie> series);
+
     // Actualizar los datos de una serie existente
     @Update
     void update(Serie serie);
