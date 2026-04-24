@@ -136,7 +136,17 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
         // Borrar serie al mantener pulsado el número
         tvSetNumber.setOnLongClickListener(v -> {
             container.removeView(filaView);
-            // TODO: Recalcular los números de las series restantes para que no salte del 1 al 3
+
+            // Bucle para recalcular el orden de las series.
+            for (int i = 0; i < container.getChildCount(); i++) {
+                View filaRestante = container.getChildAt(i);
+                TextView tvNumeroRestante = filaRestante.findViewById(R.id.tvSetNumber);
+
+                if (tvNumeroRestante != null) {
+                    // 'i' empieza en 0, así que le sumamos 1 para que las series sean 1, 2, 3...
+                    tvNumeroRestante.setText(String.valueOf(i + 1));
+                }
+            }
             return true;
         });
 
