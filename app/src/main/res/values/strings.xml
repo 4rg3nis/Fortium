@@ -74,5 +74,22 @@
     <string name="sheetRestTimer_boton_mas15">+ 15s</string>
     <string name="sheetRestTimer_boton_menos15">- 15s</string>
     <string name="sheetRestTimer_tv_titulo">Tiempo de Descanso</string>
+    <string name="bottomSheetExerciseFilters_tv_titulo">Filtros</string>
+    <string name="bottomSheetExerciseFilters_tv_limpiar">Limpiar</string>
+    <string name="bottomSheetExerciseFilters_tv_grupos">GRUPO MUSCULAR</string>
+    <string name="bottomSheetExerciseFilters_tv_pecho">Pecho</string>
+    <string name="bottomSheetExerciseFilters_tv_espalda">Espalda</string>
+    <string name="bottomSheetExerciseFilters_tv_quads">Cuadriceps</string>
+    <string name="bottomSheetExerciseFilters_tv_isquio">Isquiotibiales</string>
+    <string name="bottomSheetExerciseFilters_tv_gemelos">Gemelos</string>
+    <string name="bottomSheetExerciseFilters_tv_hombros">Hombros</string>
+    <string name="bottomSheetExerciseFilters_tv_biceps">Biceps</string>
+    <string name="bottomSheetExerciseFilters_tv_triceps">Triceps</string>
+    <string name="bottomSheetExerciseFilters_tv_antebrazo">Antebrazo</string>
+    <string name="bottomSheetExerciseFilters_tv_abs">Abdominales</string>
+    <string name="bottomSheetExerciseFilters_tv_gluteos">Gluteos</string>
+    <string name="bottomSheetExerciseFilters_tv_resultados">Mostrar Resultados</string>
+    <string name="fragmentExcersieList_boton_tv_add">Nuevo</string>
+    <string name="fragmentExcersieList_tv_buscar">Buscar ejercicio...</string>
 
 </resources>
