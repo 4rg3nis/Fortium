@@ -19,7 +19,7 @@ public interface SesionesDao {
 
     // Insertar una nueva sesión
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insert(Sesion sesion);
+    long insert(Sesion sesion);
 
     // Actualizar los datos de una sesion existente
     @Update

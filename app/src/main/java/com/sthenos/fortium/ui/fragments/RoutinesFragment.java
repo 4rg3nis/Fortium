@@ -32,6 +32,8 @@ import com.sthenos.fortium.ui.adapters.RutinaAdapter;
 import com.sthenos.fortium.ui.viewmodels.RutinaViewModel;
 import com.sthenos.fortium.ui.viewmodels.UsuarioViewModel;
 
+import java.util.Locale;
+
 public class RoutinesFragment extends Fragment {
 
     private RecyclerView rvLibraryRoutines;
@@ -63,7 +65,6 @@ public class RoutinesFragment extends Fragment {
 
         initComponents(view);
         setupRecyclerView();
-
         setObservers();
         setupListeners();
     }
@@ -131,7 +132,7 @@ public class RoutinesFragment extends Fragment {
         MaterialButton btnCancel = dialogView.findViewById(R.id.btnCancel);
         MaterialButton btnSave = dialogView.findViewById(R.id.btnSave);
 
-        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext(), R.style.Theme_Fortium) // Usa tu tema si tienes uno oscuro, o quita el segundo parámetro
+        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext(), R.style.Theme_Fortium)
                 .setView(dialogView)
                 .setBackground(new ColorDrawable(Color.TRANSPARENT))
                 .setCancelable(false)
@@ -149,10 +150,10 @@ public class RoutinesFragment extends Fragment {
             }
 
 
-            String fechaHoy = new java.text.SimpleDateFormat("dd-MM-yyyy", java.util.Locale.getDefault()).format(new java.util.Date());
+            String fechaHoy = new java.text.SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new java.util.Date());
 
 
-            Rutina nuevaRutina = new Rutina(idUsuario, title, desc, fechaHoy);
+            Rutina nuevaRutina = new Rutina(title, desc, fechaHoy);
 
             // Aqui insertamos la rutina, y como todavía sqlite no creó la rutina y el id es '0' pues directamente hacemos
             // aqui el cambio de activity

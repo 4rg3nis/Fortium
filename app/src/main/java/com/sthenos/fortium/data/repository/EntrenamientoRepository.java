@@ -1,6 +1,8 @@
 package com.sthenos.fortium.data.repository;
 
 import android.app.Application;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.lifecycle.LiveData;
 
@@ -108,6 +110,33 @@ public class EntrenamientoRepository {
                 // Manejo de error genérico
                 callback.onComplete(Resource.error("Error al guardar la sesión: " + e.getMessage(), null));
             }
+        });
+    }
+
+    /**
+     * Guarda un entrenamiento completo (Sesión). Primero lo que hace es guardar la sesión en la base de datos y optener la ID generada.
+     * Luego, con la series de la lista, la modificamos una a una para añadirle el ID de la sesión.
+     * Y por ultimo insertamos todas las series en la base de datos.
+     * @param nuevaSesion La nueva sesión a guardar.
+     * @param seriesRealizadas Las series realizadas en esta sesión.
+     * @param onSuccess Callback para manejar el resultado de la inserción.
+     */
+    public void guardarEntrenamientoCompleto(Sesion nuevaSesion, List<Serie> seriesRealizadas, Runnable onSuccess) {
+        executorService.execute(() -> {
+
+            // Guardamos la Sesion general y recogemos su DNI (ID)
+            long sesionIdGenerado = sesionesDao.insert(nuevaSesion);
+
+            // Le pegamos este ID a TODAS las series que el usuario ha hecho hoy
+            for (Serie serie : seriesRealizadas) {
+                serie.setSesionId((int) sesionIdGenerado);
+            }
+
+            seriesDao.insertAll(seriesRealizadas);
+
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if (onSuccess != null) onSuccess.run();
+            });
         });
     }
 
