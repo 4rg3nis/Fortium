@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.sthenos.fortium.R;
+import com.sthenos.fortium.ui.fragments.ExerciseFragment;
 import com.sthenos.fortium.ui.fragments.HomeFragment;
 import com.sthenos.fortium.ui.fragments.RoutinesFragment;
 
@@ -44,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
                 selectedFragment = new HomeFragment();
             } else if (id == R.id.nav_routines) {
                 selectedFragment = new RoutinesFragment();
+            } else if (id == R.id.nav_exercises){
+                selectedFragment = new ExerciseFragment();
             }
 
             if (selectedFragment != null) {
