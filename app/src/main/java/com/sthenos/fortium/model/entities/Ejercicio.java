@@ -7,7 +7,6 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.sthenos.fortium.model.enums.Equipo;
-import com.sthenos.fortium.model.enums.TipoMedida;
 
 @Entity(tableName = "Ejercicios")
 public class Ejercicio {
@@ -28,50 +27,30 @@ public class Ejercicio {
     @ColumnInfo(name="descripcionTecnica")
     private String descripcionTecnica;
 
-    @ColumnInfo(name="tipoMedida")
-    private TipoMedida tipoMedida;
-
     @ColumnInfo(name="equipo")
     private Equipo equipo;
-
-    @ColumnInfo(name="unilateral")
-    private boolean unilateral = false;
-
-    @ColumnInfo(name="urlMultimedia")
-    private String urlMultimedia;
 
     @ColumnInfo(name="imagenPath")
     private String imagenPath;
 
-    @ColumnInfo(name="favorito")
-    private boolean favorito = false;
-
-    public Ejercicio(int id, String nombre, String grupoMuscularPrincipal, boolean esPredefinido, String descripcionTecnica, TipoMedida tipoMedida, Equipo equipo, boolean unilateral, String urlMultimedia, String imagenPath, boolean favorito) {
+    public Ejercicio(int id, String nombre, String grupoMuscularPrincipal,  boolean esPredefinido, String descripcionTecnica, Equipo equipo, String imagenPath) {
         this.id = id;
         this.nombre = nombre;
         this.grupoMuscularPrincipal = grupoMuscularPrincipal;
         this.esPredefinido = esPredefinido;
         this.descripcionTecnica = descripcionTecnica;
-        this.tipoMedida = tipoMedida;
         this.equipo = equipo;
-        this.unilateral = unilateral;
-        this.urlMultimedia = urlMultimedia;
         this.imagenPath = imagenPath;
-        this.favorito = favorito;
     }
 
     @Ignore
-    public Ejercicio(String nombre, String grupoMuscularPrincipal, boolean esPredefinido, String descripcionTecnica, TipoMedida tipoMedida, Equipo equipo, boolean unilateral, String urlMultimedia, String imagenPath, boolean favorito) {
+    public Ejercicio(String nombre, String grupoMuscularPrincipal,boolean esPredefinido, String descripcionTecnica, Equipo equipo, String imagenPath) {
         this.nombre = nombre;
         this.grupoMuscularPrincipal = grupoMuscularPrincipal;
         this.esPredefinido = esPredefinido;
         this.descripcionTecnica = descripcionTecnica;
-        this.tipoMedida = tipoMedida;
         this.equipo = equipo;
-        this.unilateral = unilateral;
-        this.urlMultimedia = urlMultimedia;
         this.imagenPath = imagenPath;
-        this.favorito = favorito;
     }
 
     public int getId() {
@@ -116,14 +95,6 @@ public class Ejercicio {
         this.descripcionTecnica = descripcionTecnica;
     }
 
-    public TipoMedida getTipoMedida() {
-        return tipoMedida;
-    }
-
-    public void setTipoMedida(TipoMedida tipoMedida) {
-        this.tipoMedida = tipoMedida;
-    }
-
     public Equipo getEquipo() {
         return equipo;
     }
@@ -132,35 +103,11 @@ public class Ejercicio {
         this.equipo = equipo;
     }
 
-    public boolean isUnilateral() {
-        return unilateral;
-    }
-
-    public void setUnilateral(boolean unilateral) {
-        this.unilateral = unilateral;
-    }
-
-    public String getUrlMultimedia() {
-        return urlMultimedia;
-    }
-
-    public void setUrlMultimedia(String urlMultimedia) {
-        this.urlMultimedia = urlMultimedia;
-    }
-
     public String getImagenPath() {
         return imagenPath;
     }
 
     public void setImagenPath(String imagenPath) {
         this.imagenPath = imagenPath;
-    }
-
-    public boolean isFavorito() {
-        return favorito;
-    }
-
-    public void setFavorito(boolean favorito) {
-        this.favorito = favorito;
     }
 }
