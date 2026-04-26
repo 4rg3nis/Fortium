@@ -74,5 +74,32 @@
     <string name="sheetRestTimer_boton_mas15">+ 15s</string>
     <string name="sheetRestTimer_boton_menos15">- 15s</string>
     <string name="sheetRestTimer_tv_titulo">Tiempo de Descanso</string>
+    <string name="bottomSheetExerciseFilters_tv_titulo">Filtros</string>
+    <string name="bottomSheetExerciseFilters_tv_limpiar">Limpiar</string>
+    <string name="bottomSheetExerciseFilters_tv_grupos">GRUPO MUSCULAR</string>
+    <string name="bottomSheetExerciseFilters_tv_pecho">Pecho</string>
+    <string name="bottomSheetExerciseFilters_tv_espalda">Espalda</string>
+    <string name="bottomSheetExerciseFilters_tv_quads">Cuadriceps</string>
+    <string name="bottomSheetExerciseFilters_tv_isquio">Isquiotibiales</string>
+    <string name="bottomSheetExerciseFilters_tv_gemelos">Gemelos</string>
+    <string name="bottomSheetExerciseFilters_tv_hombros">Hombros</string>
+    <string name="bottomSheetExerciseFilters_tv_biceps">Biceps</string>
+    <string name="bottomSheetExerciseFilters_tv_triceps">Triceps</string>
+    <string name="bottomSheetExerciseFilters_tv_antebrazo">Antebrazo</string>
+    <string name="bottomSheetExerciseFilters_tv_abs">Abdominales</string>
+    <string name="bottomSheetExerciseFilters_tv_gluteos">Gluteos</string>
+    <string name="bottomSheetExerciseFilters_tv_resultados">Mostrar Resultados</string>
+    <string name="fragmentExcersieList_boton_tv_add">Nuevo</string>
+    <string name="fragmentExcersieList_tv_buscar">Buscar ejercicio...</string>
+    <string name="bottomSheetCreateExcersice_tv_titulo">Crear Ejercicio Propio</string>
+    <string name="bottomSheetCreateExcersice_til_nombre">Nombre del ejercicio</string>
+    <string name="bottomSheetCreateExcersice_til_grupoMuscular">Grupo Muscular</string>
+    <string name="bottomSheetCreateExcersice_boton_guardar">Guardar Ejercicio</string>
+    <string name="exerciseForm_boton_cambiar_foto">Cambiar GIF/Foto</string>
+    <string name="exerciseForm_til_nombre">Nombre</string>
+    <string name="exerciseForm_til_grupo_muscular">Grupo Muscular</string>
+    <string name="exerciseForm_til_equipo">Equipo</string>
+    <string name="exerciseForm_boton_guardar">Guardar Ejercicio</string>
+    <string name="exerciseForm_boton_eliminar">Eliminar Ejercicio</string>
 
 </resources>

@@ -80,11 +80,11 @@ public abstract class FortiumDatabase extends RoomDatabase {
             databaseWriteExecutor.execute(() -> {
                 EjerciciosDao ejerciciosDao = INSTANCE.ejerciciosDao();
 
-                Ejercicio sentadilla = new Ejercicio("Sentadilla con Barra", "Piernas", true, "Flexión de rodillas con barra en la espalda", TipoMedida.PESO, Equipo.PESO_LIBRE, false, "", "", false);
-                Ejercicio pressBanca = new Ejercicio("Press de Banca", "Pecho", true, "Empuje horizontal con barra en banco plano", TipoMedida.PESO, Equipo.PESO_LIBRE, false, "", "", false);
-                Ejercicio pesoMuerto = new Ejercicio("Peso Muerto", "Espalda/Piernas", true, "Levantamiento de barra desde el suelo", TipoMedida.PESO, Equipo.PESO_LIBRE, false, "", "",false);
-                Ejercicio dominadas = new Ejercicio("Dominadas", "Espalda", true, "Tracción vertical con peso corporal", TipoMedida.PESO_CORPORAL, Equipo.PESO_CORPORAL, false, "", "",false);
-                Ejercicio pressMilitar = new Ejercicio("Press Militar", "Hombros", true, "Empuje vertical con barra o mancuernas", TipoMedida.PESO, Equipo.PESO_LIBRE, false, "", "",false);
+                Ejercicio sentadilla = new Ejercicio("Sentadilla con Barra", "Cuadriceps",  true, "Flexión de rodillas con barra en la espalda", Equipo.PESO_LIBRE,  "sentadillas_barra.gif");
+                Ejercicio pressBanca = new Ejercicio("Press de Banca", "Pecho", true, "Empuje horizontal con barra en banco plano",  Equipo.PESO_LIBRE, "press_banca.gif");
+                Ejercicio pesoMuerto = new Ejercicio("Peso Muerto", "Espalda", true, "Levantamiento de barra desde el suelo",  Equipo.PESO_LIBRE, "peso_muerto.gif");
+                Ejercicio dominadas = new Ejercicio("Dominadas", "Espalda", true, "Tracción vertical con peso corporal",  Equipo.PESO_CORPORAL,"dominadas.gif");
+                Ejercicio pressMilitar = new Ejercicio("Press Militar", "Hombros", true, "Empuje vertical con barra o mancuernas",  Equipo.PESO_LIBRE,"press_militar.gif");
 
                 ejerciciosDao.insert(sentadilla);
                 ejerciciosDao.insert(pressBanca);

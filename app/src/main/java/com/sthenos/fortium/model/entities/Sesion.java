@@ -42,7 +42,7 @@ public class Sesion {
     @ColumnInfo(name="comentarioGeneral")
     private String comentarioGeneral;
 
-    public Sesion(int id, int rutinaId, @NonNull String fechaInicio, String fechaFin, int cantidadSeries, boolean recordPersonal, String comentarioGeneral) {
+    public Sesion(int id, Integer rutinaId, @NonNull String fechaInicio, String fechaFin, int cantidadSeries, boolean recordPersonal, String comentarioGeneral) {
         this.id = id;
         this.rutinaId = rutinaId;
         this.fechaInicio = fechaInicio;
@@ -53,7 +53,7 @@ public class Sesion {
     }
 
     @Ignore
-    public Sesion( int rutinaId, @NonNull String fechaInicio, String fechaFin, int cantidadSeries, boolean recordPersonal, String comentarioGeneral) {
+    public Sesion( Integer rutinaId, @NonNull String fechaInicio, String fechaFin, int cantidadSeries, boolean recordPersonal, String comentarioGeneral) {
         this.rutinaId = rutinaId;
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
@@ -70,11 +70,11 @@ public class Sesion {
         this.id = id;
     }
 
-    public int getRutinaId() {
+    public Integer getRutinaId() {
         return rutinaId;
     }
 
-    public void setRutinaId(int rutinaId) {
+    public void setRutinaId(Integer rutinaId) {
         this.rutinaId = rutinaId;
     }
 
