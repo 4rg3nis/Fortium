@@ -43,18 +43,27 @@ public class ExerciseLibraryAdapter extends RecyclerView.Adapter<ExerciseLibrary
     @Override
     public void onBindViewHolder(@NonNull ExerciseLibraryAdapter.ExerciseViewHolder holder, int position) {
         Ejercicio ejercicio = listaMostrada.get(position);
+        String path = ejercicio.getImagenPath();
         holder.tvName.setText(ejercicio.getNombre());
         holder.tvMuscle.setText(ejercicio.getGrupoMuscularPrincipal());
-        int imagenId = obtenerRecursoDesdeString(ejercicio.getImagenPath());
+
+        Object modeloDeCarga; // Esto puede ser un numero o un texto
+
+        if (path != null && (path.startsWith("/") || path.startsWith("content://"))) {
+            // Es una foto de la galeria
+            modeloDeCarga = path;
+        } else {
+            // Es un ejercicio del sistema
+            modeloDeCarga = obtenerRecursoDesdeString( path);
+        }
 
         Glide.with(holder.itemView.getContext())
                 .asBitmap() // Obliga a que sea estático
-                .load(imagenId)
+                .load(modeloDeCarga)
                 .placeholder(R.drawable.ic_launcher_foreground)
                 .into(holder.ivExerciseImage);
 
         holder.itemView.setOnClickListener(v -> {
-            android.util.Log.d("FORTIUM_ADAPTER", "Clic detectado en: " + ejercicio.getNombre());
             if (listener != null) listener.onExerciseClick(ejercicio);
         });
     }

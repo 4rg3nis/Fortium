@@ -1,5 +1,6 @@
 package com.sthenos.fortium.ui.activities;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -7,6 +8,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -22,6 +26,10 @@ import com.sthenos.fortium.model.entities.Ejercicio;
 import com.sthenos.fortium.model.enums.Equipo;
 import com.sthenos.fortium.ui.viewmodels.EjercicioViewModel;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+
 public class ExerciseFormActivity extends AppCompatActivity {
 
     private TextInputEditText etName, etDescription;
@@ -33,6 +41,27 @@ public class ExerciseFormActivity extends AppCompatActivity {
     private int ejercicioIdActual = -1;
     private Ejercicio ejercicioAEditar = null;
     private String currentImagePath = "";
+
+    private final ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
+            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+                if (uri != null) {
+                    // El usuario ha elegido una foto. Hacemos la copia de seguridad.
+                    String rutaSegura = copiarImagenAInterno(uri);
+
+                    if (rutaSegura != null) {
+                        // Actualizamos nuestra variable global
+                        currentImagePath = rutaSegura;
+
+                        // Le decimos a Glide que nos muestre la foto que acabamos de copiar
+                        Glide.with(this)
+                                .load(currentImagePath)
+                                .centerCrop()
+                                .into(ivExercisePreview);
+                    } else {
+                        Toast.makeText(this, "Error al procesar la imagen", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +82,7 @@ public class ExerciseFormActivity extends AppCompatActivity {
     }
 
     private void setupDropdowns() {
-        String[] musculos = {"Pecho", "Espalda", "Piernas", "Hombros", "Brazos", "Core", "Cardio"};
+        String[] musculos = {"Pecho", "Espalda", "Cuadriceps","Isquiotibiales", "Glúteos", "Gemelos", "Bíceps", "Tríceps", "Hombros", "Abdominales"};
         dropMuscle.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, musculos));
 
         String[] equipo = {"Maquina", "Polea", "Peso Corporal", "Peso libre"};
@@ -84,10 +113,18 @@ public class ExerciseFormActivity extends AppCompatActivity {
 
                 currentImagePath = ejercicio.getImagenPath();
 
-                int imageResId = obtenerRecursoDesdeString(currentImagePath);
+                Object fuenteDeImagen;
+
+                if (currentImagePath != null && currentImagePath.startsWith("/")) {
+                    // Es una ruta absoluta del almacenamiento interno
+                    fuenteDeImagen = currentImagePath;
+                } else {
+                    // Es un nombre de archivo de la carpeta drawable
+                    fuenteDeImagen = obtenerRecursoDesdeString(currentImagePath);
+                }
 
                 Glide.with(this)
-                        .load(imageResId)
+                        .load(fuenteDeImagen)
                         .centerCrop()
                         .into(ivExercisePreview);
 
@@ -178,7 +215,9 @@ public class ExerciseFormActivity extends AppCompatActivity {
 
         // Aquí en el futuro abriremos la galería del móvil
         btnUploadMedia.setOnClickListener(v -> {
-            Toast.makeText(this, "Próximamente: Abrir galería", Toast.LENGTH_SHORT).show();
+            pickMedia.launch(new PickVisualMediaRequest.Builder()
+                    .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                    .build());
         });
     }
 
@@ -194,5 +233,34 @@ public class ExerciseFormActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(EjercicioViewModel.class);
 
+    }
+
+    private String copiarImagenAInterno(Uri uri) {
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(uri);
+
+            String extension = getContentResolver().getType(uri);
+            extension = extension != null ? extension.split("/")[1] : "jpg";
+
+            // Creamos un nombre único basado en la fecha/hora
+            String fileName = "img_ejercicio_" + System.currentTimeMillis() + "." + extension;
+            File archivoDestino = new File(getFilesDir(), fileName);
+
+            FileOutputStream outputStream = new FileOutputStream(archivoDestino);
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+
+            outputStream.close();
+            inputStream.close();
+
+            return archivoDestino.getAbsolutePath();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
