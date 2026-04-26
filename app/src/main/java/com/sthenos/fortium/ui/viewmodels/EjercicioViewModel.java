@@ -36,4 +36,8 @@ public class EjercicioViewModel extends AndroidViewModel {
     public LiveData<Ejercicio> getEjercicioById(int id) {
         return repository.getEjercicioById(id);
     }
+
+    public void deleteEjercicio(Ejercicio ejercicio) {
+        repository.deleteEjercicio(ejercicio);
+    }
 }

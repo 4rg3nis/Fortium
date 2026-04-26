@@ -74,9 +74,8 @@ public class ExerciseFragment extends Fragment {
         btnFilters.setOnClickListener(v -> abrirBottomSheetFiltros());
 
         view.findViewById(R.id.fabAddCustomExercise).setOnClickListener(v -> {
-            Log.d("FORTIUM_DEBUG", "Crear ejercicio ");
             Intent intent = new Intent(requireContext(), ExerciseFormActivity.class);
-            // Al no pasarle ejercicioId, la Activity sabrá automáticamente que es modo creacion
+            // Al no pasarle ejercicioId, el activity sabrá automáticamente que es modo creacion
             startActivity(intent);
         });
     }
@@ -139,11 +138,9 @@ public class ExerciseFragment extends Fragment {
         rvExerciseLibrary.setLayoutManager(new LinearLayoutManager(requireContext()));
         adapter = new ExerciseLibraryAdapter(requireContext());
         adapter.setListener(ejercicio -> {
-            Log.d("FORTIUM_DEBUG", "Intentando editar ejercicio con ID: " + ejercicio.getId());
             Intent intent = new Intent(requireContext(), ExerciseFormActivity.class);
 
             // Pasamos el ID del ejercicio.
-            // Es vital usar la misma clave "ejercicioId" que en la Activity.
             intent.putExtra("ejercicioId",  ejercicio.getId());
 
             startActivity(intent);

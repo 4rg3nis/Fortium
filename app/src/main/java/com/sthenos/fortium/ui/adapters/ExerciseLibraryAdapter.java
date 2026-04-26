@@ -58,7 +58,7 @@ public class ExerciseLibraryAdapter extends RecyclerView.Adapter<ExerciseLibrary
         }
 
         Glide.with(holder.itemView.getContext())
-                .asBitmap() // Obliga a que sea estático
+                .asBitmap() // Obliga a que sea estático (imagen)
                 .load(modeloDeCarga)
                 .placeholder(R.drawable.ic_launcher_foreground)
                 .into(holder.ivExerciseImage);

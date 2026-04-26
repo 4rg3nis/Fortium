@@ -19,6 +19,7 @@
             app:navigationIcon="@drawable/ic_close"
             app:navigationIconTint="@color/white"
             app:title="Nuevo Ejercicio"
+            app:subtitleTextColor="@color/white"
             app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -137,6 +138,18 @@
                 android:layout_height="56dp"
                 android:layout_marginTop="32dp"
                 android:text="@string/exerciseForm_boton_guardar" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDelete"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="12dp"
+                android:text="@string/exerciseForm_boton_eliminar"
+                android:textColor="@color/red_600"
+                app:strokeColor="@color/red_600"
+                app:cornerRadius="12dp"
+                android:visibility="gone" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

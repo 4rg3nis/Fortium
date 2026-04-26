@@ -64,9 +64,6 @@ public class EjercicioRepository {
     }
 
     public void deleteEjercicio(Ejercicio ejercicio) throws UnsupportedOperationException {
-        if (ejercicio.isEsPredefinido()) {
-            throw new UnsupportedOperationException("Seguridad: No se pueden eliminar los ejercicios predefinidos.");
-        }
         executorService.execute(() -> {
             ejerciciosDao.delete(ejercicio);
         });
