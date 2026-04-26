@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 
 import com.sthenos.fortium.data.repository.EjercicioRepository;
 import com.sthenos.fortium.model.entities.Ejercicio;
+import com.sthenos.fortium.model.entities.Usuario;
 
 import java.util.List;
 
@@ -24,4 +25,15 @@ public class EjercicioViewModel extends AndroidViewModel {
         return repository.getAllEjercicios();
     }
 
+    public void insertEjercicio(Ejercicio ejercicio) {
+        repository.insertEjercicio(ejercicio);
+    }
+
+    public void updateEjercicio(Ejercicio ejercicioAEditar) {
+        repository.updateEjercicio(ejercicioAEditar);
+    }
+
+    public LiveData<Ejercicio> getEjercicioById(int id) {
+        return repository.getEjercicioById(id);
+    }
 }

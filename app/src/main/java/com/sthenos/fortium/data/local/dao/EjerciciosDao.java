@@ -9,6 +9,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.sthenos.fortium.model.entities.Ejercicio;
+import com.sthenos.fortium.model.entities.Usuario;
 
 import java.util.List;
 
@@ -40,11 +41,7 @@ public interface EjerciciosDao {
 
     // Busca un ejercicio específico por su ID único
     @Query("SELECT * FROM Ejercicios WHERE id = :id LIMIT 1")
-    Ejercicio getById(int id);
-
-    // Obtiene todos los ejercicios marcados como favoritos (Room guarda los booleanos como 1 o 0)
-    @Query("SELECT * FROM Ejercicios WHERE favorito = 1")
-    LiveData<List<Ejercicio>> getFavoritos();
+    LiveData<Ejercicio> getById(int id);
 
     // Filtra los ejercicios por un grupo muscular específico
     @Query("SELECT * FROM Ejercicios WHERE grupoMuscularPrincipal = :grupoMuscular")

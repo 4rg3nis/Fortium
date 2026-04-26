@@ -1,8 +1,10 @@
 package com.sthenos.fortium.ui.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.sthenos.fortium.R;
+import com.sthenos.fortium.ui.activities.ExerciseFormActivity;
 import com.sthenos.fortium.ui.adapters.ExerciseLibraryAdapter;
 import com.sthenos.fortium.ui.viewmodels.EjercicioViewModel;
 
@@ -71,7 +74,10 @@ public class ExerciseFragment extends Fragment {
         btnFilters.setOnClickListener(v -> abrirBottomSheetFiltros());
 
         view.findViewById(R.id.fabAddCustomExercise).setOnClickListener(v -> {
-            Toast.makeText(requireContext(), "Pantalla de crear ejercicio...", android.widget.Toast.LENGTH_SHORT).show();
+            Log.d("FORTIUM_DEBUG", "Crear ejercicio ");
+            Intent intent = new Intent(requireContext(), ExerciseFormActivity.class);
+            // Al no pasarle ejercicioId, la Activity sabrá automáticamente que es modo creacion
+            startActivity(intent);
         });
     }
 
@@ -131,10 +137,16 @@ public class ExerciseFragment extends Fragment {
     private void setupRecyclerView(View view) {
         RecyclerView rvExerciseLibrary = view.findViewById(R.id.rvExerciseLibrary);
         rvExerciseLibrary.setLayoutManager(new LinearLayoutManager(requireContext()));
-        adapter = new ExerciseLibraryAdapter();
+        adapter = new ExerciseLibraryAdapter(requireContext());
         adapter.setListener(ejercicio -> {
-            Toast.makeText(requireContext(), "Abrir: " + ejercicio.getNombre(), android.widget.Toast.LENGTH_SHORT).show();
-            // TODO: Navegar a ExerciseDetailFragment pasando el ID del ejercicio
+            Log.d("FORTIUM_DEBUG", "Intentando editar ejercicio con ID: " + ejercicio.getId());
+            Intent intent = new Intent(requireContext(), ExerciseFormActivity.class);
+
+            // Pasamos el ID del ejercicio.
+            // Es vital usar la misma clave "ejercicioId" que en la Activity.
+            intent.putExtra("ejercicioId",  ejercicio.getId());
+
+            startActivity(intent);
         });
         rvExerciseLibrary.setAdapter(adapter);
     }

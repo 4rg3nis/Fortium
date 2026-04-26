@@ -1,13 +1,16 @@
 package com.sthenos.fortium.ui.adapters;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.model.entities.Ejercicio;
 
@@ -24,6 +27,12 @@ public class ExerciseLibraryAdapter extends RecyclerView.Adapter<ExerciseLibrary
     private List<Ejercicio> listaMostrada = new ArrayList<>();
     private OnExerciseClickListener listener;
 
+    private Context context;
+
+    public ExerciseLibraryAdapter(Context context) {
+        this.context = context;
+    }
+
     @NonNull
     @Override
     public ExerciseLibraryAdapter.ExerciseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -36,10 +45,38 @@ public class ExerciseLibraryAdapter extends RecyclerView.Adapter<ExerciseLibrary
         Ejercicio ejercicio = listaMostrada.get(position);
         holder.tvName.setText(ejercicio.getNombre());
         holder.tvMuscle.setText(ejercicio.getGrupoMuscularPrincipal());
+        int imagenId = obtenerRecursoDesdeString(ejercicio.getImagenPath());
+
+        Glide.with(holder.itemView.getContext())
+                .asBitmap() // Obliga a que sea estático
+                .load(imagenId)
+                .placeholder(R.drawable.ic_launcher_foreground)
+                .into(holder.ivExerciseImage);
 
         holder.itemView.setOnClickListener(v -> {
+            android.util.Log.d("FORTIUM_ADAPTER", "Clic detectado en: " + ejercicio.getNombre());
             if (listener != null) listener.onExerciseClick(ejercicio);
         });
+    }
+
+    /**
+     * Traduce "archivo.gif" -> R.drawable.archivo
+     * @param nombreArchivo Nombre del archivo.
+     * @return Recurso de la imagen.
+     */
+    private int obtenerRecursoDesdeString(String nombreArchivo) {
+        if (nombreArchivo == null || nombreArchivo.isEmpty()) {
+            return R.drawable.ic_launcher_foreground;
+        }
+
+        // Le quitamos la extensión
+        String nombreLimpio = nombreArchivo.replaceFirst("[.][^.]+$", "");
+
+        // Buscamos su DNI en la carpeta drawable
+        int recursoId = context.getResources().getIdentifier(nombreLimpio, "drawable", context.getPackageName());
+
+        // Si recursoId es 0, significa que no lo encontró.
+        return recursoId != 0 ? recursoId : R.drawable.ic_launcher_foreground;
     }
 
     @Override
@@ -97,9 +134,11 @@ public class ExerciseLibraryAdapter extends RecyclerView.Adapter<ExerciseLibrary
      */
     class ExerciseViewHolder extends RecyclerView.ViewHolder {
         TextView tvName, tvMuscle;
+        ImageView ivExerciseImage;
         // TODO: Meter la foto del ejercicio.
         ExerciseViewHolder(View itemView) {
             super(itemView);
+            ivExerciseImage = itemView.findViewById(R.id.ivExerciseImage);
             tvName = itemView.findViewById(R.id.tvLibraryExerciseName);
             tvMuscle = itemView.findViewById(R.id.tvLibraryMuscleGroup);
         }

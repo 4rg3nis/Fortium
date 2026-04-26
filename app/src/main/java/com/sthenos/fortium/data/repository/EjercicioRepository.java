@@ -72,4 +72,7 @@ public class EjercicioRepository {
         });
     }
 
+    public LiveData<Ejercicio> getEjercicioById(int id) {
+        return ejerciciosDao.getById(id);
+    }
 }
