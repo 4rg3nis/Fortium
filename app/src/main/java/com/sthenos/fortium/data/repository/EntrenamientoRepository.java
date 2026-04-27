@@ -10,6 +10,9 @@ import com.sthenos.fortium.data.local.FortiumDatabase;
 import com.sthenos.fortium.data.local.dao.SeriesDao;
 import com.sthenos.fortium.data.local.dao.SesionesDao;
 import com.sthenos.fortium.model.Resource;
+import com.sthenos.fortium.model.entities.DistribucionMuscular;
+import com.sthenos.fortium.model.entities.Progreso1RM;
+import com.sthenos.fortium.model.entities.ProgresoVolumen;
 import com.sthenos.fortium.model.entities.Serie;
 import com.sthenos.fortium.model.entities.Sesion;
 
@@ -87,6 +90,14 @@ public class EntrenamientoRepository {
         });
     }
 
+   public LiveData<List<DistribucionMuscular>> getDistribucionMuscular30Dias(String fechaHace30Dias) {
+        return seriesDao.getDistribucionMuscular30Dias(fechaHace30Dias);
+   }
+
+    public LiveData<List<ProgresoVolumen>> getUltimas7SesionesVolumen() {
+        return seriesDao.getUltimas7SesionesVolumen();
+    }
+
     public interface RepositoryCallback<T> {
         void onComplete(Resource<T> result);
     }
@@ -140,5 +151,8 @@ public class EntrenamientoRepository {
         });
     }
 
+    public LiveData<List<Progreso1RM>> getProgresion1RM(int ejercicioId) {
+        return seriesDao.getProgresion1RM(ejercicioId);
+    }
 
 }

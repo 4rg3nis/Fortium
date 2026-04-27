@@ -101,5 +101,10 @@
     <string name="exerciseForm_til_equipo">Equipo</string>
     <string name="exerciseForm_boton_guardar">Guardar Ejercicio</string>
     <string name="exerciseForm_boton_eliminar">Eliminar Ejercicio</string>
+    <string name="fragmentStatistics_tv_titulo">Dashboard de Progreso</string>
+    <string name="fragmentStatistics_tv_fuerza">Evolución de Fuerza</string>
+    <string name="fragmentStatistics_til_ejercicio">Selecciona un ejercicio</string>
+    <string name="fragmentStatistics_tv_volumen">Volumen Total</string>
+    <string name="fragmentStatistics_tv_series">Series de los ultimos 30 días</string>
 
 </resources>

@@ -4,8 +4,12 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 
 import com.sthenos.fortium.data.repository.EntrenamientoRepository;
+import com.sthenos.fortium.model.entities.DistribucionMuscular;
+import com.sthenos.fortium.model.entities.Progreso1RM;
+import com.sthenos.fortium.model.entities.ProgresoVolumen;
 import com.sthenos.fortium.model.entities.Serie;
 import com.sthenos.fortium.model.entities.Sesion;
 
@@ -32,5 +36,17 @@ public class EntrenamientoViewModel extends AndroidViewModel {
      */
     public void guardarEntrenamientoCompleto(Sesion nuevaSesion, List<Serie> seriesRealizadas, Runnable onSuccess) {
         repository.guardarEntrenamientoCompleto(nuevaSesion, seriesRealizadas, onSuccess);
+    }
+
+    public LiveData<List<Progreso1RM>> getProgresion1RM(int ejercicioId) {
+        return repository.getProgresion1RM(ejercicioId);
+    }
+
+    public  LiveData<List<DistribucionMuscular>> getDistribucionMuscular30Dias(String fecha) {
+        return repository.getDistribucionMuscular30Dias( fecha);
+    }
+
+    public LiveData<List<ProgresoVolumen>> getUltimas7SesionesVolumen() {
+        return repository.getUltimas7SesionesVolumen();
     }
 }

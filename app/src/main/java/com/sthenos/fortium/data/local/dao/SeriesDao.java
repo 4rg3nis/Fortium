@@ -8,6 +8,9 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.sthenos.fortium.model.entities.DistribucionMuscular;
+import com.sthenos.fortium.model.entities.Progreso1RM;
+import com.sthenos.fortium.model.entities.ProgresoVolumen;
 import com.sthenos.fortium.model.entities.Serie;
 
 import java.util.List;
@@ -49,4 +52,24 @@ public interface SeriesDao {
     @Query("SELECT * FROM Series WHERE ejercicioId = :ejercicioId")
     LiveData<List<Serie>> getByEjercicioId(int ejercicioId);
 
+    @Query("SELECT Sesiones.fechaInicio AS fecha, MAX(Series.peso) AS pesoMaximo, Series.repeticiones AS reps, Series.rpe_rir AS rpe " +
+            "FROM Series " +
+            "INNER JOIN Sesiones ON Series.sesionId = Sesiones.id " +
+            "WHERE Series.ejercicioId = :ejercicioId " +
+            "GROUP BY Sesiones.id " +
+            "ORDER BY Sesiones.fechaInicio ASC")
+    LiveData<List<Progreso1RM>> getProgresion1RM(int ejercicioId);
+
+    @Query("SELECT Sesiones.fechaInicio as fecha, SUM(Series.peso * Series.repeticiones) as totalVolumen " +
+            "FROM Series INNER JOIN Sesiones ON Series.sesionId = Sesiones.id " +
+            "GROUP BY Sesiones.id ORDER BY Sesiones.fechaInicio DESC LIMIT 7")
+    LiveData<List<ProgresoVolumen>> getUltimas7SesionesVolumen();
+
+    @Query("SELECT Ejercicios.grupoMuscularPrincipal AS musculo, COUNT(Series.id) AS cantidadSeries " +
+            "FROM Series " +
+            "INNER JOIN Ejercicios ON Series.ejercicioId = Ejercicios.id " +
+            "INNER JOIN Sesiones ON Series.sesionId = Sesiones.id " +
+            "WHERE Sesiones.fechaInicio >= :fechaHace30Dias " +
+            "GROUP BY Ejercicios.grupoMuscularPrincipal")
+    LiveData<List<DistribucionMuscular>> getDistribucionMuscular30Dias(String fechaHace30Dias);
 }
