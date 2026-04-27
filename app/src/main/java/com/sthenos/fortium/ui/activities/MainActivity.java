@@ -14,6 +14,7 @@ import com.sthenos.fortium.R;
 import com.sthenos.fortium.ui.fragments.ExerciseFragment;
 import com.sthenos.fortium.ui.fragments.HomeFragment;
 import com.sthenos.fortium.ui.fragments.RoutinesFragment;
+import com.sthenos.fortium.ui.fragments.StatisticsFragment;
 
 public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNav;
@@ -47,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
                 selectedFragment = new RoutinesFragment();
             } else if (id == R.id.nav_exercises){
                 selectedFragment = new ExerciseFragment();
+            } else if (id == R.id.nav_stats){
+                selectedFragment = new StatisticsFragment();
             }
 
             if (selectedFragment != null) {
