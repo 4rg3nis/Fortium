@@ -30,9 +30,7 @@
     <string name="navMenu_opcion2">Rutinas</string>
     <string name="navMenu_opcion3">Ejercicios</string>
     <string name="navMenu_opcion4">Estadísticas</string>
-    <string name="main_texto_saludo">Hola, Argenis</string>
     <string name="main_texto_empezar">¿Listo para arrasar?</string>
-    <string name="main_texto_ej_peso">85 kg</string>
     <string name="main_texto_volumen_semanal">Volumen semanal</string>
     <string name="main_texto_ej_volumne_semanal">0 kg</string>
     <string name="main_texto_rm">Sentadilla e1RM</string>
@@ -106,5 +104,16 @@
     <string name="fragmentStatistics_til_ejercicio">Selecciona un ejercicio</string>
     <string name="fragmentStatistics_tv_volumen">Volumen Total</string>
     <string name="fragmentStatistics_tv_series">Series de los ultimos 30 días</string>
+    <string name="main_tv_entrenamientos">Últimos Entrenamientos</string>
+    <string name="main_tv_vertodos">Ver todos</string>
+    <string name="activitySettings_tv_subti1">Perfil Físico (Para cálculos de 1RM)</string>
+    <string name="activitySettings_tv_subti2">Datos y Copias de Seguridad</string>
+    <string name="activitySettings_til_hint_peso">Peso</string>
+    <string name="activitySettings_til_hint_altura">Altura (m)</string>
+    <string name="activitySettings_til_hint_edad">Edad</string>
+    <string name="activitySettings_til_hint_genero">Género</string>
+    <string name="activitySettings_boton_guardar">Guardar Perfil</string>
+    <string name="activitySettings_boton_exportar">Exportar Datos (JSON)</string>
+    <string name="activitySettings_boton_importar">Importar Datos (JSON)</string>
 
 </resources>

@@ -7,8 +7,10 @@ import android.graphics.Shader;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -17,10 +19,37 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.button.MaterialButton;
 import com.sthenos.fortium.R;
+import com.sthenos.fortium.utils.JsonImporter;
 
 public class WelcomeActivity extends AppCompatActivity {
-    private MaterialButton btnSetUp;
+    private MaterialButton btnSetUp, btnImportData;
     private TextView tvRadiant;
+
+    private final ActivityResultLauncher<String[]> importLauncher = registerForActivityResult(new androidx.activity.result.contract.ActivityResultContracts.OpenDocument(), uri -> {
+        if (uri != null) {
+            Toast.makeText(this, "Importando datos, por favor espera...", Toast.LENGTH_LONG).show();
+
+            JsonImporter.ejecutarImportacionCompleta(this, uri, new JsonImporter.ImportCallback() {
+                @Override
+                public void onSuccess() {
+                    runOnUiThread(() -> {
+                        Toast.makeText(getApplicationContext(), "¡Datos restaurados con éxito!", Toast.LENGTH_LONG).show();
+
+                        // Reiniciamos la app para aplicar cambios
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    });
+                }
+
+                @Override
+                public void onError(String mensaje) {
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), mensaje, Toast.LENGTH_LONG).show());
+                }
+            });
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +84,10 @@ public class WelcomeActivity extends AppCompatActivity {
                 finish(); // Para que no pueda volver atrás.
             }
         });
+
+        btnImportData.setOnClickListener(v -> {
+            importLauncher.launch(new String[]{"application/json"});
+        });
     }
 
     private void setColorRadiant() {
@@ -77,5 +110,6 @@ public class WelcomeActivity extends AppCompatActivity {
     private void initComponents() {
         btnSetUp = findViewById(R.id.btnSetUpProfile);
         tvRadiant = findViewById(R.id.tvRadiant);
+        btnImportData = findViewById(R.id.btnImportData);
     }
 }

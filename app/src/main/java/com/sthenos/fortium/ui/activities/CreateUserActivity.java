@@ -23,6 +23,10 @@ import com.sthenos.fortium.model.enums.Genero;
 import com.sthenos.fortium.model.enums.UnidadMedida;
 import com.sthenos.fortium.ui.viewmodels.UsuarioViewModel;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class CreateUserActivity extends AppCompatActivity {
 
     private TextInputEditText etDate, etWeight, etHeight, etName, etLastName;
@@ -163,8 +167,8 @@ public class CreateUserActivity extends AppCompatActivity {
         // Escuchar cuando el usuario pulsa Aceptar
         materialDatePicker.addOnPositiveButtonClickListener(selection -> {
             // Convertir los milisegundos a un formato de fecha legible (dd/MM/yyyy)
-            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault());
-            String dateString = sdf.format(new java.util.Date(selection));
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            String dateString = sdf.format(new Date(selection));
 
             etDate.setText(dateString);
         });

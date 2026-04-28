@@ -3,6 +3,7 @@ package com.sthenos.fortium.utils;
 import androidx.room.TypeConverter;
 
 import com.sthenos.fortium.model.enums.Equipo;
+import com.sthenos.fortium.model.enums.Genero;
 import com.sthenos.fortium.model.enums.TipoMedida;
 import com.sthenos.fortium.model.enums.TipoSerie;
 import com.sthenos.fortium.model.enums.UnidadMedida;
@@ -49,5 +50,15 @@ public class Converters {
     @TypeConverter
     public static UnidadMedida toUnitMeasure(String value){
         return value == null ? null : UnidadMedida.valueOf(value);
+    }
+
+    @TypeConverter
+    public static String fromGenero(Genero genero) {
+        return genero == null ? null : genero.name();
+    }
+
+    @TypeConverter
+    public static Genero toGenero(String value) {
+        return value == null ? null : Genero.valueOf(value);
     }
 }

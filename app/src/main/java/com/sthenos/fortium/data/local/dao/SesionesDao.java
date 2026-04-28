@@ -21,6 +21,9 @@ public interface SesionesDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     long insert(Sesion sesion);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertAll(List<Sesion> sesiones);
+
     // Actualizar los datos de una sesion existente
     @Update
     void update(Sesion sesion);
@@ -38,4 +41,8 @@ public interface SesionesDao {
     // Obtener una sesión específica por su ID
     @Query("SELECT * FROM Sesiones WHERE id = :id LIMIT 1")
     Sesion getById(int id);
+
+    // Obtener todas las sesiones de una rutina específica
+    @Query("SELECT * FROM Sesiones")
+    List<Sesion> getAllSesionesSync();
 }

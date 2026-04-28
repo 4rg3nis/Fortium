@@ -83,4 +83,32 @@ public class Usuario {
     public int getId() {
         return id;
     }
+
+    public void setNombre(@NonNull String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public void setFechaNacimiento(String fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
+    public void setPesoActual(double pesoActual) {
+        this.pesoActual = pesoActual;
+    }
+
+    public void setGenero(Genero genero) {
+        this.genero = genero;
+    }
+
+    public void setAltura(double altura) {
+        this.altura = altura;
+    }
+
+    public void setUnidadmedida(UnidadMedida unidadmedida) {
+        this.unidadmedida = unidadmedida;
+    }
 }

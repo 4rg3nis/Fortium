@@ -1,10 +1,12 @@
 package com.sthenos.fortium.ui.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,17 +20,19 @@ import com.google.android.material.button.MaterialButton;
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.data.repository.EntrenamientoRepository;
 import com.sthenos.fortium.model.entities.Rutina;
+import com.sthenos.fortium.ui.activities.SettingsActivity;
 import com.sthenos.fortium.ui.adapters.RutinaAdapter;
 import com.sthenos.fortium.ui.viewmodels.RutinaViewModel;
 import com.sthenos.fortium.ui.viewmodels.UsuarioViewModel;
 
 public class HomeFragment extends Fragment {
 
-    private TextView tvSaludo, tvPeso, tvRm;
+    private TextView tvSaludo, tvPeso;
     private RecyclerView rvRutinas;
     private RutinaViewModel rutinaViewModel;
     private MaterialButton btnEmpezarEntrenamiento;
     private UsuarioViewModel usuarioViewModel;
+    private ImageButton btnSettings;
     private int idUsuario = -1;
 
     public HomeFragment() {
@@ -49,16 +53,6 @@ public class HomeFragment extends Fragment {
         setRecyclerView();
         setObservers();
         setListeners();
-        setExampleRm();
-    }
-
-    private void setExampleRm() {
-        double pesoLevantado = 120.0;
-        int repeticiones = 5;
-
-        double e1rmCalculado = EntrenamientoRepository.getInstance(requireActivity().getApplication()).calcular1RM(pesoLevantado, repeticiones);
-
-        tvRm.setText(String.format("%.1f", e1rmCalculado));
     }
 
     private void setObservers() {
@@ -83,6 +77,7 @@ public class HomeFragment extends Fragment {
             public void onClick(View view) {
                 int numeroAleatorio = (int) (Math.random() * 100);
                 Rutina nuevaRutina = new Rutina(
+                        // TODO: Cambiar esto..
                         idUsuario, // usuarioId simulado
                         "Rutina " + numeroAleatorio,
                         "Creada para demostración de base de datos",
@@ -93,6 +88,12 @@ public class HomeFragment extends Fragment {
                         "¡Rutina creada con éxito!", android.widget.Toast.LENGTH_SHORT).show();
             }
         });
+        btnSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(requireContext(), SettingsActivity.class);
+                startActivity(intent);
+            }});
     }
 
     private void setRecyclerView() {
@@ -116,7 +117,7 @@ public class HomeFragment extends Fragment {
         tvPeso = view.findViewById(R.id.tvPeso);
         rvRutinas = view.findViewById(R.id.rvRutinas);
         btnEmpezarEntrenamiento = view.findViewById(R.id.btnEmpezarEntrenamiento);
-        tvRm = view.findViewById(R.id.tvRm);
+        btnSettings = view.findViewById(R.id.btnSettings);
 
         rutinaViewModel = new ViewModelProvider(this).get(RutinaViewModel.class);
         usuarioViewModel = new ViewModelProvider(this).get(UsuarioViewModel.class);

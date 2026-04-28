@@ -1,4 +1,4 @@
-package com.sthenos.fortium.model;
+package com.sthenos.fortium.model.queries;
 
 import androidx.room.Embedded;
 import androidx.room.Junction;

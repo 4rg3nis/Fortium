@@ -9,9 +9,7 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.Update;
 
-import com.sthenos.fortium.model.RutinaConEjercicios;
-import com.sthenos.fortium.model.entities.Ejercicio;
-import com.sthenos.fortium.model.entities.EjercicioConDetalles;
+import com.sthenos.fortium.model.queries.EjercicioConDetalles;
 import com.sthenos.fortium.model.entities.RutinaEjercicio;
 
 import java.util.List;

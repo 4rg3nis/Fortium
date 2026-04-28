@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sthenos.fortium.R;
-import com.sthenos.fortium.model.entities.EjercicioConDetalles;
+import com.sthenos.fortium.model.queries.EjercicioConDetalles;
 import com.sthenos.fortium.model.entities.RutinaEjercicio;
 
 import java.util.ArrayList;

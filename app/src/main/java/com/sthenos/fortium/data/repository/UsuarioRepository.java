@@ -45,4 +45,8 @@ public class UsuarioRepository {
     public LiveData<Usuario> getUsuarioActual(){
         return usuariosDao.getUsuarioActual();
     }
+
+    public void update(Usuario usuarioActual) {
+        executorService.execute(() -> usuariosDao.update(usuarioActual));
+    }
 }

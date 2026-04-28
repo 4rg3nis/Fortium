@@ -50,4 +50,7 @@ public interface EjerciciosDao {
     // Filtra para obtener solo los ejercicios predefinidos del sistema
     @Query("SELECT * FROM Ejercicios WHERE esPredefinido = 1")
     LiveData<List<Ejercicio>> getPredefinidos();
+
+    @Query("SELECT * FROM Ejercicios")
+    List<Ejercicio> getAllEjerciciosSync();
 }

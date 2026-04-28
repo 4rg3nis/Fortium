@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_900"
+    android:background="@color/gray_800"
     android:clipToPadding="false"
     android:paddingBottom="80dp">
 
@@ -18,18 +18,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <!--
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/ivAvatar"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_centerVertical="true"
-                android:scaleType="centerCrop"
-
-                app:strokeColor="#803F3F46"
-                app:strokeWidth="1dp"
-                tools:src="@tools:sample/avatars" />
-             -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -40,7 +28,7 @@
                     android:id="@+id/tvSaludo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/main_texto_saludo"
+                    tools:text="Hola, Argenis"
                     android:textColor="@color/white"
                     android:textSize="22sp"
                     android:textStyle="bold" />
@@ -53,124 +41,57 @@
                     android:textSize="14sp" />
             </LinearLayout>
 
-            <com.google.android.material.card.MaterialCardView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                app:cardBackgroundColor="@color/gray_800"
-                app:cardCornerRadius="16dp"
-                app:strokeColor="@color/gray_700"
-                app:strokeWidth="1dp">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/tvPeso"
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="6dp"
-                    android:text="@string/main_texto_ej_peso"
-                    android:textColor="@color/blue_400"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-            </com.google.android.material.card.MaterialCardView>
-        </RelativeLayout>
+                    app:cardBackgroundColor="@color/gray_800"
+                    app:cardCornerRadius="12dp"
+                    app:strokeColor="@color/gray_700"
+                    app:strokeWidth="1dp">
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            app:cardBackgroundColor="@color/gray_800"
-            app:cardCornerRadius="28dp"
-            app:cardElevation="8dp"
-            app:strokeColor="@color/gray_700"
-            app:strokeWidth="1dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="24dp">
-
-                <RelativeLayout
-                    android:id="@+id/rlInfo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <LinearLayout
-                        android:id="@+id/llWeight"
+                    <TextView
+                        android:id="@+id/tvPeso"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="8dp"
+                        tools:text="85.00"
+                        android:textColor="@color/blue_400"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </com.google.android.material.card.MaterialCardView>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/ic_activity"
-                            android:drawablePadding="8dp"
-                            android:drawableTint="@color/blue_400"
-                            android:text="@string/main_texto_volumen_semanal"
-                            android:textColor="@color/gray_400"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/main_texto_ej_volumne_semanal"
-                            android:textColor="@color/white"
-                            android:textSize="28sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/llRm"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:gravity="end"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/ic_trending"
-                            android:drawablePadding="8dp"
-                            android:drawableTint="@color/blue_400"
-                            android:text="@string/main_texto_rm"
-                            android:textColor="@color/gray_400"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/tvRm"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/main_texto_ej_rm"
-                            android:textColor="@color/white"
-                            android:textSize="28sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                </RelativeLayout>
-
-                <FrameLayout
-                    android:id="@+id/chartContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:layout_marginTop="16dp" />
+                <ImageButton
+                    android:id="@+id/btnSettings"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="12dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_settings"
+                    app:tint="@color/gray_400" />
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+        </RelativeLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnEmpezarEntrenamiento"
             android:layout_width="match_parent"
             android:layout_height="64dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="32dp"
             android:text="@string/main_boton_texto_empezar_ejercicio"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold"
             app:backgroundTint="@color/blue_400"
-            app:cornerRadius="32dp"
+            app:cornerRadius="16dp"
             app:icon="@drawable/ic_play"
             app:iconGravity="textStart"
             app:iconSize="24dp"
@@ -179,15 +100,50 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="16dp">
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/main_tv_entrenamientos"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvVerHistorialCompleto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:text="@string/main_tv_vertodos"
+                android:textColor="@color/blue_400"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvHistorialReciente"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_routine" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="12dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/main_texto_rutinas"
                 android:textColor="@color/white"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView

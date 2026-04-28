@@ -8,9 +8,9 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.sthenos.fortium.model.entities.DistribucionMuscular;
-import com.sthenos.fortium.model.entities.Progreso1RM;
-import com.sthenos.fortium.model.entities.ProgresoVolumen;
+import com.sthenos.fortium.model.queries.DistribucionMuscular;
+import com.sthenos.fortium.model.queries.Progreso1RM;
+import com.sthenos.fortium.model.queries.ProgresoVolumen;
 import com.sthenos.fortium.model.entities.Serie;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public interface SeriesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Serie serie);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<Serie> series);
 
     // Actualizar los datos de una serie existente
@@ -72,4 +72,7 @@ public interface SeriesDao {
             "WHERE Sesiones.fechaInicio >= :fechaHace30Dias " +
             "GROUP BY Ejercicios.grupoMuscularPrincipal")
     LiveData<List<DistribucionMuscular>> getDistribucionMuscular30Dias(String fechaHace30Dias);
+
+    @Query("SELECT * FROM Series")
+    List<Serie> getAllSeriesSync();
 }
