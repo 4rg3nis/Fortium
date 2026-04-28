@@ -13,6 +13,9 @@
         android:theme="@style/Theme.Fortium"
         tools:targetApi="31">
         <activity
+            android:name=".ui.activities.SettingsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activities.ExerciseFormActivity"
             android:exported="false" />
         <activity

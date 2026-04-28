@@ -1,4 +1,4 @@
-package com.sthenos.fortium.model.entities;
+package com.sthenos.fortium.model.queries;
 
 /**
  * Clase para poder almacenar los datos de los ejercicio realizado en una sesión de entrenamiento.

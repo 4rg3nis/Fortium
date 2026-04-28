@@ -7,9 +7,9 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.sthenos.fortium.data.repository.EntrenamientoRepository;
-import com.sthenos.fortium.model.entities.DistribucionMuscular;
-import com.sthenos.fortium.model.entities.Progreso1RM;
-import com.sthenos.fortium.model.entities.ProgresoVolumen;
+import com.sthenos.fortium.model.queries.DistribucionMuscular;
+import com.sthenos.fortium.model.queries.Progreso1RM;
+import com.sthenos.fortium.model.queries.ProgresoVolumen;
 import com.sthenos.fortium.model.entities.Serie;
 import com.sthenos.fortium.model.entities.Sesion;
 

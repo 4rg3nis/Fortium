@@ -44,4 +44,7 @@ public interface UsuariosDao {
 
     @Query("SELECT * FROM Usuarios LIMIT 1")
     LiveData<Usuario> getUsuarioActual();
+
+    @Query("SELECT * FROM Usuarios LIMIT 1")
+    Usuario getUsuario();
 }

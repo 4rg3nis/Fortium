@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.sthenos.fortium.R;
-import com.sthenos.fortium.model.entities.EjercicioConDetalles;
+import com.sthenos.fortium.model.queries.EjercicioConDetalles;
 
 import java.util.ArrayList;
 import java.util.List;

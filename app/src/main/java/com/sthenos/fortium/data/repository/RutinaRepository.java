@@ -6,17 +6,14 @@ import android.os.Looper;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.sthenos.fortium.data.local.FortiumDatabase;
 import com.sthenos.fortium.data.local.dao.RutinasDao;
 import com.sthenos.fortium.data.local.dao.RutinasEjerciciosDao;
-import com.sthenos.fortium.model.entities.EjercicioConDetalles;
+import com.sthenos.fortium.model.queries.EjercicioConDetalles;
 import com.sthenos.fortium.model.entities.Rutina;
 import com.sthenos.fortium.model.entities.RutinaEjercicio;
-import com.sthenos.fortium.model.entities.Serie;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

@@ -43,6 +43,7 @@ public interface RutinasDao {
     @Query("SELECT * FROM Rutinas WHERE id = :id LIMIT 1")
     LiveData<Rutina> getById(int id);
 
-
+    @Query("SELECT * FROM Rutinas")
+    List<Rutina> getAllExport();
 
 }

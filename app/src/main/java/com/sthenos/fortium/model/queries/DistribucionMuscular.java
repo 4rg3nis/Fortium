@@ -1,4 +1,4 @@
-package com.sthenos.fortium.model.entities;
+package com.sthenos.fortium.model.queries;
 
 /**
  * Molde para representar la distribución de entrenamiento por grupo muscular.

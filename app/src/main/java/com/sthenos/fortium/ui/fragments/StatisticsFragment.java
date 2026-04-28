@@ -32,20 +32,18 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.sthenos.fortium.R;
-import com.sthenos.fortium.model.entities.DistribucionMuscular;
+import com.sthenos.fortium.model.queries.DistribucionMuscular;
 import com.sthenos.fortium.model.entities.Ejercicio;
-import com.sthenos.fortium.model.entities.Progreso1RM;
-import com.sthenos.fortium.model.entities.ProgresoVolumen;
+import com.sthenos.fortium.model.queries.Progreso1RM;
+import com.sthenos.fortium.model.queries.ProgresoVolumen;
 import com.sthenos.fortium.model.entities.Usuario;
 import com.sthenos.fortium.ui.viewmodels.EjercicioViewModel;
 import com.sthenos.fortium.ui.viewmodels.EntrenamientoViewModel;
-import com.sthenos.fortium.ui.viewmodels.RutinaViewModel;
 import com.sthenos.fortium.ui.viewmodels.UsuarioViewModel;
 import com.sthenos.fortium.utils.Calculador1RM;
+import com.sthenos.fortium.utils.Converters;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -183,9 +181,9 @@ public class StatisticsFragment extends Fragment {
             ArrayList<Entry> puntos = new ArrayList<>();
             ArrayList<String> etiquetasFechas = new ArrayList<>();
 
-            String genero = String.valueOf(usuario.getGenero());
+            String genero = Converters.fromGenero(usuario.getGenero());
             String fechaNacimiento = usuario.getFechaNacimiento();
-            int edad = getEdad(fechaNacimiento);
+            int edad = usuarioViewModel.calcularEdad(usuario);
 //            double pesoCuerpo = usuario.getPesoActual();
 //            double altura = usuario.getAltura();
 
@@ -221,18 +219,6 @@ public class StatisticsFragment extends Fragment {
             xAxis.setValueFormatter(new IndexAxisValueFormatter(etiquetasFechas));
             xAxis.setGranularity(1f);
         });
-    }
-
-    /**
-     * Calcula la edad a partir de la fecha de nacimiento.
-     * @param fechaNacimiento Fecha de nacimiento en formato dd/MM/yyyy
-     * @return Edad en años
-     */
-    private int getEdad(String fechaNacimiento) {
-        LocalDate fechaActual = LocalDate.now();
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        LocalDate fechaNac = LocalDate.parse(fechaNacimiento, formato);
-        return Period.between(fechaNac, fechaActual).getYears();
     }
 
     /**

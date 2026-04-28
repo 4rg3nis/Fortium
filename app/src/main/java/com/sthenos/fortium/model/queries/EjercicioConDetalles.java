@@ -1,7 +1,10 @@
-package com.sthenos.fortium.model.entities;
+package com.sthenos.fortium.model.queries;
 
 import androidx.room.Embedded;
 import androidx.room.Relation;
+
+import com.sthenos.fortium.model.entities.Ejercicio;
+import com.sthenos.fortium.model.entities.RutinaEjercicio;
 
 /**
  * Representa la unión entre un ejercicio y sus detalles dentro de una rutina.

@@ -1,4 +1,4 @@
-package com.sthenos.fortium.model.entities;
+package com.sthenos.fortium.model.queries;
 
 /**
  * Molde para representar el volumen total de carga por sesión.
