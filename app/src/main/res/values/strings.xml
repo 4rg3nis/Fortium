@@ -115,5 +115,9 @@
     <string name="activitySettings_boton_guardar">Guardar Perfil</string>
     <string name="activitySettings_boton_exportar">Exportar Datos (JSON)</string>
     <string name="activitySettings_boton_importar">Importar Datos (JSON)</string>
+    <string name="workout_tv_volumen">VOLUMEN TOTAL</string>
+    <string name="workout_tv_series">SERIES TOTALES</string>
+    <string name="workout_til_notas">Notas del entrenamiento (Opcional)</string>
+    <string name="main_tv_no_sesiones">No hay entrenamientos aún</string>
 
 </resources>

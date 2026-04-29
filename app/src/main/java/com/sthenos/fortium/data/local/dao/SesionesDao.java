@@ -10,6 +10,7 @@ import androidx.room.Update;
 
 import com.sthenos.fortium.model.entities.Serie;
 import com.sthenos.fortium.model.entities.Sesion;
+import com.sthenos.fortium.model.queries.HistorialSesion;
 
 import java.util.List;
 
@@ -45,4 +46,12 @@ public interface SesionesDao {
     // Obtener todas las sesiones de una rutina específica
     @Query("SELECT * FROM Sesiones")
     List<Sesion> getAllSesionesSync();
+
+    // Obtener el historial de sesiones recientes, incluyendo el nombre de la rutina.
+    // Se hace un left join para un futuro de entrenamientos libre sin rutia. (Entrenamiento rapido)
+    @Query("SELECT Sesiones.id AS sesionId, Rutinas.nombre AS nombreRutina, " +
+            "Sesiones.fechaInicio, Sesiones.cantidadSeries, Sesiones.volumenTotal, Sesiones.notas " +
+            "FROM Sesiones LEFT JOIN Rutinas ON Sesiones.rutinaId = Rutinas.id " +
+            "ORDER BY Sesiones.fechaInicio DESC LIMIT 5")
+    LiveData<List<HistorialSesion>> getHistorialReciente();
 }
