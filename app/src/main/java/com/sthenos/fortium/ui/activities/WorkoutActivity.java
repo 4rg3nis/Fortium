@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.model.entities.Ejercicio;
 import com.sthenos.fortium.model.queries.EjercicioConDetalles;
@@ -47,21 +48,21 @@ public class WorkoutActivity extends AppCompatActivity {
     private ImageButton btnDiscard;
     private MaterialButton btnFinish, btnAddExercise;
     private RecyclerView rvActiveExercises;
+    private TextView tvLiveSeries, tvLiveVolumen;
+    private TextInputEditText etWorkoutNotes;
+
     private RutinaViewModel rutinaViewModel;
     private EntrenamientoViewModel entrenamientoViewModel;
+    private EjercicioViewModel ejercicioViewModel;
     private ActiveWorkoutAdapter adapter;
-    private int rutinaId = -1;
 
+    private int rutinaId = -1;
     private CountDownTimer countDownTimer;
     private BottomSheetDialog restDialog;
-
     private List<Ejercicio> ejerciciosDisponibles;
-
     private List<Serie> seriesCompletadasHoy;
-
     private String fechaInicioString;
 
-    private EjercicioViewModel ejercicioViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,17 +80,12 @@ public class WorkoutActivity extends AppCompatActivity {
         setupViewModel();
     }
 
-    /**
-     * Configura los view model's y sus observadores.
-     */
     private void setupViewModel() {
-
         rutinaId = getIntent().getIntExtra("rutinaId", -1);
 
         if (rutinaId != -1) {
             rutinaViewModel.getEjerciciosDeRutina(rutinaId).observe(this, listaPlantilla -> {
                 if (listaPlantilla != null && !listaPlantilla.isEmpty()) {
-                    // Pasamos los ejercicios reales al adaptador
                     adapter.setEjercicios(listaPlantilla);
                 }
             });
@@ -116,17 +112,31 @@ public class WorkoutActivity extends AppCompatActivity {
 
             chronometer.stop();
 
+            // Recogemos las notas escritas por el usuario
+            String notas = "";
+            if (etWorkoutNotes.getText() != null) {
+                notas = etWorkoutNotes.getText().toString().trim();
+            }
+
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
             String fechaFinString = sdf.format(new java.util.Date());
 
-            long fechaHoy = System.currentTimeMillis();
+            // Recalculamos el volumen total sumando todas las series completadas.
+            // Se hace aquí para garantizar la integridad de los datos
+            // antes de guardar la sesión en la base de datos.
+            double volumenFinal = 0.0;
+            for (Serie s : seriesCompletadasHoy) {
+                volumenFinal += (s.getPeso() * s.getRepeticiones());
+            }
+
+            // Creamos la sesión con todos los datos integrados
             Sesion sesionHoy = new Sesion(
                     rutinaId,
                     fechaInicioString,
                     fechaFinString,
                     seriesCompletadasHoy.size(),
-                    false,
-                    ""
+                    volumenFinal,
+                    notas
             );
 
             // Mandamos a guardar todo
@@ -136,30 +146,22 @@ public class WorkoutActivity extends AppCompatActivity {
             });
         });
 
-        // Añadir nuevo ejercicio "al vuelo" estos no estarán visible en la parte del detalle de la rutina
+        // Añadir nuevo ejercicio
         btnAddExercise.setOnClickListener(v -> {
-            // Aquí abriríamos el mismo BottomSheet de ejercicios que en detalle rutina
-
             if (ejerciciosDisponibles.isEmpty()) {
                 Toast.makeText(this, "Cargando catálogo de ejercicios...", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Creamos el menú desplegable
             ExerciseSelectionBottomSheet bottomSheet = new ExerciseSelectionBottomSheet();
-
-            // Le pasamos todos los ejercicios
             bottomSheet.setEjercicios(ejerciciosDisponibles);
 
-            // Escuchamos cuál elige el usuario
             bottomSheet.setListener(ejercicioSeleccionado -> {
-
                 EjercicioConDetalles ejercicioExtra = new EjercicioConDetalles();
                 ejercicioExtra.ejercicio = ejercicioSeleccionado;
 
                 int nuevoOrden = adapter.getItemCount() + 1;
 
-                // Le creamos un enlace ficticio: 1 serie y 0 reps por defecto
                 ejercicioExtra.rutinaEjercicio = new com.sthenos.fortium.model.entities.RutinaEjercicio(
                         rutinaId,
                         ejercicioSeleccionado.getId(),
@@ -170,52 +172,43 @@ public class WorkoutActivity extends AppCompatActivity {
                 );
 
                 adapter.addEjercicioEnVivo(ejercicioExtra);
-
                 Toast.makeText(this, ejercicioSeleccionado.getNombre() + " añadido", Toast.LENGTH_SHORT).show();
             });
 
-            // Lo mostramos
             bottomSheet.show(getSupportFragmentManager(), "ExerciseSheet");
         });
     }
 
-    /**
-     * Muestra un diálogo de confirmación para descartar la sesión.
-     */
     private void mostrarDialogoDescartar() {
         new MaterialAlertDialogBuilder(this)
                 .setTitle("¿Descartar entrenamiento?")
                 .setMessage("Se perderán todos los datos y series que hayas anotado hoy.")
                 .setPositiveButton("Descartar", (dialog, which) -> {
                     chronometer.stop();
-                    finish(); // Cierra la pantalla sin guardar
+                    finish();
                 })
                 .setNegativeButton("Cancelar", null)
                 .show();
     }
 
-    /**
-     * Configura el cronómetro y tambien guarda la fecha de inicio de la sesión.
-     */
     private void setupChronometer() {
-        // Arrancamos el cronómetro desde cero en el momento que se abre la pantalla
         chronometer.setBase(SystemClock.elapsedRealtime());
         chronometer.start();
 
-        // Uso el formato yyyy-MM-dd sobre todo para a la hora de hacer una query en Room lo haga bien al indicar la fecha.
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         fechaInicioString = sdf.format(new java.util.Date());
     }
 
-    /**
-     * Inicializa los componentes de la pantalla.
-     */
     private void initComponents() {
         chronometer = findViewById(R.id.chronometerWorkout);
         btnDiscard = findViewById(R.id.btnDiscardWorkout);
         btnFinish = findViewById(R.id.btnFinishWorkout);
         btnAddExercise = findViewById(R.id.btnAddExerciseToWorkout);
         rvActiveExercises = findViewById(R.id.rvWorkoutActive);
+
+        tvLiveSeries = findViewById(R.id.tvLiveSeries);
+        tvLiveVolumen = findViewById(R.id.tvLiveVolumen);
+        etWorkoutNotes = findViewById(R.id.etWorkoutNotes);
 
         initAdapter();
 
@@ -230,9 +223,6 @@ public class WorkoutActivity extends AppCompatActivity {
         rutinaViewModel = new ViewModelProvider(this).get(RutinaViewModel.class);
     }
 
-    /**
-     * Inicializa el adaptador de ejercicios activos.
-     */
     private void initAdapter() {
         adapter = new ActiveWorkoutAdapter(this, new ActiveWorkoutAdapter.OnSetActionListener() {
             @Override
@@ -242,11 +232,9 @@ public class WorkoutActivity extends AppCompatActivity {
 
             @Override
             public void onSetCompleted(int tiempoDescanso, int ejercicioId, float peso, int reps, float rpe) {
-                // Iniciar el cronómetro de descanso
                 iniciarTemporizadorDescanso(tiempoDescanso);
                 int ordenActual = seriesCompletadasHoy.size() + 1;
 
-                // TODO: Comprobar el tipo de serie que esta para actualizarlo.
                 Serie nuevaSerie = new Serie(
                         0,
                         ejercicioId,
@@ -259,32 +247,34 @@ public class WorkoutActivity extends AppCompatActivity {
                 );
 
                 seriesCompletadasHoy.add(nuevaSerie);
+
+                actualizarStatsEnVivo();
             }
 
             @Override
             public void onSetUnchecked(int ejercicioId, float peso, int reps) {
-                // Buscamos esta serie en la lista y la borramos
-                for (int i = 0; i < seriesCompletadasHoy.size(); i++) {
-                    Serie s = seriesCompletadasHoy.get(i);
-                    if (s.getEjercicioId() == ejercicioId && s.getPeso() == peso && s.getRepeticiones() == reps) {
-                        seriesCompletadasHoy.remove(i);
-                        break;
-                    }
-                }
+                seriesCompletadasHoy.removeIf(s ->
+                        s.getEjercicioId() == ejercicioId && s.getPeso() == peso && s.getRepeticiones() == reps);
+
+                actualizarStatsEnVivo();
             }
         });
     }
 
-    /**
-     * Inicia el temporizador de descanso.
-     * @param tiempoDescansoSegundos
-     */
-    private void iniciarTemporizadorDescanso(int tiempoDescansoSegundos) {
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
+    private void actualizarStatsEnVivo() {
+        double volumenTotal = 0;
+        for (Serie s : seriesCompletadasHoy) {
+            volumenTotal += (s.getPeso() * s.getRepeticiones());
         }
 
-        // Preparamos el panel
+        tvLiveSeries.setText(String.valueOf(seriesCompletadasHoy.size()));
+        tvLiveVolumen.setText(String.format(Locale.getDefault(), "%.1f kg", volumenTotal));
+    }
+
+    private void iniciarTemporizadorDescanso(int tiempoDescansoSegundos) {
+        if (tiempoDescansoSegundos <= 0) return;
+        if (countDownTimer != null) countDownTimer.cancel();
+
         if (restDialog == null) {
             restDialog = new BottomSheetDialog(this);
             restDialog.setContentView(R.layout.bottom_sheet_rest_timer);
@@ -295,8 +285,6 @@ public class WorkoutActivity extends AppCompatActivity {
         MaterialButton btnAdd = restDialog.findViewById(R.id.btnAdd15s);
         MaterialButton btnLess = restDialog.findViewById(R.id.btnLess15s);
 
-
-        // Lógica de los botones del panel
         btnSkip.setOnClickListener(v -> {
             if (countDownTimer != null) countDownTimer.cancel();
             restDialog.dismiss();
@@ -316,17 +304,14 @@ public class WorkoutActivity extends AppCompatActivity {
 
         restDialog.show();
 
-        // Arrancamos el cronómetro de Android. Multiplicamos por 1000 porque funciona en milisegundos
         countDownTimer = new CountDownTimer(tiempoDescansoSegundos * 1000L, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                // Esto se ejecuta CADA SEGUNDO
                 long segundosRestantes = millisUntilFinished / 1000;
                 long minutos = segundosRestantes / 60;
                 long segundos = segundosRestantes % 60;
 
-                // Formateamos para que se vea como "01:30"
-                String tiempoFormateado = String.format("%02d:%02d", minutos, segundos);
+                String tiempoFormateado = String.format(Locale.getDefault(), "%02d:%02d", minutos, segundos);
                 if (tvTime != null) {
                     tvTime.setText(tiempoFormateado);
                 }
@@ -334,18 +319,13 @@ public class WorkoutActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                // Cuando el tiempo se acaba
                 if (restDialog != null && restDialog.isShowing()) {
                     restDialog.dismiss();
                 }
-                // Opcional: Hacer vibrar el móvil
-                // android.os.Vibrator v = (android.os.Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                // if (v != null) v.vibrate(500);
             }
         }.start();
     }
 
-    // Es vital cancelar el cronómetro si el usuario cierra la app de golpe
     @Override
     protected void onDestroy() {
         super.onDestroy();

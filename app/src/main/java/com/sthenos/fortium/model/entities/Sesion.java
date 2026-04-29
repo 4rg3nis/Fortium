@@ -36,30 +36,30 @@ public class Sesion {
     @ColumnInfo(name="cantidadSeries")
     private int cantidadSeries;
 
-    @ColumnInfo(name="recordPersonal")
-    private boolean recordPersonal = false;
+    @ColumnInfo(name = "volumenTotal")
+    private double volumenTotal;
 
-    @ColumnInfo(name="comentarioGeneral")
-    private String comentarioGeneral;
+    @ColumnInfo(name="notas")
+    private String notas;
 
-    public Sesion(int id, Integer rutinaId, @NonNull String fechaInicio, String fechaFin, int cantidadSeries, boolean recordPersonal, String comentarioGeneral) {
+    public Sesion(int id, Integer rutinaId, @NonNull String fechaInicio, String fechaFin, int cantidadSeries, double volumenTotal, String notas) {
         this.id = id;
         this.rutinaId = rutinaId;
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
         this.cantidadSeries = cantidadSeries;
-        this.recordPersonal = recordPersonal;
-        this.comentarioGeneral = comentarioGeneral;
+        this.volumenTotal = volumenTotal;
+        this.notas = notas;
     }
 
     @Ignore
-    public Sesion( Integer rutinaId, @NonNull String fechaInicio, String fechaFin, int cantidadSeries, boolean recordPersonal, String comentarioGeneral) {
+    public Sesion( Integer rutinaId, @NonNull String fechaInicio, String fechaFin, int cantidadSeries, double volumenTotal, String notas) {
         this.rutinaId = rutinaId;
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
         this.cantidadSeries = cantidadSeries;
-        this.recordPersonal = recordPersonal;
-        this.comentarioGeneral = comentarioGeneral;
+        this.volumenTotal = volumenTotal;
+        this.notas = notas;
     }
 
     public int getId() {
@@ -103,23 +103,20 @@ public class Sesion {
         this.cantidadSeries = cantidadSeries;
     }
 
-    public boolean isRecordPersonal() {
-        return recordPersonal;
+
+    public double getVolumenTotal() {
+        return volumenTotal;
     }
 
-    public void setRecordPersonal(boolean recordPersonal) {
-        this.recordPersonal = recordPersonal;
+    public void setVolumenTotal(double volumenTotal) {
+        this.volumenTotal = volumenTotal;
     }
 
-    public String isComentarioGeneral() {
-        return comentarioGeneral;
+    public String getNotas() {
+        return notas;
     }
 
-    public void setComentarioGeneral(String comentarioGeneral) {
-        this.comentarioGeneral = comentarioGeneral;
-    }
-
-    public String getComentarioGeneral() {
-        return comentarioGeneral;
+    public void setNotas(String notas) {
+        this.notas = notas;
     }
 }
