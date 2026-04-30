@@ -23,8 +23,22 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
     private final boolean enActivity;
     private OnItemClickListener listener;
 
+    /**
+     * Interfaz para manejar los clics en los elementos del RecyclerView.
+     */
     public interface OnItemClickListener {
+        /**
+         * Se llama cuando se hace clic en un elemento del RecyclerView. Para ver el detalle de la sesión.
+         * @param sesion La sesión seleccionada.
+         */
         void onItemClick(HistorialSesion sesion);
+
+        /**
+         * Se llama cuando se hace un clic largo en un elemento del RecyclerView. Para eliminar la sesión.
+         * @param sesion La sesión seleccionada.
+         */
+        void onItemLongClick(HistorialSesion sesion);
+
     }
 
     public HistorialAdapter(boolean enActivity, OnItemClickListener listener) {
@@ -77,6 +91,13 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
             if (listener != null) {
                 listener.onItemClick(sesion);
             }
+        });
+
+        holder.itemView.setOnLongClickListener(v -> {
+            if (listener != null) {
+                listener.onItemLongClick(sesion);
+            }
+            return true; // El "true" le dice a Android que ya hemos manejado este toque y que no dispare también el clic normal
         });
     }
 

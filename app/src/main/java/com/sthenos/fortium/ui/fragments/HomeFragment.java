@@ -18,8 +18,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.model.entities.Rutina;
+import com.sthenos.fortium.model.queries.HistorialSesion;
 import com.sthenos.fortium.ui.activities.HistorialActivity;
 import com.sthenos.fortium.ui.activities.SettingsActivity;
 import com.sthenos.fortium.ui.adapters.HistorialAdapter;
@@ -69,10 +71,27 @@ public class HomeFragment extends Fragment {
      * @param view La vista del fragmento.
      */
     private void setupHistorialReciente(View view) {
-        androidx.recyclerview.widget.RecyclerView rvHistorial = view.findViewById(R.id.rvHistorialReciente);
+        RecyclerView rvHistorial = view.findViewById(R.id.rvHistorialReciente);
 
-        historialAdapter = new HistorialAdapter(false, sesion -> {
-            Toast.makeText(requireContext(), "Clic en: " + sesion.nombreRutina, android.widget.Toast.LENGTH_SHORT).show();
+        historialAdapter = new HistorialAdapter(false, new HistorialAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(HistorialSesion sesion) {
+                Toast.makeText(getContext(), "Clic en: " + sesion.nombreRutina, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onItemLongClick(HistorialSesion sesion) {
+                new MaterialAlertDialogBuilder(getContext())
+                        .setTitle("¿Eliminar entrenamiento?")
+                        .setMessage("Vas a borrar tu sesión '" + (sesion.nombreRutina != null ? sesion.nombreRutina : "Libre") + "'. Se borrarán todas las series y volumen de tu historial. Esta acción no se puede deshacer.")
+                        .setPositiveButton("Eliminar", (dialog, which) -> {
+                            // Llamamos al ViewModel para que la fulmine
+                            entrenamientoViewModel.eliminarSesionCompleta(sesion.sesionId);
+                            android.widget.Toast.makeText(getContext(), "Sesión eliminada", android.widget.Toast.LENGTH_SHORT).show();
+                        })
+                        .setNegativeButton("Cancelar", null)
+                        .show();
+            }
         });
         rvHistorial.setAdapter(historialAdapter);
 
@@ -108,9 +127,6 @@ public class HomeFragment extends Fragment {
                 idUsuario = usuario.getId();
                 setPeso(usuario.getPesoActual());
                 setSaludo(usuario.getNombre());
-                Log.d("DEBUG_FORTIUM", "Usuario cargado con ID: " + idUsuario);
-            } else {
-                Log.d("DEBUG_FORTIUM", "Esperando a que el usuario se cargue...");
             }
         });
     }

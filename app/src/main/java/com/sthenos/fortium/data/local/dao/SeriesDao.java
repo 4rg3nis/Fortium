@@ -75,4 +75,7 @@ public interface SeriesDao {
 
     @Query("SELECT * FROM Series")
     List<Serie> getAllSeriesSync();
+
+    @Query("DELETE FROM Series WHERE sesionId = :sesionId")
+    void deleteBySesion(int sesionId);
 }

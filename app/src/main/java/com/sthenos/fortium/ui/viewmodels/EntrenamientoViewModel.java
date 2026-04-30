@@ -58,4 +58,8 @@ public class EntrenamientoViewModel extends AndroidViewModel {
     public LiveData<List<HistorialSesion>> getHistorialCompleto() {
         return repository.getHistorialCompleto();
     }
+
+    public void eliminarSesionCompleta(int sesionId) {
+        repository.eliminarSesionCompleta(sesionId);
+    }
 }

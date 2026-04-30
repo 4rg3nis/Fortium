@@ -61,6 +61,17 @@ public class EntrenamientoRepository {
         return sesionesDao.getHistorialCompleto();
     }
 
+    /**
+     * Elimina una sesión y sus series de la base de datos.
+     * @param sesionId El ID de la sesión a eliminar.
+     */
+    public void eliminarSesionCompleta(int sesionId) {
+        executorService.execute(() -> {
+            seriesDao.deleteBySesion(sesionId);
+            sesionesDao.deleteSesionById(sesionId);
+        });
+    }
+
     public interface RepositoryCallback<T> {
         void onComplete(Resource<T> result);
     }

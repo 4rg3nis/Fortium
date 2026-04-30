@@ -61,4 +61,8 @@ public interface SesionesDao {
             "FROM Sesiones LEFT JOIN Rutinas ON Sesiones.rutinaId = Rutinas.id " +
             "ORDER BY Sesiones.fechaInicio DESC")
     LiveData<List<HistorialSesion>> getHistorialCompleto();
+
+
+    @Query("DELETE FROM Sesiones WHERE id = :sesionId")
+    void deleteSesionById(int sesionId);
 }
