@@ -54,4 +54,8 @@ public class EntrenamientoViewModel extends AndroidViewModel {
     public LiveData<List<HistorialSesion>> getHistorialReciente() {
         return repository.getHistorialReciente();
     }
+
+    public LiveData<List<HistorialSesion>> getHistorialCompleto() {
+        return repository.getHistorialCompleto();
+    }
 }

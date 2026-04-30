@@ -20,6 +20,18 @@ import java.util.List;
 public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.ViewHolder> {
 
     private List<HistorialSesion> sesiones = new ArrayList<>();
+    private final boolean enActivity;
+    private OnItemClickListener listener;
+
+    public interface OnItemClickListener {
+        void onItemClick(HistorialSesion sesion);
+    }
+
+    public HistorialAdapter(boolean enActivity, OnItemClickListener listener) {
+        this.enActivity = enActivity;
+        this.listener = listener;
+    }
+
 
     public void setSesiones(List<HistorialSesion> nuevasSesiones) {
         this.sesiones = nuevasSesiones;
@@ -29,8 +41,9 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_historial_reciente, parent, false);
+        int layoutId = enActivity ? R.layout.item_historial_vertical : R.layout.item_historial_reciente;
+
+        View view = LayoutInflater.from(parent.getContext()).inflate(layoutId, parent, false);
         return new ViewHolder(view);
     }
 
@@ -59,6 +72,12 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
         } else {
             holder.tvNotas.setVisibility(View.GONE); // Se oculta si no hay notas
         }
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(sesion);
+            }
+        });
     }
 
     @Override

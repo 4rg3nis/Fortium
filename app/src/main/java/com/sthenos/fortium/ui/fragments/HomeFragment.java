@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.model.entities.Rutina;
+import com.sthenos.fortium.ui.activities.HistorialActivity;
 import com.sthenos.fortium.ui.activities.SettingsActivity;
 import com.sthenos.fortium.ui.adapters.HistorialAdapter;
 import com.sthenos.fortium.ui.adapters.RutinaAdapter;
@@ -28,7 +30,7 @@ import com.sthenos.fortium.ui.viewmodels.UsuarioViewModel;
 
 public class HomeFragment extends Fragment {
 
-    private TextView tvSaludo, tvPeso, tvViewAll, tvEmptyHistorial;
+    private TextView tvSaludo, tvPeso, tvViewAll, tvEmptyHistorial, tvVerHistorialCompleto;
     private RecyclerView rvRutinas;
     private RutinaViewModel rutinaViewModel;
     private MaterialButton btnEmpezarEntrenamiento;
@@ -63,12 +65,15 @@ public class HomeFragment extends Fragment {
     /**
      * Configura el RecyclerView para mostrar el historial de sesiones recientes.
      * Si no hay sesiones recientes, muestra un mensaje de "No hay sesiones recientes".
+     *
      * @param view La vista del fragmento.
      */
     private void setupHistorialReciente(View view) {
         androidx.recyclerview.widget.RecyclerView rvHistorial = view.findViewById(R.id.rvHistorialReciente);
 
-        historialAdapter = new HistorialAdapter();
+        historialAdapter = new HistorialAdapter(false, sesion -> {
+            Toast.makeText(requireContext(), "Clic en: " + sesion.nombreRutina, android.widget.Toast.LENGTH_SHORT).show();
+        });
         rvHistorial.setAdapter(historialAdapter);
 
         entrenamientoViewModel.getHistorialReciente().observe(getViewLifecycleOwner(), sesiones -> {
@@ -132,7 +137,16 @@ public class HomeFragment extends Fragment {
             public void onClick(View view) {
                 Intent intent = new Intent(requireContext(), SettingsActivity.class);
                 startActivity(intent);
-            }});
+            }
+        });
+
+        tvVerHistorialCompleto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(requireContext(), HistorialActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void setRecyclerView() {
@@ -157,6 +171,7 @@ public class HomeFragment extends Fragment {
         btnEmpezarEntrenamiento = view.findViewById(R.id.btnEmpezarEntrenamiento);
         btnSettings = view.findViewById(R.id.btnSettings);
         tvEmptyHistorial = view.findViewById(R.id.tvEmptyHistorial);
+        tvVerHistorialCompleto = view.findViewById(R.id.tvVerHistorialCompleto);
 
         rutinaViewModel = new ViewModelProvider(this).get(RutinaViewModel.class);
         usuarioViewModel = new ViewModelProvider(this).get(UsuarioViewModel.class);

@@ -4,14 +4,22 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-04-03T11:23:24.768437400Z">
+        <DropdownSelection timestamp="2026-04-30T15:02:06.777027500Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\argen\.android\avd\Small_Phone.avd" />
             </handle>
           </Target>
         </DropdownSelection>
-        <DialogSelection />
+        <DialogSelection>
+          <targets>
+            <Target type="DEFAULT_BOOT">
+              <handle>
+                <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\argen\.android\avd\Small_Phone.avd" />
+              </handle>
+            </Target>
+          </targets>
+        </DialogSelection>
       </SelectionState>
     </selectionStates>
   </component>

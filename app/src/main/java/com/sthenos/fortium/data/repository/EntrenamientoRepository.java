@@ -57,6 +57,10 @@ public class EntrenamientoRepository {
         return sesionesDao.getHistorialReciente();
     }
 
+    public LiveData<List<HistorialSesion>> getHistorialCompleto() {
+        return sesionesDao.getHistorialCompleto();
+    }
+
     public interface RepositoryCallback<T> {
         void onComplete(Resource<T> result);
     }

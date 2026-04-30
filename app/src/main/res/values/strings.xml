@@ -119,5 +119,6 @@
     <string name="workout_tv_series">SERIES TOTALES</string>
     <string name="workout_til_notas">Notas del entrenamiento (Opcional)</string>
     <string name="main_tv_no_sesiones">No hay entrenamientos aún</string>
-
+    <string name="titulo_historial_completo">Historial de Sesiones</string>
+    <string name="no_hay_entrenamientos">Aún no has registrado sesiones</string>
 </resources>

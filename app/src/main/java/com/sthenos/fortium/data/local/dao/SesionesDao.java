@@ -54,4 +54,11 @@ public interface SesionesDao {
             "FROM Sesiones LEFT JOIN Rutinas ON Sesiones.rutinaId = Rutinas.id " +
             "ORDER BY Sesiones.fechaInicio DESC LIMIT 5")
     LiveData<List<HistorialSesion>> getHistorialReciente();
+
+    // Obtener el historial completo de sesiones, incluyendo el nombre de la rutina.
+    @Query("SELECT Sesiones.id AS sesionId, Rutinas.nombre AS nombreRutina, " +
+            "Sesiones.fechaInicio, Sesiones.cantidadSeries, Sesiones.volumenTotal, Sesiones.notas " +
+            "FROM Sesiones LEFT JOIN Rutinas ON Sesiones.rutinaId = Rutinas.id " +
+            "ORDER BY Sesiones.fechaInicio DESC")
+    LiveData<List<HistorialSesion>> getHistorialCompleto();
 }
