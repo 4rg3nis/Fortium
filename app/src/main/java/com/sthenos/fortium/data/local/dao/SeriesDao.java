@@ -12,6 +12,7 @@ import com.sthenos.fortium.model.queries.DistribucionMuscular;
 import com.sthenos.fortium.model.queries.Progreso1RM;
 import com.sthenos.fortium.model.queries.ProgresoVolumen;
 import com.sthenos.fortium.model.entities.Serie;
+import com.sthenos.fortium.model.queries.SerieHistorial;
 
 import java.util.List;
 
@@ -75,4 +76,12 @@ public interface SeriesDao {
 
     @Query("SELECT * FROM Series")
     List<Serie> getAllSeriesSync();
+
+    @Query("DELETE FROM Series WHERE sesionId = :sesionId")
+    void deleteBySesion(int sesionId);
+
+    @Query("SELECT Ejercicios.id as ejercicioId, Ejercicios.nombre as nombreEjercicio, Series.peso, Series.repeticiones, Series.ordenEnSesion " +
+            "FROM Series INNER JOIN Ejercicios ON Series.ejercicioId = Ejercicios.id " +
+            "WHERE Series.sesionId = :sesionId ORDER BY Series.ordenEnSesion ASC")
+    LiveData<List<SerieHistorial>> getSeriesDeSesion(int sesionId);
 }

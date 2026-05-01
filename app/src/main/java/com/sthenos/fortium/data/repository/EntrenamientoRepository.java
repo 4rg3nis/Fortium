@@ -11,10 +11,12 @@ import com.sthenos.fortium.data.local.dao.SeriesDao;
 import com.sthenos.fortium.data.local.dao.SesionesDao;
 import com.sthenos.fortium.model.Resource;
 import com.sthenos.fortium.model.queries.DistribucionMuscular;
+import com.sthenos.fortium.model.queries.HistorialSesion;
 import com.sthenos.fortium.model.queries.Progreso1RM;
 import com.sthenos.fortium.model.queries.ProgresoVolumen;
 import com.sthenos.fortium.model.entities.Serie;
 import com.sthenos.fortium.model.entities.Sesion;
+import com.sthenos.fortium.model.queries.SerieHistorial;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -44,58 +46,39 @@ public class EntrenamientoRepository {
         return instance;
     }
 
-    /**
-     * Calcula el 1RM actual de un ejercicio. Utiliza la fórmula de Epley.
-     * @param peso Peso del ejercicio.
-     * @param reps Número de repeticiones del ejercicio.
-     * @return El peso máximo estimado para 1 repetición del ejercicio.
-     */
-    public double calcular1RM(double peso, int reps) {
-        if (reps <= 0 || peso <= 0) {
-            return 0.0;
-        }
-        if (reps == 1) {
-            return peso; // Si es 1 repetición, ese es su 1RM actual
-        }
-
-        // Aplicación de la fórmula de Epley
-        return peso * (1.0 + (reps / 30.0));
-    }
-
-    public LiveData<List<Serie>> getSeriesDeSesion(int sesionId) {
-        return seriesDao.getBySesionId(sesionId);
-    }
-
-    public void insertSerie(Serie serie) {
-        // Validación de datos antes de insertar en BBDD
-        if (serie.getPeso() < 0 || serie.getRepeticiones() < 0) {
-            throw new IllegalArgumentException("El peso y las repeticiones no pueden ser negativos.");
-        }
-
-        executorService.execute(() -> {
-            seriesDao.insert(serie);
-        });
-    }
-
-    public void updateSerie(Serie serie) {
-        executorService.execute(() -> {
-            seriesDao.update(serie);
-        });
-    }
-
-    public void deleteSesion(Sesion sesion) {
-        executorService.execute(() -> {
-            // SQLite borrará todas sus series automáticamente.
-            sesionesDao.delete(sesion);
-        });
-    }
-
    public LiveData<List<DistribucionMuscular>> getDistribucionMuscular30Dias(String fechaHace30Dias) {
         return seriesDao.getDistribucionMuscular30Dias(fechaHace30Dias);
    }
 
     public LiveData<List<ProgresoVolumen>> getUltimas7SesionesVolumen() {
         return seriesDao.getUltimas7SesionesVolumen();
+    }
+
+    public LiveData<List<HistorialSesion>> getHistorialReciente() {
+        return sesionesDao.getHistorialReciente();
+    }
+
+    public LiveData<List<HistorialSesion>> getHistorialCompleto() {
+        return sesionesDao.getHistorialCompleto();
+    }
+
+    /**
+     * Elimina una sesión y sus series de la base de datos.
+     * @param sesionId El ID de la sesión a eliminar.
+     */
+    public void eliminarSesionCompleta(int sesionId) {
+        executorService.execute(() -> {
+            seriesDao.deleteBySesion(sesionId);
+            sesionesDao.deleteSesionById(sesionId);
+        });
+    }
+
+    public LiveData<Sesion> getSesionById(int sesionId) {
+        return sesionesDao.getSesionById(sesionId);
+    }
+
+    public LiveData<List<SerieHistorial>> getSeriesDeSesion(int sesionId) {
+        return seriesDao.getSeriesDeSesion(sesionId);
     }
 
     public interface RepositoryCallback<T> {

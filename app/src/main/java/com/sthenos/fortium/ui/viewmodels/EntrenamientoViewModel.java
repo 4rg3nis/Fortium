@@ -8,10 +8,12 @@ import androidx.lifecycle.LiveData;
 
 import com.sthenos.fortium.data.repository.EntrenamientoRepository;
 import com.sthenos.fortium.model.queries.DistribucionMuscular;
+import com.sthenos.fortium.model.queries.HistorialSesion;
 import com.sthenos.fortium.model.queries.Progreso1RM;
 import com.sthenos.fortium.model.queries.ProgresoVolumen;
 import com.sthenos.fortium.model.entities.Serie;
 import com.sthenos.fortium.model.entities.Sesion;
+import com.sthenos.fortium.model.queries.SerieHistorial;
 
 import java.util.List;
 
@@ -48,5 +50,25 @@ public class EntrenamientoViewModel extends AndroidViewModel {
 
     public LiveData<List<ProgresoVolumen>> getUltimas7SesionesVolumen() {
         return repository.getUltimas7SesionesVolumen();
+    }
+
+    public LiveData<List<HistorialSesion>> getHistorialReciente() {
+        return repository.getHistorialReciente();
+    }
+
+    public LiveData<List<HistorialSesion>> getHistorialCompleto() {
+        return repository.getHistorialCompleto();
+    }
+
+    public void eliminarSesionCompleta(int sesionId) {
+        repository.eliminarSesionCompleta(sesionId);
+    }
+
+    public LiveData<Sesion> getSesionById(int sesionId) {
+        return repository.getSesionById(sesionId);
+    }
+
+    public LiveData<List<SerieHistorial>> getSeriesDeSesion(int sesionId) {
+        return repository.getSeriesDeSesion(sesionId);
     }
 }
