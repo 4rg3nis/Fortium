@@ -11,6 +11,7 @@ import com.sthenos.fortium.data.local.dao.SeriesDao;
 import com.sthenos.fortium.data.local.dao.SesionesDao;
 import com.sthenos.fortium.model.Resource;
 import com.sthenos.fortium.model.queries.DistribucionMuscular;
+import com.sthenos.fortium.model.queries.EjercicioConDetalles;
 import com.sthenos.fortium.model.queries.HistorialSesion;
 import com.sthenos.fortium.model.queries.Progreso1RM;
 import com.sthenos.fortium.model.queries.ProgresoVolumen;
@@ -18,9 +19,12 @@ import com.sthenos.fortium.model.entities.Serie;
 import com.sthenos.fortium.model.entities.Sesion;
 import com.sthenos.fortium.model.queries.SerieHistorial;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 public class EntrenamientoRepository {
     private final SeriesDao seriesDao;
@@ -136,6 +140,30 @@ public class EntrenamientoRepository {
 
     public LiveData<List<Progreso1RM>> getProgresion1RM(int ejercicioId) {
         return seriesDao.getProgresion1RM(ejercicioId);
+    }
+
+    /**
+     * Busca los records de los ejercicios en la base de datos.
+     * @param ejercicios La lista de ejercicios a buscar.
+     * @param callback El callback para manejar el resultado.
+     */
+    public void buscarRecordsDeEjercicios(List<EjercicioConDetalles> ejercicios, Consumer<Map<Integer, List<String>>> callback){
+        executorService.execute(() -> {
+
+            Map<Integer, List<String>> recordsTemporales = new HashMap<>();
+
+            for (EjercicioConDetalles ej : ejercicios) {
+                int id = ej.ejercicio.getId();
+
+                // Nos trae una lista con la serie 1, serie 2, serie 3... de la semana pasada
+                List<String> records = seriesDao.getUltimasSeriesDeEjercicio(id);
+
+                if (records != null && !records.isEmpty()) {
+                    recordsTemporales.put(id, records);
+                }
+            }
+            callback.accept(recordsTemporales);
+        });
     }
 
 }

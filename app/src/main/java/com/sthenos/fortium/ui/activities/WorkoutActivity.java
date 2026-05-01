@@ -87,6 +87,7 @@ public class WorkoutActivity extends AppCompatActivity {
             rutinaViewModel.getEjerciciosDeRutina(rutinaId).observe(this, listaPlantilla -> {
                 if (listaPlantilla != null && !listaPlantilla.isEmpty()) {
                     adapter.setEjercicios(listaPlantilla);
+                    cargarRecordsPersonales(listaPlantilla);
                 }
             });
         } else {
@@ -97,6 +98,16 @@ public class WorkoutActivity extends AppCompatActivity {
             if (ejercicios != null) {
                 ejerciciosDisponibles = ejercicios;
             }
+        });
+    }
+
+    /**
+     * Carga los records personales de los ejercicios.
+     * @param listaPlantilla La lista de ejercicios de la plantilla
+     */
+    private void cargarRecordsPersonales(List<EjercicioConDetalles> listaPlantilla) {
+        entrenamientoViewModel.getRecords(listaPlantilla).observe(this, records -> {
+            adapter.setUltimosRecords(records);
         });
     }
 
