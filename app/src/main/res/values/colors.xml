@@ -43,4 +43,6 @@
     <color name="red_500">#FF3B30</color>
 
     <color name="red_600">#F44336</color>
+
+    <color name="gray_950">#1A1A1A</color>
 </resources>

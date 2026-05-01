@@ -1,5 +1,6 @@
 package com.sthenos.fortium.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -56,7 +57,9 @@ public class HistorialActivity extends AppCompatActivity {
         HistorialAdapter adapter = new HistorialAdapter(true, new HistorialAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(HistorialSesion sesion) {
-                Toast.makeText(HistorialActivity.this, "Clic en: " + sesion.nombreRutina, Toast.LENGTH_SHORT).show();
+                Intent intent = new android.content.Intent(HistorialActivity.this, DetallesSesionActivity.class);
+                intent.putExtra("sesionId", sesion.sesionId);
+                startActivity(intent);
             }
 
             @Override

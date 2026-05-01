@@ -16,6 +16,7 @@ import com.sthenos.fortium.model.queries.Progreso1RM;
 import com.sthenos.fortium.model.queries.ProgresoVolumen;
 import com.sthenos.fortium.model.entities.Serie;
 import com.sthenos.fortium.model.entities.Sesion;
+import com.sthenos.fortium.model.queries.SerieHistorial;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -70,6 +71,14 @@ public class EntrenamientoRepository {
             seriesDao.deleteBySesion(sesionId);
             sesionesDao.deleteSesionById(sesionId);
         });
+    }
+
+    public LiveData<Sesion> getSesionById(int sesionId) {
+        return sesionesDao.getSesionById(sesionId);
+    }
+
+    public LiveData<List<SerieHistorial>> getSeriesDeSesion(int sesionId) {
+        return seriesDao.getSeriesDeSesion(sesionId);
     }
 
     public interface RepositoryCallback<T> {

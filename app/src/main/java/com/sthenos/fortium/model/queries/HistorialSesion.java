@@ -11,5 +11,4 @@ public class HistorialSesion {
     public int cantidadSeries;
     public double volumenTotal;
     public String notas;
-
 }

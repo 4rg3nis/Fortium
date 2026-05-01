@@ -121,4 +121,13 @@
     <string name="main_tv_no_sesiones">No hay entrenamientos aún</string>
     <string name="titulo_historial_completo">Historial de Sesiones</string>
     <string name="no_hay_entrenamientos">Aún no has registrado sesiones</string>
+    <string name="detalleEjercicio_tv_series">SERIES</string>
+    <string name="detalleEjercicio_tv_reps">REPS</string>
+    <string name="detalleEjercicio_tv_kg">KG</string>
+    <string name="detallesSesion_tv_fecha">FECHA</string>
+    <string name="detallesSesion_tv_tiempo">TIEMPO / INICIO</string>
+    <string name="detallesSesion_tv_volumen">VOLUMEN TOTAL</string>
+    <string name="detallesSesion_tv_series">SERIES TOTALES</string>
+    <string name="detallesSesion_tv_notas">Notas del entrenamiento</string>
+    <string name="detallesSesion_tv_ejercicios">Ejercicios Realizados</string>
 </resources>

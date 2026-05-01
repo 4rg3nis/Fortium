@@ -22,6 +22,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.model.entities.Rutina;
 import com.sthenos.fortium.model.queries.HistorialSesion;
+import com.sthenos.fortium.ui.activities.DetallesSesionActivity;
 import com.sthenos.fortium.ui.activities.HistorialActivity;
 import com.sthenos.fortium.ui.activities.SettingsActivity;
 import com.sthenos.fortium.ui.adapters.HistorialAdapter;
@@ -76,7 +77,9 @@ public class HomeFragment extends Fragment {
         historialAdapter = new HistorialAdapter(false, new HistorialAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(HistorialSesion sesion) {
-                Toast.makeText(getContext(), "Clic en: " + sesion.nombreRutina, Toast.LENGTH_SHORT).show();
+                Intent intent = new android.content.Intent(getContext(), DetallesSesionActivity.class);
+                intent.putExtra("sesionId", sesion.sesionId);
+                startActivity(intent);
             }
 
             @Override

@@ -65,4 +65,7 @@ public interface SesionesDao {
 
     @Query("DELETE FROM Sesiones WHERE id = :sesionId")
     void deleteSesionById(int sesionId);
+
+    @Query("SELECT * FROM Sesiones WHERE id = :sesionId")
+    LiveData<Sesion> getSesionById(int sesionId);
 }
