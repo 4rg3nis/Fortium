@@ -5,9 +5,11 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.sthenos.fortium.data.repository.EntrenamientoRepository;
 import com.sthenos.fortium.model.queries.DistribucionMuscular;
+import com.sthenos.fortium.model.queries.EjercicioConDetalles;
 import com.sthenos.fortium.model.queries.HistorialSesion;
 import com.sthenos.fortium.model.queries.Progreso1RM;
 import com.sthenos.fortium.model.queries.ProgresoVolumen;
@@ -16,6 +18,7 @@ import com.sthenos.fortium.model.entities.Sesion;
 import com.sthenos.fortium.model.queries.SerieHistorial;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * ViewModel para la actividad de entrenamiento.
@@ -70,5 +73,17 @@ public class EntrenamientoViewModel extends AndroidViewModel {
 
     public LiveData<List<SerieHistorial>> getSeriesDeSesion(int sesionId) {
         return repository.getSeriesDeSesion(sesionId);
+    }
+
+    public LiveData<Map<Integer, List<String>>> getRecords(List<EjercicioConDetalles> ejercicios) {
+        MutableLiveData<Map<Integer, List<String>>> recordsLiveData = new MutableLiveData<>();
+
+        repository.buscarRecordsDeEjercicios(ejercicios, records -> {
+            // Usamos postValue() porque estamos en un hilo secundario.
+            // postValue se encarga automáticamente de mandarlo al hilo principal de la UI de forma segura.
+            recordsLiveData.postValue(records);
+        });
+
+        return recordsLiveData;
     }
 }

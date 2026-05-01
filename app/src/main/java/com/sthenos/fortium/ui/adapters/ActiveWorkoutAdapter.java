@@ -18,7 +18,9 @@ import com.sthenos.fortium.R;
 import com.sthenos.fortium.model.queries.EjercicioConDetalles;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdapter.ExerciseViewHolder> {
     private final Context context;
@@ -30,9 +32,19 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
 
     private static final int TIEMPO_DESCANSO_INICIAL_DEFAULT = 90;
 
+    private Map<Integer, List<String>> ultimosRecords = new HashMap<>();
     public ActiveWorkoutAdapter(Context context, OnSetActionListener listener) {
         this.context = context;
         this.listener = listener;
+    }
+
+    /**
+     * Actualiza los records de los ejercicios.
+     * @param records Los nuevos records de los ejercicios.
+     */
+    public void setUltimosRecords(Map<Integer, List<String>> records) {
+        this.ultimosRecords = records;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -123,10 +135,31 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
 
         // Buscamos los elementos dentro de ESA fila específica
         TextView tvSetNumber = filaView.findViewById(R.id.tvSetNumber);
+        TextView tvRecord = filaView.findViewById(R.id.tvRecordAnterior);
         TextView tvRepsInput = filaView.findViewById(R.id.etRepsInput);
         ToggleButton btnCheck = filaView.findViewById(R.id.btnCheckSet);
 
         tvSetNumber.setText(String.valueOf(numeroSerie));
+
+        if (tvRecord != null) {
+            int idEjercicioReal = listaEjercicios.get(positionEjercicio).ejercicio.getId();
+
+            // Cogemos la lista de todas las series de la sesión anterior
+            List<String> recordsEjercicio = ultimosRecords.get(idEjercicioReal);
+
+            // numeroSerie empieza en 1, 2, 3... pero las listas empiezan en 0, 1, 2...
+            int indiceLista = numeroSerie - 1;
+
+            // Comprobamos si hay un registro para este número de serie exacto
+            if (recordsEjercicio != null && indiceLista < recordsEjercicio.size()) {
+                tvRecord.setText(recordsEjercicio.get(indiceLista));
+                tvRecord.setVisibility(View.VISIBLE);
+            } else {
+                // Si es la primera vez que hace el ejercicio, o si la semana pasada hizo 3 series y hoy ha añadido una 4 serie nueva.
+                tvRecord.setText("-");
+            }
+        }
+
         tvRepsInput.setHint(String.valueOf(repeticionesObjetivo));
 
         EditText etWeightInput = filaView.findViewById(R.id.etWeightInput);
