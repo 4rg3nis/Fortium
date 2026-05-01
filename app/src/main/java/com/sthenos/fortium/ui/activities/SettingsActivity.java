@@ -103,13 +103,13 @@ public class SettingsActivity extends AppCompatActivity {
         // Lanzador para abrir un archivo JSON y restaurar la base de datos (Importar)
         importLauncher = registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
             if (uri != null) {
-                Toast.makeText(this, "Importando datos, por favor espera...", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Importando datos", Toast.LENGTH_LONG).show();
 
                 JsonImporter.ejecutarImportacionCompleta(this, uri, new JsonImporter.ImportCallback() {
                     @Override
                     public void onSuccess() {
                         runOnUiThread(() -> {
-                            Toast.makeText(getApplicationContext(), "¡Datos restaurados con éxito!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "Datos restaurados", Toast.LENGTH_LONG).show();
 
                             // Reiniciamos la app para aplicar cambios
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
