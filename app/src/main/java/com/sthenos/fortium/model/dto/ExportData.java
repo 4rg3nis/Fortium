@@ -25,4 +25,6 @@ public class ExportData {
         this.sesiones = sesiones;
         this.series = series;
     }
+
+    public ExportData() {}
 }

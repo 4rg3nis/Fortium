@@ -1,5 +1,6 @@
 package com.sthenos.fortium.ui.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -16,11 +17,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.work.Constraints;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.textfield.TextInputEditText;
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.data.local.FortiumDatabase;
@@ -32,17 +38,16 @@ import com.sthenos.fortium.model.entities.Sesion;
 import com.sthenos.fortium.model.entities.Usuario;
 import com.sthenos.fortium.model.enums.Genero;
 import com.sthenos.fortium.ui.viewmodels.UsuarioViewModel;
+import com.sthenos.fortium.utils.AutoBackupWorker;
 import com.sthenos.fortium.utils.Converters;
 import com.sthenos.fortium.utils.JsonExporter;
 import com.sthenos.fortium.utils.JsonImporter;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -54,40 +59,14 @@ public class SettingsActivity extends AppCompatActivity {
     private UsuarioViewModel usuarioViewModel;
     private Usuario usuarioActual;
 
+    private MaterialSwitch switchAutoBackup;
+    private ActivityResultLauncher<Intent> exploradorArchivosLauncher;
+
     // Lanzador para guardar el archivo (Exportar)
-    private final ActivityResultLauncher<String> exportLauncher =
-            registerForActivityResult(new ActivityResultContracts.CreateDocument("application/json"), uri -> {
-                if (uri != null) {
-                    ejecutarExportacionBackup(uri);
-                }
-            });
+    private ActivityResultLauncher<String> exportLauncher;
 
     // Lanzador para abrir un archivo (Importar)
-    private final ActivityResultLauncher<String[]> importLauncher = registerForActivityResult(new androidx.activity.result.contract.ActivityResultContracts.OpenDocument(), uri -> {
-        if (uri != null) {
-            Toast.makeText(this, "Importando datos, por favor espera...", Toast.LENGTH_LONG).show();
-
-            JsonImporter.ejecutarImportacionCompleta(this, uri, new JsonImporter.ImportCallback() {
-                @Override
-                public void onSuccess() {
-                    runOnUiThread(() -> {
-                        Toast.makeText(getApplicationContext(), "¡Datos restaurados con éxito!", Toast.LENGTH_LONG).show();
-
-                        // Reiniciamos la app para aplicar cambios
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        finish();
-                    });
-                }
-
-                @Override
-                public void onError(String mensaje) {
-                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), mensaje, Toast.LENGTH_LONG).show());
-                }
-            });
-        }
-    });
+    private ActivityResultLauncher<String[]> importLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,8 +82,120 @@ public class SettingsActivity extends AppCompatActivity {
         initComponents();
         setupDropdown();
         setListeners();
-
         cargarDatosUsuario();
+        setupBackups();
+    }
+
+    /**
+     * Configura la lógica de respaldos: exportación manual, importación
+     * y programación de copias automáticas semanales.
+     */
+    private void setupBackups() {
+        SharedPreferences prefs = getSharedPreferences("FortiumApp", MODE_PRIVATE);
+
+        // Lanzador para crear un nuevo archivo JSON (Exportar)
+        exportLauncher = registerForActivityResult(new ActivityResultContracts.CreateDocument("application/json"), uri -> {
+            if (uri != null) {
+                ejecutarExportacionBackup(uri);
+            }
+        });
+
+        // Lanzador para abrir un archivo JSON y restaurar la base de datos (Importar)
+        importLauncher = registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
+            if (uri != null) {
+                Toast.makeText(this, "Importando datos, por favor espera...", Toast.LENGTH_LONG).show();
+
+                JsonImporter.ejecutarImportacionCompleta(this, uri, new JsonImporter.ImportCallback() {
+                    @Override
+                    public void onSuccess() {
+                        runOnUiThread(() -> {
+                            Toast.makeText(getApplicationContext(), "¡Datos restaurados con éxito!", Toast.LENGTH_LONG).show();
+
+                            // Reiniciamos la app para aplicar cambios
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish();
+                        });
+                    }
+
+                    @Override
+                    public void onError(String mensaje) {
+                        runOnUiThread(() -> Toast.makeText(getApplicationContext(), mensaje, Toast.LENGTH_LONG).show());
+                    }
+                });
+            }
+        });
+
+        switchAutoBackup.setChecked(prefs.getBoolean("autoBackupEnabled", false));
+
+        // Lógica del interruptor de Backup Automático
+        switchAutoBackup.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                // Si es la primera vez, pedimos al usuario elegir carpeta
+                if (!prefs.contains("backupFolderUri")) {
+                    // Abre el selector del sistema para que el usuario elija la carpeta de destino del backup
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                    exploradorArchivosLauncher.launch(intent);
+                } else {
+                    // Si ya tenía carpeta de antes, solo reactivamos el trabajo
+                    prefs.edit().putBoolean("autoBackupEnabled", true).apply();
+                    programarTrabajadorBackup();
+                    Toast.makeText(this, "Copias reactivadas", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                // Si lo apaga, cancelamos
+                WorkManager.getInstance(this).cancelUniqueWork("FortiumWeeklyBackup");
+                prefs.edit().putBoolean("autoBackupEnabled", false).apply();
+                Toast.makeText(this, "Copias desactivadas", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Manejador del explorador para obtener permisos persistentes sobre una carpeta
+        exploradorArchivosLauncher = registerForActivityResult( new ActivityResultContracts.StartActivityForResult(), result -> {
+                    // Si el usuario selecciona una carpeta, guardamos su URI
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        Uri uriCarpeta = result.getData().getData();
+                        if (uriCarpeta != null) {
+                            // Solicita permiso permanente de lectura/escritura en la carpeta elegida
+                            getContentResolver().takePersistableUriPermission(uriCarpeta,
+                                    Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                            // Guardamos la URI en nuestros ajustes
+                            prefs.edit()
+                                    .putString("backupFolderUri", uriCarpeta.toString())
+                                    .putBoolean("autoBackupEnabled", true)
+                                    .apply();
+
+                            // Programamos el trabajo de fondo
+                            programarTrabajadorBackup();
+                            Toast.makeText(this, "Copias semanales activadas", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        // Si el usuario cancela y no elige carpeta, apagamos el interruptor
+                        switchAutoBackup.setChecked(false);
+                    }
+                }
+        );
+    }
+
+    /**
+     * Registra una tarea programada en WorkManager para ejecutarse
+     * cada 7 días, siempre que haya batería suficiente.
+     */
+    private void programarTrabajadorBackup() {
+        PeriodicWorkRequest backupRequest = new PeriodicWorkRequest.Builder(
+                AutoBackupWorker.class, 7, TimeUnit.DAYS)
+                .setConstraints(new Constraints.Builder()
+                        .setRequiresBatteryNotLow(true)
+                        .build()) // Restricción de batería no baja
+                .build();
+
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "FortiumWeeklyBackup", // Nombre
+                ExistingPeriodicWorkPolicy.KEEP, // KEEP para no resetear el ciclo de 7 días cada vez
+                backupRequest // La tarea programada que queremos ejecutar en segundo plano
+        );
     }
 
     /**
@@ -223,6 +314,7 @@ public class SettingsActivity extends AppCompatActivity {
         btnSaveProfile = findViewById(R.id.btnSaveProfile);
         btnExport = findViewById(R.id.btnExportJson);
         btnImport = findViewById(R.id.btnImportJson);
+        switchAutoBackup = findViewById(R.id.switchAutoBackup);
 
         usuarioViewModel = new ViewModelProvider(this).get(UsuarioViewModel.class);
     }
