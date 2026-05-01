@@ -130,4 +130,6 @@
     <string name="detallesSesion_tv_series">SERIES TOTALES</string>
     <string name="detallesSesion_tv_notas">Notas del entrenamiento</string>
     <string name="detallesSesion_tv_ejercicios">Ejercicios Realizados</string>
+    <string name="activitySettings_tv_copia">Copia de seguridad semanal</string>
+    <string name="activitySettings_tv_copia2">Realizar backup automático cada 7 días</string>
 </resources>

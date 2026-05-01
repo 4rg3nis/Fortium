@@ -46,4 +46,6 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:5.0.7")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation("com.google.code.gson:gson:2.14.0")
+    implementation("androidx.work:work-runtime:2.11.2")
+    implementation("androidx.documentfile:documentfile:1.1.0")
 }
