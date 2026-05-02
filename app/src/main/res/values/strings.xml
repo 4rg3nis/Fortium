@@ -22,7 +22,7 @@
     <string name="crearPerfil_nombre_campo_peso">Peso actual</string>
     <string name="crearPerfil_nombre_toggle_kg">KG</string>
     <string name="crearPerfil_nombre_toggle_lb">LB</string>
-    <string name="crearPerfil_hint_campo_peso">E.g. 170</string>
+    <string name="crearPerfil_hint_campo_peso">E.g. 70</string>
     <string name="crearPerfil_nombre_campo_altura">Altura</string>
     <string name="crearPerfil_hint_campo_altura">E.g. 180</string>
     <string name="crearPerfil_boton_guardar_continuar">Guardar y Continuar</string>

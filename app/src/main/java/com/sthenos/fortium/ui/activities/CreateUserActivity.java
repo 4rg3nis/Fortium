@@ -22,6 +22,7 @@ import com.sthenos.fortium.model.entities.Usuario;
 import com.sthenos.fortium.model.enums.Genero;
 import com.sthenos.fortium.model.enums.UnidadMedida;
 import com.sthenos.fortium.ui.viewmodels.UsuarioViewModel;
+import com.sthenos.fortium.utils.Converters;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -126,14 +127,15 @@ public class CreateUserActivity extends AppCompatActivity {
         String fecha = etDate.getText().toString().trim();
         double peso = Double.parseDouble(etWeight.getText().toString());
         double altura = Double.parseDouble(etHeight.getText().toString());
-        Genero genero = Genero.Otros;
+        Genero genero = Converters.toGenero("Otros");
         int selectedGenderId = toggleGender.getCheckedButtonId();
-        if (selectedGenderId == R.id.btnMale) genero = Genero.Masculino;
-        else if (selectedGenderId == R.id.btnFemale) genero = Genero.Femenino;
 
-        UnidadMedida medida = UnidadMedida.LB;
+        if (selectedGenderId == R.id.btnMale) genero = Converters.toGenero("Masculino");
+        else if (selectedGenderId == R.id.btnFemale) genero = Converters.toGenero("Femenino");
+
+        UnidadMedida medida = Converters.toUnitMeasure("KG");
         int selectedWeightId = toggleWeight.getCheckedButtonId();
-        if (selectedWeightId == R.id.btn_kg) medida = UnidadMedida.KG;
+        if (selectedWeightId == R.id.btn_lb) medida = Converters.toUnitMeasure("LB");
 
         usuarioViewModel.guardarUsuario(new Usuario(nombre, apellidos, fecha, peso, altura, genero, medida));
         guardarDatosSharedPref(nombre);
