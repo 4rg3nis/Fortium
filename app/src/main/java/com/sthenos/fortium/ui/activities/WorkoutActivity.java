@@ -1,8 +1,14 @@
 package com.sthenos.fortium.ui.activities;
 
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.SystemClock;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.util.Log;
+import android.view.View;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -19,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.sthenos.fortium.R;
@@ -45,23 +52,21 @@ import java.util.Locale;
 public class WorkoutActivity extends AppCompatActivity {
 
     private Chronometer chronometer;
-    private ImageButton btnDiscard;
+    private ImageButton btnDiscard, btnTimerClose, btnTimerPlus, btnTimerMinus;
     private MaterialButton btnFinish, btnAddExercise;
     private RecyclerView rvActiveExercises;
-    private TextView tvLiveSeries, tvLiveVolumen;
+    private TextView tvLiveSeries, tvLiveVolumen, tvRestTimerPill;
     private TextInputEditText etWorkoutNotes;
-
     private RutinaViewModel rutinaViewModel;
     private EntrenamientoViewModel entrenamientoViewModel;
     private EjercicioViewModel ejercicioViewModel;
     private ActiveWorkoutAdapter adapter;
-
     private int rutinaId = -1;
-    private CountDownTimer countDownTimer;
     private BottomSheetDialog restDialog;
     private List<Ejercicio> ejerciciosDisponibles;
     private List<Serie> seriesCompletadasHoy;
     private String fechaInicioString;
+    private MaterialCardView cardRestTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +83,43 @@ public class WorkoutActivity extends AppCompatActivity {
         setupChronometer();
         setupListeners();
         setupViewModel();
+        setupTimeExercise();
+    }
+
+    /**
+     * Configuramos el temporizador del ejercicio. Cuando esta activi se hace visible, cuando no, se desactiva.
+     * Una vez finalizado el temporizador, se le manda el dispositivo que vibre.
+     */
+    private void setupTimeExercise() {
+        entrenamientoViewModel.getTimerActivo().observe(this, activo -> {
+            cardRestTimer.setVisibility(activo ? View.VISIBLE : View.GONE);
+        });
+
+        entrenamientoViewModel.getTiempoRestante().observe(this, segundos -> {
+            if (segundos != null) {
+                long min = segundos / 60;
+                long seg = segundos % 60;
+                tvRestTimerPill.setText(String.format(Locale.getDefault(), "%02d:%02d", min, seg));
+            }
+        });
+
+        entrenamientoViewModel.getTimerFinalizado().observe(this, finalizado -> {
+            if (finalizado) {
+                hacerVibrar();
+                entrenamientoViewModel.resetTimerFinalizado();
+            }
+        });
+    }
+
+    /**
+     * Hacemos vibrar el dispositivo. Ponemos un log para ver que se hace.
+     */
+    private void hacerVibrar() {
+        Log.d("Vibrar", "Vibrar");
+        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        if (vibrator != null && vibrator.hasVibrator()) {
+            vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+        }
     }
 
     private void setupViewModel() {
@@ -188,6 +230,10 @@ public class WorkoutActivity extends AppCompatActivity {
 
             bottomSheet.show(getSupportFragmentManager(), "ExerciseSheet");
         });
+
+        btnTimerClose.setOnClickListener(v -> entrenamientoViewModel.cancelarTemporizador());
+        btnTimerPlus.setOnClickListener(v -> entrenamientoViewModel.ajustarTemporizador(15));
+        btnTimerMinus.setOnClickListener(v -> entrenamientoViewModel.ajustarTemporizador(-15));
     }
 
     private void mostrarDialogoDescartar() {
@@ -220,6 +266,13 @@ public class WorkoutActivity extends AppCompatActivity {
         tvLiveSeries = findViewById(R.id.tvLiveSeries);
         tvLiveVolumen = findViewById(R.id.tvLiveVolumen);
         etWorkoutNotes = findViewById(R.id.etWorkoutNotes);
+        cardRestTimer = findViewById(R.id.cardRestTimer);
+        tvRestTimerPill = findViewById(R.id.tvRestTimerPill);
+
+        btnTimerClose = findViewById(R.id.btnTimerClose);
+        btnTimerPlus = findViewById(R.id.btnTimerPlus);
+        btnTimerMinus = findViewById(R.id.btnTimerMinus);
+
 
         initAdapter();
 
@@ -237,13 +290,7 @@ public class WorkoutActivity extends AppCompatActivity {
     private void initAdapter() {
         adapter = new ActiveWorkoutAdapter(this, new ActiveWorkoutAdapter.OnSetActionListener() {
             @Override
-            public void onSetCompleted(int tiempoDescansoSegundos) {
-                iniciarTemporizadorDescanso(tiempoDescansoSegundos);
-            }
-
-            @Override
             public void onSetCompleted(int tiempoDescanso, int ejercicioId, float peso, int reps, float rpe) {
-                iniciarTemporizadorDescanso(tiempoDescanso);
                 int ordenActual = seriesCompletadasHoy.size() + 1;
 
                 Serie nuevaSerie = new Serie(
@@ -260,6 +307,8 @@ public class WorkoutActivity extends AppCompatActivity {
                 seriesCompletadasHoy.add(nuevaSerie);
 
                 actualizarStatsEnVivo();
+
+                entrenamientoViewModel.iniciarTemporizador(tiempoDescanso);
             }
 
             @Override
@@ -280,66 +329,5 @@ public class WorkoutActivity extends AppCompatActivity {
 
         tvLiveSeries.setText(String.valueOf(seriesCompletadasHoy.size()));
         tvLiveVolumen.setText(String.format(Locale.getDefault(), "%.1f kg", volumenTotal));
-    }
-
-    private void iniciarTemporizadorDescanso(int tiempoDescansoSegundos) {
-        if (tiempoDescansoSegundos <= 0) return;
-        if (countDownTimer != null) countDownTimer.cancel();
-
-        if (restDialog == null) {
-            restDialog = new BottomSheetDialog(this);
-            restDialog.setContentView(R.layout.bottom_sheet_rest_timer);
-        }
-
-        TextView tvTime = restDialog.findViewById(R.id.tvRestTimerBig);
-        MaterialButton btnSkip = restDialog.findViewById(R.id.btnSkipRest);
-        MaterialButton btnAdd = restDialog.findViewById(R.id.btnAdd15s);
-        MaterialButton btnLess = restDialog.findViewById(R.id.btnLess15s);
-
-        btnSkip.setOnClickListener(v -> {
-            if (countDownTimer != null) countDownTimer.cancel();
-            restDialog.dismiss();
-        });
-
-        btnAdd.setOnClickListener(v -> {
-            if (countDownTimer != null) countDownTimer.cancel();
-            restDialog.dismiss();
-            iniciarTemporizadorDescanso(tiempoDescansoSegundos + 15);
-        });
-
-        btnLess.setOnClickListener(v -> {
-            if (countDownTimer != null) countDownTimer.cancel();
-            restDialog.dismiss();
-            iniciarTemporizadorDescanso(tiempoDescansoSegundos - 15);
-        });
-
-        restDialog.show();
-
-        countDownTimer = new CountDownTimer(tiempoDescansoSegundos * 1000L, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                long segundosRestantes = millisUntilFinished / 1000;
-                long minutos = segundosRestantes / 60;
-                long segundos = segundosRestantes % 60;
-
-                String tiempoFormateado = String.format(Locale.getDefault(), "%02d:%02d", minutos, segundos);
-                if (tvTime != null) {
-                    tvTime.setText(tiempoFormateado);
-                }
-            }
-
-            @Override
-            public void onFinish() {
-                if (restDialog != null && restDialog.isShowing()) {
-                    restDialog.dismiss();
-                }
-            }
-        }.start();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (countDownTimer != null) countDownTimer.cancel();
     }
 }
