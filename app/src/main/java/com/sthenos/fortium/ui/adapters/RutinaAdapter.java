@@ -13,13 +13,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.model.entities.Rutina;
+import com.sthenos.fortium.model.queries.RutinaResumen;
 import com.sthenos.fortium.ui.activities.RutinaDetalleActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class RutinaAdapter extends RecyclerView.Adapter<RutinaAdapter.RutinaViewHolder> {
-    private List<Rutina> rutinasList = new ArrayList<>();
+    private List<RutinaResumen> rutinasList = new ArrayList<>();
 
     @NonNull
     @Override
@@ -30,24 +34,51 @@ public class RutinaAdapter extends RecyclerView.Adapter<RutinaAdapter.RutinaView
 
     @Override
     public void onBindViewHolder(@NonNull RutinaAdapter.RutinaViewHolder holder, int position) {
-        Rutina rutinaActual = rutinasList.get(position);
+        RutinaResumen resumen = rutinasList.get(position);
 
-        holder.tvRoutineTitle.setText(rutinaActual.getNombre());
+        holder.tvRoutineTitle.setText(resumen.rutina.getNombre());
 
-        holder.tvRoutineSubtitle.setText(rutinaActual.getDescripcion());
+        holder.tvRoutineSubtitle.setText(resumen.totalEjercicios + " Ejercicios - " +
+                (resumen.musculosInvolucrados != null ? resumen.musculosInvolucrados.replace(",", ", ") : "Sin Musculos"));
 
-        holder.tvRoutineDate.setText("Creada: " + rutinaActual.getFechaCreacion());
+        if (resumen.ultimaVez != null) {
+            holder.tvRoutineDate.setText("Última vez: " + formatearTiempoTranscurrido(resumen.ultimaVez));
+        } else {
+            holder.tvRoutineDate.setText("Nunca entrenado");
+        }
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), RutinaDetalleActivity.class);
-            intent.putExtra("rutinaId", rutinaActual.getId());
+            intent.putExtra("rutinaId", resumen.rutina.getId());
             v.getContext().startActivity(intent);
         });
 
         holder.btnRoutineOptions.setOnClickListener(v -> {
             // Por ahora ponemos un Toast, en el futuro aquí abriremos un PopupMenu
-            Toast.makeText(v.getContext(), "Opciones de: " + rutinaActual.getNombre(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(v.getContext(), "Opciones de: " + resumen.rutina.getNombre(), Toast.LENGTH_SHORT).show();
         });
+    }
+
+    /**
+     * Convierte una fecha SQL (yyyy-MM-dd HH:mm:ss) en tiempo relativo.
+     * @param fechaSql Fecha obtenida de la base de datos.
+     * @return "Hoy", "Ayer", "Hace n días" o la fecha original si hay un error.
+     */
+    private String formatearTiempoTranscurrido(String fechaSql) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            Date fecha = sdf.parse(fechaSql);
+            if (fecha == null) return fechaSql;
+
+            long diferenciaMillis = System.currentTimeMillis() - fecha.getTime();
+            long dias = diferenciaMillis / (1000 * 60 * 60 * 24);
+
+            if (dias == 0) return "Hoy";
+            if (dias == 1) return "Ayer";
+            return "Hace " + dias + " días";
+        } catch (Exception e) {
+            return fechaSql; // Si falla el parseo, devolvemos la fecha en bruto
+        }
     }
 
     @Override
@@ -55,7 +86,7 @@ public class RutinaAdapter extends RecyclerView.Adapter<RutinaAdapter.RutinaView
         return rutinasList.size();
     }
 
-    public void setRutinas(List<Rutina> rutinas) {
+    public void setRutinas(List<RutinaResumen> rutinas) {
         this.rutinasList = rutinas;
         notifyDataSetChanged();
     }
