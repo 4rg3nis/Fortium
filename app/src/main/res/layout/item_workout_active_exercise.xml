@@ -49,6 +49,22 @@
                 tools:text="1:30" />
         </LinearLayout>
 
+        <EditText
+            android:id="@+id/etExerciseNotes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/bg_notes_quote"
+            android:hint="@string/workoutActiveExcersice_tv_notas"
+            android:textColorHint="@color/white"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:padding="12dp"
+            android:gravity="top"
+            android:minLines="1"
+            android:inputType="textMultiLine|textCapSentences" />
 
         <LinearLayout
             android:layout_width="match_parent"

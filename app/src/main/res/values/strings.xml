@@ -132,4 +132,5 @@
     <string name="detallesSesion_tv_ejercicios">Ejercicios Realizados</string>
     <string name="activitySettings_tv_copia">Copia de seguridad semanal</string>
     <string name="activitySettings_tv_copia2">Realizar backup automático cada 7 días</string>
+    <string name="workoutActiveExcersice_tv_notas">Añadir notas del ejercicio...</string>
 </resources>

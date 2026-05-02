@@ -84,6 +84,29 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
             agregarFilaSerie(holder.layoutSetsContainer, nuevaSerieNum, 0, position);
         });
 
+
+        holder.etExerciseNotes.setOnFocusChangeListener(null);
+
+        // Cargamos la nota que viene de la base de datos
+        String notaActual = item.rutinaEjercicio.getNotas();
+        holder.etExerciseNotes.setText(notaActual != null ? notaActual : "");
+
+        holder.etExerciseNotes.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                String textoNuevo = holder.etExerciseNotes.getText().toString().trim();
+
+                String textoAntiguo = item.rutinaEjercicio.getNotas() != null ? item.rutinaEjercicio.getNotas() : "";
+
+                // Si el texto ha cambiado, lo guardamos en la base de datos
+                if (!textoNuevo.equals(textoAntiguo)) {
+                    item.rutinaEjercicio.setNotas(textoNuevo);
+
+                    if (listener != null) {
+                        listener.onNotaEjercicioGuardada(item.rutinaEjercicio.getId(), textoNuevo);
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -289,6 +312,8 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
      */
     class ExerciseViewHolder extends RecyclerView.ViewHolder {
         TextView tvExerciseName, btnAddSet, btnRestTimerConfig;
+
+        EditText etExerciseNotes;
         LinearLayout layoutSetsContainer;
 
         ExerciseViewHolder(View itemView) {
@@ -297,6 +322,7 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
             layoutSetsContainer = itemView.findViewById(R.id.layoutSetsContainer);
             btnAddSet = itemView.findViewById(R.id.btnAddSet);
             btnRestTimerConfig = itemView.findViewById(R.id.btnRestTimerConfig);
+            etExerciseNotes = itemView.findViewById(R.id.etExerciseNotes);
         }
     }
 
@@ -307,5 +333,7 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
 
         // Necesitamos saber si el usuario se arrepiente y desmarca la serie
         void onSetUnchecked(int ejercicioId, float peso, int reps);
+
+        void onNotaEjercicioGuardada(int rutinaEjercicioId, String nuevaNota);
     }
 }

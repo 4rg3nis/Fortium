@@ -30,6 +30,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.model.entities.Ejercicio;
+import com.sthenos.fortium.model.entities.RutinaEjercicio;
 import com.sthenos.fortium.model.queries.EjercicioConDetalles;
 import com.sthenos.fortium.model.entities.Serie;
 import com.sthenos.fortium.model.entities.Sesion;
@@ -42,6 +43,7 @@ import com.sthenos.fortium.ui.viewmodels.RutinaViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -62,7 +64,6 @@ public class WorkoutActivity extends AppCompatActivity {
     private EjercicioViewModel ejercicioViewModel;
     private ActiveWorkoutAdapter adapter;
     private int rutinaId = -1;
-    private BottomSheetDialog restDialog;
     private List<Ejercicio> ejerciciosDisponibles;
     private List<Serie> seriesCompletadasHoy;
     private String fechaInicioString;
@@ -218,7 +219,7 @@ public class WorkoutActivity extends AppCompatActivity {
 
                 int nuevoOrden = adapter.getItemCount() + 1;
 
-                ejercicioExtra.rutinaEjercicio = new com.sthenos.fortium.model.entities.RutinaEjercicio(
+                ejercicioExtra.rutinaEjercicio = new RutinaEjercicio(
                         rutinaId,
                         ejercicioSeleccionado.getId(),
                         1,
@@ -256,7 +257,7 @@ public class WorkoutActivity extends AppCompatActivity {
         chronometer.start();
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        fechaInicioString = sdf.format(new java.util.Date());
+        fechaInicioString = sdf.format(new Date());
     }
 
     private void initComponents() {
@@ -320,6 +321,11 @@ public class WorkoutActivity extends AppCompatActivity {
                         s.getEjercicioId() == ejercicioId && s.getPeso() == peso && s.getRepeticiones() == reps);
 
                 actualizarStatsEnVivo();
+            }
+
+            @Override
+            public void onNotaEjercicioGuardada(int rutinaEjercicioId, String nuevaNota) {
+                rutinaViewModel.actualizarNotaDeEjercicio(rutinaEjercicioId, nuevaNota);
             }
         });
     }

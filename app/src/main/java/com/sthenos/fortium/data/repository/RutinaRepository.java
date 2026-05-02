@@ -135,6 +135,12 @@ public class RutinaRepository {
         return rutinasDao.insertRutinaExport(rutina);
     }
 
+    public void actualizarNotaDeEjercicio(int rutinaEjercicioId, String nuevaNota) {
+        executorService.execute(() -> {
+            rutinasEjerciciosDao.actualizarNotaDeEjercicio(rutinaEjercicioId, nuevaNota);
+        });
+    }
+
     /**
      * Interfaz de callback para notificar la creación exitosa de una rutina.
      */
