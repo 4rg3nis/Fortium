@@ -251,14 +251,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
-                        android:text="@string/crearPerfil_nombre_toggle_kg" />
+                        android:text="@string/crearPerfil_nombre_toggle_lb" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_lb"
                         style="@style/Widget.Material3.Button.OutlinedButton.Icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/crearPerfil_nombre_toggle_lb"
+                        android:text="@string/crearPerfil_nombre_toggle_kg"
                         android:textColor="@color/white"/>
 
                 </com.google.android.material.button.MaterialButtonToggleGroup>
