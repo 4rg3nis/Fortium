@@ -21,6 +21,9 @@ public interface RutinasDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     long insert(Rutina rutina);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insertRutinaExport(Rutina rutina);
+
     // Permite insertar una lista completa de rutinas (útil para la carga inicial).
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<Rutina> rutina);
@@ -62,5 +65,9 @@ public interface RutinasDao {
             "(SELECT MAX(fechaInicio) FROM Sesiones WHERE rutinaId = r.id) AS ultimaVez " +
             "FROM Rutinas r")
     LiveData<List<RutinaResumen>> getRutinasConResumen();
+
+    // Elimina una rutina específica por su ID.
+    @Query("DELETE FROM Rutinas WHERE id = :id")
+    void delete(int id);
 
 }

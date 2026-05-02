@@ -39,4 +39,25 @@ public class JsonExporter {
         }
         return false;
     }
+
+    /**
+     * Exporta un String JSON directamente a un archivo.
+     * @param context Contexto de la aplicación.
+     * @param fileUri Ruta del archivo donde se exportarán los datos.
+     * @param jsonString Texto JSON a exportar.
+     * @return True si la exportación fue exitosa, false en caso contrario.
+     */
+    public static boolean exportarStringAJson(Context context, Uri fileUri, String jsonString) {
+        try {
+            OutputStream outputStream = context.getContentResolver().openOutputStream(fileUri);
+            if (outputStream != null) {
+                outputStream.write(jsonString.getBytes(StandardCharsets.UTF_8));
+                outputStream.close();
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

@@ -96,4 +96,31 @@ public class JsonImporter {
             }
         }).start();
     }
+
+    /**
+     * Lee cualquier archivo de texto  desde una Uri y lo devuelve como String.
+     * @param context Contexto de la aplicación.
+     * @param uri Ruta del archivo.
+     * @return El contenido del archivo en texto, o null si falla.
+     */
+    public static String leerArchivoComoString(Context context, Uri uri) {
+        try {
+            InputStream inputStream = context.getContentResolver().openInputStream(uri);
+            if (inputStream == null) return null;
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+
+            inputStream.close();
+            return stringBuilder.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
