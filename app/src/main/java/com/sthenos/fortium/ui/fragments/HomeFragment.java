@@ -22,6 +22,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.model.entities.Rutina;
 import com.sthenos.fortium.model.queries.HistorialSesion;
+import com.sthenos.fortium.model.queries.RutinaResumen;
 import com.sthenos.fortium.ui.activities.DetallesSesionActivity;
 import com.sthenos.fortium.ui.activities.HistorialActivity;
 import com.sthenos.fortium.ui.activities.SettingsActivity;
@@ -176,7 +177,32 @@ public class HomeFragment extends Fragment {
         rutinaViewModel = new ViewModelProvider(this).get(RutinaViewModel.class);
         usuarioViewModel = new ViewModelProvider(this).get(UsuarioViewModel.class);
         entrenamientoViewModel = new ViewModelProvider(this).get(EntrenamientoViewModel.class);
-        adapterRutina = new RutinaAdapter();
+
+        setUpAdpaters();
+    }
+
+    /**
+     * Configura el adaptador para el RecyclerView de rutinas.
+     */
+    private void setUpAdpaters() {
+        adapterRutina = new RutinaAdapter(new RutinaAdapter.OnRutinaOpcionesListener() {
+            @Override
+            public void onExportar(RutinaResumen rutina) {
+                Toast.makeText(getContext(), "Próximamente: Exportar", Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onEliminar(RutinaResumen rutina) {
+                new MaterialAlertDialogBuilder(getContext())
+                        .setTitle("¿Eliminar Rutina?")
+                        .setMessage("¿Estás seguro de que quieres borrar '" + rutina.rutina.getNombre() + "'? Tu historial de entrenamientos se mantendrá.")
+                        .setPositiveButton("Eliminar", (dialog, which) -> {
+                            rutinaViewModel.deleteRutina(rutina.rutina.getId());
+                            Toast.makeText(getContext(), "Rutina eliminada", Toast.LENGTH_SHORT).show();
+                        })
+                        .setNegativeButton("Cancelar", null)
+                        .show();
+            }
+        });
     }
 
 }

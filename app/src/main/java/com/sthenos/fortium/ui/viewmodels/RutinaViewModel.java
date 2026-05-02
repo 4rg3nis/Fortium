@@ -56,4 +56,8 @@ public class RutinaViewModel extends AndroidViewModel {
         return repository.getRutinasConResumen();
     }
 
+    public void deleteRutina(int rutinaId) {
+        repository.deleteRutina(rutinaId);
+    }
+
 }

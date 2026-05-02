@@ -63,4 +63,8 @@ public interface RutinasDao {
             "FROM Rutinas r")
     LiveData<List<RutinaResumen>> getRutinasConResumen();
 
+    // Elimina una rutina específica por su ID.
+    @Query("DELETE FROM Rutinas WHERE id = :id")
+    void delete(int id);
+
 }

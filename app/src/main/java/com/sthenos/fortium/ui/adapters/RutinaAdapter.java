@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sthenos.fortium.R;
@@ -24,6 +25,12 @@ import java.util.Locale;
 
 public class RutinaAdapter extends RecyclerView.Adapter<RutinaAdapter.RutinaViewHolder> {
     private List<RutinaResumen> rutinasList = new ArrayList<>();
+
+    private OnRutinaOpcionesListener opcionesListener;
+
+    public RutinaAdapter(OnRutinaOpcionesListener opcionesListener) {
+        this.opcionesListener = opcionesListener;
+    }
 
     @NonNull
     @Override
@@ -54,9 +61,39 @@ public class RutinaAdapter extends RecyclerView.Adapter<RutinaAdapter.RutinaView
         });
 
         holder.btnRoutineOptions.setOnClickListener(v -> {
-            // Por ahora ponemos un Toast, en el futuro aquí abriremos un PopupMenu
-            Toast.makeText(v.getContext(), "Opciones de: " + resumen.rutina.getNombre(), Toast.LENGTH_SHORT).show();
+            showPopMenu(holder, v, resumen);
         });
+    }
+
+    /**
+     * Muestra el menú de opciones de rutina.
+     * Las opciones son:
+     * - Eliminar Rutina
+     * - Exportar Rutina
+     * @param holder ViewHolder asociado a la rutina.
+     * @param v La vista del botón de opciones.
+     * @param resumen Datos de la rutina.
+     */
+    private void showPopMenu(@NonNull RutinaViewHolder holder, View v, RutinaResumen resumen) {
+        PopupMenu popup = new PopupMenu(v.getContext(), holder.btnRoutineOptions);
+        popup.inflate(R.menu.menu_rutina_options);
+
+        // Escuchamos qué opción ha tocado el usuario
+        popup.setOnMenuItemClickListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.action_exportar) {
+                if (opcionesListener != null) opcionesListener.onExportar(resumen);
+                return true;
+            } else if (itemId == R.id.action_eliminar) {
+                if (opcionesListener != null) opcionesListener.onEliminar(resumen);
+                return true;
+            }
+            return false;
+        });
+
+        // Mostramos el menú
+        popup.show();
     }
 
     /**
@@ -104,5 +141,13 @@ public class RutinaAdapter extends RecyclerView.Adapter<RutinaAdapter.RutinaView
             tvRoutineDate = itemView.findViewById(R.id.tvRoutineDate);
             btnRoutineOptions = itemView.findViewById(R.id.btnRoutineOptions);
         }
+    }
+
+    /**
+     * Interfaz para manejar las opciones de rutina.
+     */
+    public interface OnRutinaOpcionesListener {
+        void onExportar(RutinaResumen rutina);
+        void onEliminar(RutinaResumen rutina);
     }
 }

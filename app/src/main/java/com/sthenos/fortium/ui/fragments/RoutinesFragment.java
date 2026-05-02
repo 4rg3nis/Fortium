@@ -27,6 +27,7 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.google.android.material.textfield.TextInputEditText;
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.model.entities.Rutina;
+import com.sthenos.fortium.model.queries.RutinaResumen;
 import com.sthenos.fortium.ui.activities.RutinaDetalleActivity;
 import com.sthenos.fortium.ui.adapters.RutinaAdapter;
 import com.sthenos.fortium.ui.viewmodels.RutinaViewModel;
@@ -105,7 +106,25 @@ public class RoutinesFragment extends Fragment {
 
     private void setupRecyclerView() {
         rvLibraryRoutines.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new RutinaAdapter();
+        adapter = new RutinaAdapter(new RutinaAdapter.OnRutinaOpcionesListener() {
+            @Override
+            public void onExportar(RutinaResumen rutina) {
+                Toast.makeText(getContext(), "Próximamente: Exportar", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onEliminar(RutinaResumen rutina) {
+                new MaterialAlertDialogBuilder(getContext())
+                        .setTitle("¿Eliminar Rutina?")
+                        .setMessage("¿Estás seguro de que quieres borrar '" + rutina.rutina.getNombre() + "'? Tu historial de entrenamientos se mantendrá.")
+                        .setPositiveButton("Eliminar", (dialog, which) -> {
+                            rutinaViewModel.deleteRutina(rutina.rutina.getId());
+                            Toast.makeText(getContext(), "Rutina eliminada", Toast.LENGTH_SHORT).show();
+                        })
+                        .setNegativeButton("Cancelar", null)
+                        .show();
+            }
+        });
         rvLibraryRoutines.setAdapter(adapter);
     }
 

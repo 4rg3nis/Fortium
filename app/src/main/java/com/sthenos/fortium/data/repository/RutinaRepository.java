@@ -115,6 +115,12 @@ public class RutinaRepository {
         return rutinasDao.getRutinasConResumen();
     }
 
+    public void deleteRutina(int rutinaId) {
+        executorService.execute(() -> {
+            rutinasDao.delete(rutinaId);
+        });
+    }
+
     /**
      * Interfaz de callback para notificar la creación exitosa de una rutina.
      */
