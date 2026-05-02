@@ -112,7 +112,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void setObservers() {
-        rutinaViewModel.getAllRutinas().observe(getViewLifecycleOwner(), rutinas -> {
+        rutinaViewModel.getRutinasConResumen().observe(getViewLifecycleOwner(), rutinas -> {
             if (rutinas != null && !rutinas.isEmpty()) {
 
                 // Calculamos el límite para no pasarnos del tamaño real de la lista

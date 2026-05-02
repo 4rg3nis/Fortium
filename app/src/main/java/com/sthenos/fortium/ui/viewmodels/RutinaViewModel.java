@@ -10,6 +10,7 @@ import com.sthenos.fortium.data.repository.RutinaRepository;
 import com.sthenos.fortium.model.queries.EjercicioConDetalles;
 import com.sthenos.fortium.model.entities.Rutina;
 import com.sthenos.fortium.model.entities.RutinaEjercicio;
+import com.sthenos.fortium.model.queries.RutinaResumen;
 
 import java.util.List;
 
@@ -49,6 +50,10 @@ public class RutinaViewModel extends AndroidViewModel {
 
     public void deleteEjercioFromRutina(RutinaEjercicio rutinaEjercicio){
         repository.deleteEjercioFromRutina(rutinaEjercicio);
+    }
+
+    public LiveData<List<RutinaResumen>> getRutinasConResumen() {
+        return repository.getRutinasConResumen();
     }
 
 }

@@ -77,7 +77,7 @@ public class RoutinesFragment extends Fragment {
         });
 
         // Observamos los datos de la base de datos en tiempo real
-        rutinaViewModel.getAllRutinas().observe(getViewLifecycleOwner(), rutinas -> {
+        rutinaViewModel.getRutinasConResumen().observe(getViewLifecycleOwner(), rutinas -> {
             if (rutinas == null || rutinas.isEmpty()) {
                 // Si no hay rutinas, mostramos el Empty State y ocultamos la lista
                 layoutEmptyState.setVisibility(View.VISIBLE);

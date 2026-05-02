@@ -9,6 +9,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.sthenos.fortium.model.entities.Rutina;
+import com.sthenos.fortium.model.queries.RutinaResumen;
 
 import java.util.List;
 
@@ -45,5 +46,21 @@ public interface RutinasDao {
 
     @Query("SELECT * FROM Rutinas")
     List<Rutina> getAllExport();
+
+    /**
+     * Obtiene una vista resumida de todas las rutinas.
+     * La consulta realiza tres cálculos en tiempo real:
+     * 1. Cuenta el total de ejercicios vinculados a cada rutina.
+     * 2. Concatena los nombres únicos de los grupos musculares involucrados.
+     * 3. Busca la fecha de la sesión de entrenamiento más reciente.
+     *
+     * @return LiveData con una lista de objetos {@link RutinaResumen}.
+     */
+    @Query("SELECT r.*, " +
+            "(SELECT COUNT(id) FROM RutinaEjercicios WHERE rutinaId = r.id) AS totalEjercicios, " +
+            "(SELECT GROUP_CONCAT(DISTINCT e.grupoMuscularPrincipal) FROM RutinaEjercicios re INNER JOIN Ejercicios e ON re.ejercicioId = e.id WHERE re.rutinaId = r.id) AS musculosInvolucrados, " +
+            "(SELECT MAX(fechaInicio) FROM Sesiones WHERE rutinaId = r.id) AS ultimaVez " +
+            "FROM Rutinas r")
+    LiveData<List<RutinaResumen>> getRutinasConResumen();
 
 }

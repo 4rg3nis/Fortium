@@ -13,6 +13,7 @@ import com.sthenos.fortium.data.local.dao.RutinasEjerciciosDao;
 import com.sthenos.fortium.model.queries.EjercicioConDetalles;
 import com.sthenos.fortium.model.entities.Rutina;
 import com.sthenos.fortium.model.entities.RutinaEjercicio;
+import com.sthenos.fortium.model.queries.RutinaResumen;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -108,6 +109,10 @@ public class RutinaRepository {
             rutinasEjerciciosDao.actualizarOrdenes(rutinaEjercicio.getRutinaId(), rutinaEjercicio.getOrden());
 
         });
+    }
+
+    public LiveData<List<RutinaResumen>> getRutinasConResumen() {
+        return rutinasDao.getRutinasConResumen();
     }
 
     /**
