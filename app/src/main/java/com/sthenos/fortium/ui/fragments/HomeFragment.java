@@ -148,6 +148,13 @@ public class HomeFragment extends Fragment {
                 Intent intent = new Intent(requireContext(), HistorialActivity.class);
                 startActivity(intent);
         });
+
+        tvViewAll.setOnClickListener(v -> {
+            Fragment selectedFragment = new RoutinesFragment();;
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.nav_host_fragment, selectedFragment)
+                    .commit();
+        });
     }
 
     private void setRecyclerView() {
