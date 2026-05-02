@@ -121,6 +121,10 @@ public class RutinaRepository {
         });
     }
 
+    public List<RutinaEjercicio> getEjercicioRutinaExport(int id) {
+        return rutinasEjerciciosDao.getEjercicioRutinaExport(id);
+    }
+
     /**
      * Interfaz de callback para notificar la creación exitosa de una rutina.
      */

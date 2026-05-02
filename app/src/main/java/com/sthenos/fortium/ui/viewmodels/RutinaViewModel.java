@@ -1,18 +1,23 @@
 package com.sthenos.fortium.ui.viewmodels;
 
 import android.app.Application;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.google.gson.Gson;
 import com.sthenos.fortium.data.repository.RutinaRepository;
 import com.sthenos.fortium.model.queries.EjercicioConDetalles;
 import com.sthenos.fortium.model.entities.Rutina;
 import com.sthenos.fortium.model.entities.RutinaEjercicio;
+import com.sthenos.fortium.model.queries.RutinaExportData;
 import com.sthenos.fortium.model.queries.RutinaResumen;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class RutinaViewModel extends AndroidViewModel {
     private final RutinaRepository repository;
@@ -60,4 +65,26 @@ public class RutinaViewModel extends AndroidViewModel {
         repository.deleteRutina(rutinaId);
     }
 
+    /**
+     * Genera un JSON con los datos de una rutina. Se ejecuta en un hilo separado.
+     * @param rutina La rutina a exportar.
+     * @param onJsonReady Callback que se ejecuta cuando se haya generado el JSON.
+     */
+    public void generarJsonDeRutina(Rutina rutina, Consumer<String> onJsonReady) {
+        new Thread(() -> {
+            List<RutinaEjercicio> listaEjercicios = repository.getEjercicioRutinaExport(rutina.getId());
+
+            RutinaExportData exportData = new RutinaExportData();
+            exportData.rutina = rutina;
+            exportData.ejercicios = listaEjercicios;
+
+            // Convertimos a JSON
+            String jsonFinal = new Gson().toJson(exportData);
+
+            // Volvemos al hilo principal para avisar a la pantalla
+            new Handler(Looper.getMainLooper()).post(() -> {
+                onJsonReady.accept(jsonFinal);
+            });
+        }).start();
+    }
 }

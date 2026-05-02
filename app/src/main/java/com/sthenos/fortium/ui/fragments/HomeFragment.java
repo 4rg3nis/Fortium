@@ -1,6 +1,8 @@
 package com.sthenos.fortium.ui.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +12,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -32,6 +36,9 @@ import com.sthenos.fortium.ui.adapters.RutinaAdapter;
 import com.sthenos.fortium.ui.viewmodels.EntrenamientoViewModel;
 import com.sthenos.fortium.ui.viewmodels.RutinaViewModel;
 import com.sthenos.fortium.ui.viewmodels.UsuarioViewModel;
+import com.sthenos.fortium.utils.JsonExporter;
+
+import java.io.OutputStream;
 
 public class HomeFragment extends Fragment {
 
@@ -41,10 +48,12 @@ public class HomeFragment extends Fragment {
     private MaterialButton btnEmpezarEntrenamiento;
     private UsuarioViewModel usuarioViewModel;
     private ImageButton btnSettings;
-    private int idUsuario = -1;
     private RutinaAdapter adapterRutina;
     private HistorialAdapter historialAdapter;
     private EntrenamientoViewModel entrenamientoViewModel;
+
+    private ActivityResultLauncher<Intent> exportarRutinaLauncher;
+    private String jsonAExportar = "";
 
     public HomeFragment() {}
 
@@ -126,7 +135,6 @@ public class HomeFragment extends Fragment {
         });
         usuarioViewModel.getUsuarioActual().observe(getViewLifecycleOwner(), usuario -> {
             if (usuario != null) {
-                idUsuario = usuario.getId();
                 setPeso(usuario.getPesoActual());
                 setSaludo(usuario.getNombre());
             }
@@ -186,6 +194,23 @@ public class HomeFragment extends Fragment {
         entrenamientoViewModel = new ViewModelProvider(this).get(EntrenamientoViewModel.class);
 
         setUpAdpaters();
+
+        exportarRutinaLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        Uri uri = result.getData().getData();
+                        if (uri != null && !jsonAExportar.isEmpty()) {
+                            boolean exito = JsonExporter.exportarStringAJson(requireContext(), uri, jsonAExportar);
+
+                            if (exito) {
+                               Toast.makeText(getContext(), "¡Rutina exportada con éxito!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getContext(), "Error al escribir el archivo", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                }
+        );
     }
 
     /**
@@ -195,7 +220,20 @@ public class HomeFragment extends Fragment {
         adapterRutina = new RutinaAdapter(new RutinaAdapter.OnRutinaOpcionesListener() {
             @Override
             public void onExportar(RutinaResumen rutina) {
-                Toast.makeText(getContext(), "Próximamente: Exportar", Toast.LENGTH_SHORT).show();
+                rutinaViewModel.generarJsonDeRutina(rutina.rutina, jsonGenerado -> {
+                    // Guardamos el texto generado en nuestra variable global
+                    jsonAExportar = jsonGenerado;
+
+                    // Abrimos el explorador de archivos para que elija dónde guardarlo
+                    Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("application/json"); // Tipo de archivo
+
+                    String nombreSugerido = "rutina_" + rutina.rutina.getNombre().toLowerCase().replace(" ", "_") + ".json";
+                    intent.putExtra(Intent.EXTRA_TITLE, nombreSugerido);
+
+                    exportarRutinaLauncher.launch(intent);
+                });
             }
             @Override
             public void onEliminar(RutinaResumen rutina) {

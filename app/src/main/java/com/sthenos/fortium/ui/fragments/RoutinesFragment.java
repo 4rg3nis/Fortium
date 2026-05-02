@@ -1,10 +1,14 @@
 package com.sthenos.fortium.ui.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -32,6 +36,7 @@ import com.sthenos.fortium.ui.activities.RutinaDetalleActivity;
 import com.sthenos.fortium.ui.adapters.RutinaAdapter;
 import com.sthenos.fortium.ui.viewmodels.RutinaViewModel;
 import com.sthenos.fortium.ui.viewmodels.UsuarioViewModel;
+import com.sthenos.fortium.utils.JsonExporter;
 
 import java.util.Locale;
 
@@ -47,7 +52,9 @@ public class RoutinesFragment extends Fragment {
     private TextView btnImportJSON;
     private ExtendedFloatingActionButton fabCreateRoutine;
     private RutinaAdapter adapter;
-    private int idUsuario = -1;
+
+    private ActivityResultLauncher<Intent> exportarRutinaLauncher;
+    private String jsonAExportar = "";
 
     public RoutinesFragment() {
         // Required empty public constructor
@@ -71,12 +78,6 @@ public class RoutinesFragment extends Fragment {
     }
 
     private void setObservers() {
-        usuarioViewModel.getUsuarioActual().observe(getViewLifecycleOwner(), usuario -> {
-            if(usuario != null){
-                idUsuario = usuario.getId();
-            }
-        });
-
         // Observamos los datos de la base de datos en tiempo real
         rutinaViewModel.getRutinasConResumen().observe(getViewLifecycleOwner(), rutinas -> {
             if (rutinas == null || rutinas.isEmpty()) {
@@ -102,6 +103,23 @@ public class RoutinesFragment extends Fragment {
 
         usuarioViewModel = new ViewModelProvider(this).get(UsuarioViewModel.class);
         rutinaViewModel = new ViewModelProvider(this).get(RutinaViewModel.class);
+
+        exportarRutinaLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        Uri uri = result.getData().getData();
+                        if (uri != null && !jsonAExportar.isEmpty()) {
+                            boolean exito = JsonExporter.exportarStringAJson(requireContext(), uri, jsonAExportar);
+
+                            if (exito) {
+                                Toast.makeText(getContext(), "¡Rutina exportada con éxito!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getContext(), "Error al escribir el archivo", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                }
+        );
     }
 
     private void setupRecyclerView() {
@@ -109,7 +127,20 @@ public class RoutinesFragment extends Fragment {
         adapter = new RutinaAdapter(new RutinaAdapter.OnRutinaOpcionesListener() {
             @Override
             public void onExportar(RutinaResumen rutina) {
-                Toast.makeText(getContext(), "Próximamente: Exportar", Toast.LENGTH_SHORT).show();
+                rutinaViewModel.generarJsonDeRutina(rutina.rutina, jsonGenerado -> {
+                    // Guardamos el texto generado en nuestra variable global
+                    jsonAExportar = jsonGenerado;
+
+                    // Abrimos el explorador de archivos para que elija dónde guardarlo
+                    Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("application/json"); // Tipo de archivo
+
+                    String nombreSugerido = "rutina_" + rutina.rutina.getNombre().toLowerCase().replace(" ", "_") + ".json";
+                    intent.putExtra(Intent.EXTRA_TITLE, nombreSugerido);
+
+                    exportarRutinaLauncher.launch(intent);
+                });
             }
 
             @Override

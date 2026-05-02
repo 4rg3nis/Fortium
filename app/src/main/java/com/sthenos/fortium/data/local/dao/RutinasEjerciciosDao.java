@@ -49,4 +49,7 @@ public interface RutinasEjerciciosDao {
     // Query para actualizar el orden de los ejercicios en una rutina, al borrar otro ejercicio.
     @Query("UPDATE RutinaEjercicios SET orden = orden - 1 WHERE rutinaId = :rutinaId AND orden > :ordenBorrado")
     void actualizarOrdenes(int rutinaId, int ordenBorrado);
+
+    @Query("SELECT * FROM RutinaEjercicios WHERE rutinaId = :rutinaId")
+    List<RutinaEjercicio> getEjercicioRutinaExport(int rutinaId);
 }
