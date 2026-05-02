@@ -1,6 +1,7 @@
 package com.sthenos.fortium.ui.viewmodels;
 
 import android.app.Application;
+import android.os.CountDownTimer;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -25,6 +26,14 @@ import java.util.Map;
  * @author Argenis
  */
 public class EntrenamientoViewModel extends AndroidViewModel {
+
+    private CountDownTimer restTimer;
+
+    // LiveData modificables para controlar el estado del cronómetro desde el ViewModel
+    private final MutableLiveData<Long> tiempoRestante = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> timerActivo = new MutableLiveData<>(false);
+    private long tiempoActualMilis = 0;
+    private final MutableLiveData<Boolean> timerFinalizado = new MutableLiveData<>(false);
 
     private EntrenamientoRepository repository;
 
@@ -86,4 +95,68 @@ public class EntrenamientoViewModel extends AndroidViewModel {
 
         return recordsLiveData;
     }
+
+    /**
+     * Inicializa el temporizador, en segundos.
+     * @param segundos Los segundos que durará el temporizador.
+     */
+    public void iniciarTemporizador(int segundos) {
+        if (restTimer != null) restTimer.cancel();
+
+        tiempoActualMilis = segundos * 1000L;
+        timerActivo.setValue(true);
+
+        restTimer = new CountDownTimer(tiempoActualMilis, 1000) {
+            // Cada segundo, actualizamos el tiempo restante
+            @Override
+            public void onTick(long millisUntilFinished) {
+                tiempoActualMilis = millisUntilFinished;
+                tiempoRestante.setValue(millisUntilFinished / 1000);
+            }
+
+            // Cuando el temporizador llega a 0, finalizamos.
+            @Override
+            public void onFinish() {
+                timerActivo.setValue(false);
+                tiempoRestante.setValue(0L);
+                timerFinalizado.setValue(true);
+            }
+        }.start();
+    }
+
+    public void ajustarTemporizador(int segundosExtra) {
+        // Sumamos o restamos 15s al tiempo actual
+        long nuevoTiempoSegundos = (tiempoActualMilis / 1000) + segundosExtra;
+        if (nuevoTiempoSegundos < 0) nuevoTiempoSegundos = 0;
+        iniciarTemporizador((int) nuevoTiempoSegundos);
+    }
+
+    public void cancelarTemporizador() {
+        if (restTimer != null) {
+            restTimer.cancel();
+            timerActivo.setValue(false);
+        }
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        // Cuando la pantalla se cierra y el ViewModel muere, matamos el cronómetro
+        if (restTimer != null) {
+            restTimer.cancel();
+        }
+    }
+
+    /**
+     * Resetea el estado del temporizador finalizado.
+     */
+    public void resetTimerFinalizado() {
+        timerFinalizado.setValue(false);
+    }
+
+    public LiveData<Long> getTiempoRestante() { return tiempoRestante; }
+    public LiveData<Boolean> getTimerActivo() { return timerActivo; }
+
+    public LiveData<Boolean> getTimerFinalizado() { return timerFinalizado; }
+
 }

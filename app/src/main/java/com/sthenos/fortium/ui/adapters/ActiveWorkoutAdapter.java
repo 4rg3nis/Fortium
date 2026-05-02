@@ -302,9 +302,6 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
 
     // Creamos la interfaz, que actua como túnel.
     public interface OnSetActionListener {
-        // Le pasaremos los segundos que debe descansar (ej: 90)
-        void onSetCompleted(int tiempoDescansoSegundos);
-
         // Pasamos todos los datos que el usuario ha escrito
         void onSetCompleted(int tiempoDescanso, int ejercicioId, float peso, int reps, float rpe);
 
