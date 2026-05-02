@@ -133,7 +133,7 @@ public class WorkoutActivity extends AppCompatActivity {
                 }
             });
         } else {
-            Toast.makeText(this, "Error: No se encontró la rutina", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Entrenamiento Libre iniciado", Toast.LENGTH_SHORT).show();
         }
 
         ejercicioViewModel.getAllEjercicios().observe(this, ejercicios -> {
@@ -182,9 +182,12 @@ public class WorkoutActivity extends AppCompatActivity {
                 volumenFinal += (s.getPeso() * s.getRepeticiones());
             }
 
+            // Esto es para cuando se inicia una sesion sin rutina previa ( Entrenamiento rapido)
+            Integer idRutinaParaBD = (rutinaId == -1) ? null : rutinaId;
+
             // Creamos la sesión con todos los datos integrados
             Sesion sesionHoy = new Sesion(
-                    rutinaId,
+                    idRutinaParaBD,
                     fechaInicioString,
                     fechaFinString,
                     seriesCompletadasHoy.size(),

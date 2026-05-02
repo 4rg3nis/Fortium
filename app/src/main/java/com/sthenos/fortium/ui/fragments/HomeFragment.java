@@ -25,6 +25,7 @@ import com.sthenos.fortium.model.queries.HistorialSesion;
 import com.sthenos.fortium.ui.activities.DetallesSesionActivity;
 import com.sthenos.fortium.ui.activities.HistorialActivity;
 import com.sthenos.fortium.ui.activities.SettingsActivity;
+import com.sthenos.fortium.ui.activities.WorkoutActivity;
 import com.sthenos.fortium.ui.adapters.HistorialAdapter;
 import com.sthenos.fortium.ui.adapters.RutinaAdapter;
 import com.sthenos.fortium.ui.viewmodels.EntrenamientoViewModel;
@@ -44,14 +45,11 @@ public class HomeFragment extends Fragment {
     private HistorialAdapter historialAdapter;
     private EntrenamientoViewModel entrenamientoViewModel;
 
-    public HomeFragment() {
-        // Required empty public constructor
-    }
+    public HomeFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
@@ -135,36 +133,19 @@ public class HomeFragment extends Fragment {
     }
 
     private void setListeners() {
-        btnEmpezarEntrenamiento.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int numeroAleatorio = (int) (Math.random() * 100);
-                Rutina nuevaRutina = new Rutina(
-                        // TODO: Cambiar esto..
-                        idUsuario, // usuarioId simulado
-                        "Rutina " + numeroAleatorio,
-                        "Creada para demostración de base de datos",
-                        "2023-11-11"
-                );
-                rutinaViewModel.insert(nuevaRutina);
-                android.widget.Toast.makeText(getContext(),
-                        "¡Rutina creada con éxito!", android.widget.Toast.LENGTH_SHORT).show();
-            }
+        btnEmpezarEntrenamiento.setOnClickListener( v -> {
+            Intent intent = new Intent(requireContext(), WorkoutActivity.class);
+            intent.putExtra("rutinaId", -1);
+            startActivity(intent);
         });
-        btnSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(requireContext(), SettingsActivity.class);
-                startActivity(intent);
-            }
+        btnSettings.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), SettingsActivity.class);
+            startActivity(intent);
         });
 
-        tvVerHistorialCompleto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        tvVerHistorialCompleto.setOnClickListener(v -> {
                 Intent intent = new Intent(requireContext(), HistorialActivity.class);
                 startActivity(intent);
-            }
         });
     }
 
