@@ -37,6 +37,7 @@ import com.sthenos.fortium.ui.adapters.RutinaAdapter;
 import com.sthenos.fortium.ui.viewmodels.RutinaViewModel;
 import com.sthenos.fortium.ui.viewmodels.UsuarioViewModel;
 import com.sthenos.fortium.utils.JsonExporter;
+import com.sthenos.fortium.utils.JsonImporter;
 
 import java.util.Locale;
 
@@ -54,6 +55,7 @@ public class RoutinesFragment extends Fragment {
     private RutinaAdapter adapter;
 
     private ActivityResultLauncher<Intent> exportarRutinaLauncher;
+    private ActivityResultLauncher<Intent> importarRutinaLauncher;
     private String jsonAExportar = "";
 
     public RoutinesFragment() {
@@ -104,6 +106,10 @@ public class RoutinesFragment extends Fragment {
         usuarioViewModel = new ViewModelProvider(this).get(UsuarioViewModel.class);
         rutinaViewModel = new ViewModelProvider(this).get(RutinaViewModel.class);
 
+        initExportImport();
+    }
+
+    private void initExportImport() {
         exportarRutinaLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
@@ -115,6 +121,26 @@ public class RoutinesFragment extends Fragment {
                                 Toast.makeText(getContext(), "¡Rutina exportada con éxito!", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(getContext(), "Error al escribir el archivo", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                }
+        );
+
+        importarRutinaLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        Uri uri = result.getData().getData();
+                        if (uri != null) {
+                            String jsonLeido = JsonImporter.leerArchivoComoString(requireContext(), uri);
+
+                            if (jsonLeido != null && !jsonLeido.isEmpty()) {
+                                rutinaViewModel.importarRutinaFromJson(jsonLeido,
+                                        () -> Toast.makeText(getContext(), "¡Rutina importada con éxito!",Toast.LENGTH_SHORT).show(),
+                                        (error) -> Toast.makeText(getContext(), "Error al importar: " + error, Toast.LENGTH_LONG).show()
+                                );
+                            } else {
+                                Toast.makeText(getContext(), "No se pudo leer el archivo JSON", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -165,7 +191,10 @@ public class RoutinesFragment extends Fragment {
 
         // Botón Importar JSON
         btnImportJSON.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Próximamente: Importar de archivos", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("application/json");
+            importarRutinaLauncher.launch(intent);
         });
 
         // Botón Filtro

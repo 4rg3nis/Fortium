@@ -52,4 +52,7 @@ public interface RutinasEjerciciosDao {
 
     @Query("SELECT * FROM RutinaEjercicios WHERE rutinaId = :rutinaId")
     List<RutinaEjercicio> getEjercicioRutinaExport(int rutinaId);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertRutinaEjercicioExport(List<RutinaEjercicio> ejercicios);
 }

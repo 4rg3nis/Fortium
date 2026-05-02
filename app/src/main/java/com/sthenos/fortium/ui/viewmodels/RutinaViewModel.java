@@ -87,4 +87,42 @@ public class RutinaViewModel extends AndroidViewModel {
             });
         }).start();
     }
+
+    /**
+     * Importa una rutina desde un JSON. Se ejecuta en un hilo separado.
+     * @param jsonString El contenido del archivo JSON.
+     * @param onSuccess Callback que se ejecuta cuando se haya completado la importación.
+     * @param onError Callback que se ejecuta en caso de error.
+     */
+    public void importarRutinaFromJson(String jsonString, Runnable onSuccess, Consumer<String> onError) {
+        new Thread(() -> {
+            try {
+                RutinaExportData data = new Gson().fromJson(jsonString, RutinaExportData.class);
+
+                if (data == null || data.rutina == null || data.ejercicios == null) {
+                    throw new Exception("El archivo no tiene el formato correcto.");
+                }
+
+                // Reseteamos los IDs para no sobreescribir datos existentes
+                data.rutina.setId(0);
+
+                // Guardamos la rutina y guardamos el nuevo id que nos da Room
+                long nuevoIdRutina = repository.insertarRutinaExport(data.rutina);
+
+                // Asignamos ese nuevo id a todos los ejercicios y reseteamos sus propios ids
+                for (com.sthenos.fortium.model.entities.RutinaEjercicio ejercicio : data.ejercicios) {
+                    ejercicio.setId(0); // Para que Room cree una fila nueva
+                    ejercicio.setRutinaId((int) nuevoIdRutina); // Lo enlazamos a la nueva rutina
+                }
+
+                // Guardamos todos los ejercicios de golpe
+                repository.insertRutinaEjercicioExport(data.ejercicios);
+
+                new Handler(Looper.getMainLooper()).post(onSuccess);
+            } catch (Exception e) {
+                e.printStackTrace();
+                new Handler(Looper.getMainLooper()).post(() -> onError.accept(e.getMessage()));
+            }
+        }).start();
+    }
 }

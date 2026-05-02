@@ -125,6 +125,16 @@ public class RutinaRepository {
         return rutinasEjerciciosDao.getEjercicioRutinaExport(id);
     }
 
+    public void insertRutinaEjercicioExport(List<RutinaEjercicio> ejercicios) {
+        executorService.execute(() -> {
+            rutinasEjerciciosDao.insertRutinaEjercicioExport(ejercicios);
+        });
+    }
+
+    public long insertarRutinaExport(Rutina rutina) {
+        return rutinasDao.insertRutinaExport(rutina);
+    }
+
     /**
      * Interfaz de callback para notificar la creación exitosa de una rutina.
      */

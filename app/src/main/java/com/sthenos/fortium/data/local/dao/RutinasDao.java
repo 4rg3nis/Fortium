@@ -21,6 +21,9 @@ public interface RutinasDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     long insert(Rutina rutina);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insertRutinaExport(Rutina rutina);
+
     // Permite insertar una lista completa de rutinas (útil para la carga inicial).
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<Rutina> rutina);
