@@ -235,7 +235,6 @@ public class SettingsActivity extends AppCompatActivity {
                     usuarioActual.setPesoActual(peso);
                     usuarioActual.setAltura(altura);
                     usuarioActual.setGenero(Genero.valueOf(genero));
-                    // TODO: Edad...
 
                     usuarioViewModel.updateUsuario(usuarioActual);
                     Toast.makeText(this, "Perfil actualizado correctamente", Toast.LENGTH_SHORT).show();
@@ -289,6 +288,10 @@ public class SettingsActivity extends AppCompatActivity {
             String dateString = sdf.format(new Date(selection));
 
             usuarioActual.setFechaNacimiento(dateString);
+
+            int nuevaEdad = usuarioViewModel.calcularEdad(usuarioActual);
+
+            etAge.setText(String.valueOf(nuevaEdad));
         });
     }
 
