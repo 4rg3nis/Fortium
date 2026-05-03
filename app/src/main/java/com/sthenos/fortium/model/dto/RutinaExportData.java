@@ -1,4 +1,4 @@
-package com.sthenos.fortium.model.queries;
+package com.sthenos.fortium.model.dto;
 
 import com.sthenos.fortium.model.entities.Rutina;
 import com.sthenos.fortium.model.entities.RutinaEjercicio;

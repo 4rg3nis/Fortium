@@ -13,7 +13,7 @@ import com.sthenos.fortium.data.repository.RutinaRepository;
 import com.sthenos.fortium.model.queries.EjercicioConDetalles;
 import com.sthenos.fortium.model.entities.Rutina;
 import com.sthenos.fortium.model.entities.RutinaEjercicio;
-import com.sthenos.fortium.model.queries.RutinaExportData;
+import com.sthenos.fortium.model.dto.RutinaExportData;
 import com.sthenos.fortium.model.queries.RutinaResumen;
 
 import java.util.List;
