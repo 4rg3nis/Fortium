@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
@@ -230,6 +231,14 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
                 String pesoStr = etWeightInput.getText().toString();
                 String repsStr = etRepsInput.getText().toString();
                 String rpeStr = etRpeInput.getText().toString();
+
+                if (pesoStr.isEmpty() || repsStr.isEmpty() || rpeStr.isEmpty()) {
+                    Toast.makeText(context, "Introduce el peso, las repeticiones y el rpe", Toast.LENGTH_SHORT).show();
+
+                    // Desactivamos el check porque la validación falló
+                    btnCheck.setChecked(false);
+                    return;
+                }
 
                 float peso = pesoStr.isEmpty() ? 0.0f : Float.parseFloat(pesoStr);
                 int reps = repsStr.isEmpty() ? 0 : Integer.parseInt(repsStr);
