@@ -10,5 +10,5 @@ public class SerieHistorial {
     public float peso;
     public int repeticiones;
     public int ordenEnSesion;
-    //TODO: Notas
+    public String notaEjercicio;
 }

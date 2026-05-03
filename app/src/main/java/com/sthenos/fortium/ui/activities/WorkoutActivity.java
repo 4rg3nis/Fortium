@@ -224,7 +224,6 @@ public class WorkoutActivity extends AppCompatActivity {
                         ejercicioSeleccionado.getId(),
                         1,
                         0,
-                        "",
                         nuevoOrden
                 );
 
@@ -294,7 +293,7 @@ public class WorkoutActivity extends AppCompatActivity {
     private void initAdapter() {
         adapter = new ActiveWorkoutAdapter(this, new ActiveWorkoutAdapter.OnSetActionListener() {
             @Override
-            public void onSetCompleted(int tiempoDescanso, int ejercicioId, float peso, int reps, float rpe) {
+            public void onSetCompleted(int tiempoDescanso, int ejercicioId, float peso, int reps, float rpe, String nota) {
                 int ordenActual = seriesCompletadasHoy.size() + 1;
 
                 Serie nuevaSerie = new Serie(
@@ -303,7 +302,7 @@ public class WorkoutActivity extends AppCompatActivity {
                         peso,
                         reps,
                         rpe,
-                        TipoSerie.NORMAL,
+                        nota,
                         tiempoDescanso,
                         ordenActual
                 );
@@ -321,11 +320,6 @@ public class WorkoutActivity extends AppCompatActivity {
                         s.getEjercicioId() == ejercicioId && s.getPeso() == peso && s.getRepeticiones() == reps);
 
                 actualizarStatsEnVivo();
-            }
-
-            @Override
-            public void onNotaEjercicioGuardada(int rutinaEjercicioId, String nuevaNota) {
-                rutinaViewModel.actualizarNotaDeEjercicio(rutinaEjercicioId, nuevaNota);
             }
         });
     }

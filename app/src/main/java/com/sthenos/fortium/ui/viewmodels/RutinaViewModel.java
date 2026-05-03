@@ -126,7 +126,4 @@ public class RutinaViewModel extends AndroidViewModel {
         }).start();
     }
 
-    public void actualizarNotaDeEjercicio(int rutinaEjercicioId, String nuevaNota) {
-        repository.actualizarNotaDeEjercicio(rutinaEjercicioId, nuevaNota);
-    }
 }

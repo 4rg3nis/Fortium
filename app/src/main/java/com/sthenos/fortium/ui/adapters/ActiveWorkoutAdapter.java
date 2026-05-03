@@ -1,6 +1,8 @@
 package com.sthenos.fortium.ui.adapters;
 
 import android.content.Context;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +34,11 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
 
     private static final int TIEMPO_DESCANSO_INICIAL_DEFAULT = 90;
 
+    // Memoria temporal para las notas mientras dura el entrenamiento
+    private Map<Integer, String> notasTemporales = new HashMap<>();
+
     private Map<Integer, List<String>> ultimosRecords = new HashMap<>();
+
     public ActiveWorkoutAdapter(Context context, OnSetActionListener listener) {
         this.context = context;
         this.listener = listener;
@@ -65,7 +71,13 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
 
         // Lógica del botón "Configurar tiempo de descanso" para cada ejercicio.
         holder.btnRestTimerConfig.setOnClickListener(v -> {
-            mostrarSelectorDeTiempo(position, holder.btnRestTimerConfig);
+            // Obtenemos la posición real en el momento del click.
+            // No usamos la 'position' del onBindViewHolder porque si se eliminan o añaden
+            // ejercicios, esa variable quedaría desactualizada (apuntando al índice incorrecto).
+            int currentPos = holder.getBindingAdapterPosition();
+            if (currentPos != RecyclerView.NO_POSITION) {
+                mostrarSelectorDeTiempo(currentPos, holder.btnRestTimerConfig);
+            }
         });
 
         // Limpia el contenedor para evitar que se dupliquen o mezclen series al reciclar la vista
@@ -74,39 +86,46 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
         // Creamos tantas filas como el usuario configuró en la plantilla
         int seriesObjetivo = item.rutinaEjercicio.getSeriesObjetivo();
         for (int i = 1; i <= seriesObjetivo; i++) {
-            agregarFilaSerie(holder.layoutSetsContainer, i, item.rutinaEjercicio.getRepeticionesObjetivo(), position);
+            agregarFilaSerie(holder.layoutSetsContainer, i, item.rutinaEjercicio.getRepeticionesObjetivo(), position, holder.etExerciseNotes);
         }
 
         // Lógica del botón "+ Añadir Serie"
         holder.btnAddSet.setOnClickListener(v -> {
             int nuevaSerieNum = holder.layoutSetsContainer.getChildCount() + 1;
-            // TODO: Hacer que siga el mismo patron que los otros y poner que las repeticiones sea igual que el ultimo?
-            agregarFilaSerie(holder.layoutSetsContainer, nuevaSerieNum, 0, position);
+            agregarFilaSerie(holder.layoutSetsContainer, nuevaSerieNum, 0, position, holder.etExerciseNotes);
         });
 
+        // Evitamos que el reciclaje de vistas mezcle los datos:
+        // Si el EditText ya tenía un TextWatcher de otro ejercicio, lo quitamos
+        // antes de cambiar el texto para que no se dispare y sobrescriba notas ajenas.
+        if (holder.etExerciseNotes.getTag() instanceof TextWatcher) {
+            holder.etExerciseNotes.removeTextChangedListener((TextWatcher) holder.etExerciseNotes.getTag());
+        }
 
-        holder.etExerciseNotes.setOnFocusChangeListener(null);
-
-        // Cargamos la nota que viene de la base de datos
-        String notaActual = item.rutinaEjercicio.getNotas();
+        // Cargamos la nota desde nuestra memoria temporal del adaptador
+        String notaActual = notasTemporales.get(position);
         holder.etExerciseNotes.setText(notaActual != null ? notaActual : "");
 
-        holder.etExerciseNotes.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) {
-                String textoNuevo = holder.etExerciseNotes.getText().toString().trim();
+        TextWatcher watcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-                String textoAntiguo = item.rutinaEjercicio.getNotas() != null ? item.rutinaEjercicio.getNotas() : "";
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
-                // Si el texto ha cambiado, lo guardamos en la base de datos
-                if (!textoNuevo.equals(textoAntiguo)) {
-                    item.rutinaEjercicio.setNotas(textoNuevo);
-
-                    if (listener != null) {
-                        listener.onNotaEjercicioGuardada(item.rutinaEjercicio.getId(), textoNuevo);
-                    }
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Guardamos en el mapa usando la posición del ejercicio como clave
+                int currentPos = holder.getBindingAdapterPosition();
+                if (currentPos != RecyclerView.NO_POSITION) {
+                    notasTemporales.put(currentPos, s.toString());
                 }
             }
-        });
+        };
+
+        // Se lo enganchamos al EditText y lo guardamos en el Tag para poder quitarlo luego
+        holder.etExerciseNotes.addTextChangedListener(watcher);
+        holder.etExerciseNotes.setTag(watcher);
     }
 
     /**
@@ -118,17 +137,13 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
      */
     private void mostrarSelectorDeTiempo(int position, TextView btnRestTimerConfig) {
         String[] opcionesTxt = {"30 seg", "1 min", "1 min 30 seg", "2 min", "2 min 30 seg", "3 min", "5 min"};
-        // El valor real en segundos de cada opción
         int[] opcionesSeg = {30, 60, 90, 120, 150, 180, 300};
 
         new MaterialAlertDialogBuilder(context)
                 .setTitle("Descanso para este ejercicio")
                 .setItems(opcionesTxt, (dialog, which) -> {
-                    // Guardamos el nuevo tiempo en la memoria
                     int nuevoTiempo = opcionesSeg[which];
                     tiemposDescanso.put(position, nuevoTiempo);
-
-                    // Actualizamos el botón visualmente con el nuevo tiempo formateado.
                     btnRestTimerConfig.setText(formatearTiempo(nuevoTiempo));
                 })
                 .show();
@@ -151,12 +166,11 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
      * @param numeroSerie El numero del orden de la serie
      * @param repeticionesObjetivo EL numero de repeticiones
      * @param positionEjercicio La posicion del ejercicio para saber el tiempo de descanso correspondiente a ese ejercicio.
+     * @param etExerciseNotes El EditText de las notas del ejercicio
      */
-    private void agregarFilaSerie(LinearLayout container, int numeroSerie, int repeticionesObjetivo, int positionEjercicio) {
-        // Inflamos el XML de la fila individual
+    private void agregarFilaSerie(LinearLayout container, int numeroSerie, int repeticionesObjetivo, int positionEjercicio, EditText etExerciseNotes) {
         View filaView = LayoutInflater.from(context).inflate(R.layout.item_workout_set_row, container, false);
 
-        // Buscamos los elementos dentro de ESA fila específica
         TextView tvSetNumber = filaView.findViewById(R.id.tvSetNumber);
         TextView tvRecord = filaView.findViewById(R.id.tvRecordAnterior);
         TextView tvRepsInput = filaView.findViewById(R.id.etRepsInput);
@@ -166,19 +180,13 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
 
         if (tvRecord != null) {
             int idEjercicioReal = listaEjercicios.get(positionEjercicio).ejercicio.getId();
-
-            // Cogemos la lista de todas las series de la sesión anterior
             List<String> recordsEjercicio = ultimosRecords.get(idEjercicioReal);
-
-            // numeroSerie empieza en 1, 2, 3... pero las listas empiezan en 0, 1, 2...
             int indiceLista = numeroSerie - 1;
 
-            // Comprobamos si hay un registro para este número de serie exacto
             if (recordsEjercicio != null && indiceLista < recordsEjercicio.size()) {
                 tvRecord.setText(recordsEjercicio.get(indiceLista));
                 tvRecord.setVisibility(View.VISIBLE);
             } else {
-                // Si es la primera vez que hace el ejercicio, o si la semana pasada hizo 3 series y hoy ha añadido una 4 serie nueva.
                 tvRecord.setText("-");
             }
         }
@@ -189,17 +197,13 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
         EditText etRpeInput = filaView.findViewById(R.id.etRpeInput);
         EditText etRepsInput = filaView.findViewById(R.id.etRepsInput);
 
-        // Borrar serie al mantener pulsado el número
         tvSetNumber.setOnLongClickListener(v -> {
             container.removeView(filaView);
-
-            // Bucle para recalcular el orden de las series.
             for (int i = 0; i < container.getChildCount(); i++) {
                 View filaRestante = container.getChildAt(i);
                 TextView tvNumeroRestante = filaRestante.findViewById(R.id.tvSetNumber);
 
                 if (tvNumeroRestante != null) {
-                    // 'i' empieza en 0, así que le sumamos 1 para que las series sean 1, 2, 3...
                     tvNumeroRestante.setText(String.valueOf(i + 1));
                 }
             }
@@ -210,7 +214,6 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
         // borrar cuando se quiera.
         btnCheck.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                // Leemos lo que ha escrito el usuario (Si está vacío, ponemos un 0)
                 String pesoStr = etWeightInput.getText().toString();
                 String repsStr = etRepsInput.getText().toString();
                 String rpeStr = etRpeInput.getText().toString();
@@ -221,32 +224,27 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
 
                 if (rpe > 10.0f) {
                     android.widget.Toast.makeText(context, "El RPE máximo es 10", android.widget.Toast.LENGTH_SHORT).show();
-                    btnCheck.setChecked(false); // Desmarcamos el botón automáticamente
-                    return; // Cortamos la ejecución aquí, no se guarda nada
+                    btnCheck.setChecked(false);
+                    return;
                 }
 
-                // Bloqueamos los campos para que no pueda editarlos mientras está en check
                 etWeightInput.setEnabled(false);
                 etRepsInput.setEnabled(false);
                 etRpeInput.setEnabled(false);
 
-                // Avisamos a la Activity para que guarde esta serie en la memoria temporal
                 if (listener != null) {
                     int tiempoParaEsteEjercicio = tiemposDescanso.get(positionEjercicio);
-
                     int idEjercicioReaL = listaEjercicios.get(positionEjercicio).ejercicio.getId();
 
-                    listener.onSetCompleted(tiempoParaEsteEjercicio, idEjercicioReaL, peso, reps, rpe);
+                    String notaStr = etExerciseNotes.getText().toString().trim();
+
+                    listener.onSetCompleted(tiempoParaEsteEjercicio, idEjercicioReaL, peso, reps, rpe, notaStr);
                 }
             } else {
-                // Si DESMARCA la serie
-
-                // Desbloqueamos los campos
                 etWeightInput.setEnabled(true);
                 etRepsInput.setEnabled(true);
                 etRpeInput.setEnabled(true);
 
-                // Avisamos a la Activity para que borre esta serie de la memoria temporal
                 if (listener != null) {
                     String pesoStr = etWeightInput.getText().toString();
                     String repsStr = etRepsInput.getText().toString();
@@ -260,30 +258,22 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
             }
         });
 
-        // Añadimos la fila al contenedor visual
         container.addView(filaView);
     }
 
-    /**
-     * Actualiza la lista de ejercicios con los nuevos datos. Tambien limpia el mapa de tiempos de descanso y
-     * le asigna los 90 segundos por defecto a cada ejercicio.
-     * @param ejercicios La lista de ejercicio qeu se quiere que se muestre en el adaptador.
-     */
     public void setEjercicios(List<EjercicioConDetalles> ejercicios) {
         this.listaEjercicios = ejercicios;
 
-        // Asignamos 90 segundos por defecto a cada ejercicio al cargar
+        // Limpiamos memorias al actualizar la lista
         tiemposDescanso.clear();
+        notasTemporales.clear();
+
         for (int i = 0; i < ejercicios.size(); i++) {
             tiemposDescanso.put(i, TIEMPO_DESCANSO_INICIAL_DEFAULT);
         }
         notifyDataSetChanged();
     }
 
-    /**
-     * Añade un nuevo ejercicio a la lista de ejercicios.
-     * @param nuevoEjercicio El nuevo ejercicio a añadir
-     */
     public void addEjercicioEnVivo(EjercicioConDetalles nuevoEjercicio) {
         if (listaEjercicios == null) {
             listaEjercicios = new ArrayList<>();
@@ -292,10 +282,7 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
         listaEjercicios.add(nuevoEjercicio);
         int nuevaPosicion = listaEjercicios.size() - 1;
 
-        // Le ponemos 90 segundos de descanso por defecto al nuevo ejercicio
         tiemposDescanso.put(nuevaPosicion, 90);
-
-        // Avisamos al RecyclerView de que se ha insertado un elemento nuevo al final
         notifyItemInserted(nuevaPosicion);
     }
 
@@ -307,12 +294,8 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
         return listaEjercicios.size();
     }
 
-    /**
-     * ViewHolder del adaptador de {@link ActiveWorkoutAdapter}
-     */
     class ExerciseViewHolder extends RecyclerView.ViewHolder {
         TextView tvExerciseName, btnAddSet, btnRestTimerConfig;
-
         EditText etExerciseNotes;
         LinearLayout layoutSetsContainer;
 
@@ -326,14 +309,8 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
         }
     }
 
-    // Creamos la interfaz, que actua como túnel.
     public interface OnSetActionListener {
-        // Pasamos todos los datos que el usuario ha escrito
-        void onSetCompleted(int tiempoDescanso, int ejercicioId, float peso, int reps, float rpe);
-
-        // Necesitamos saber si el usuario se arrepiente y desmarca la serie
+        void onSetCompleted(int tiempoDescanso, int ejercicioId, float peso, int reps, float rpe, String nota);
         void onSetUnchecked(int ejercicioId, float peso, int reps);
-
-        void onNotaEjercicioGuardada(int rutinaEjercicioId, String nuevaNota);
     }
 }

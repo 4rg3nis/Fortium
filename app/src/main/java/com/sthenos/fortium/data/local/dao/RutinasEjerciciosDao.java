@@ -55,7 +55,4 @@ public interface RutinasEjerciciosDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertRutinaEjercicioExport(List<RutinaEjercicio> ejercicios);
-
-    @Query("UPDATE RutinaEjercicios SET notas = :nuevaNota WHERE id = :rutinaEjercicioId")
-    void actualizarNotaDeEjercicio(int rutinaEjercicioId, String nuevaNota);
 }

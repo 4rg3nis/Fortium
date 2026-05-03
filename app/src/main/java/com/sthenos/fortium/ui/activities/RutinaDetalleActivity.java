@@ -176,7 +176,7 @@ public class RutinaDetalleActivity extends AppCompatActivity {
     private void guardarEjercicioEnRutina(long ejercicioId, int numSets, int numReps) {
         int nuevoOrden = ejercicioCount + 1; // Orden del nuevo ejercicio
         int ejId = (int) ejercicioId;
-        RutinaEjercicio rutinaEjercicio = new RutinaEjercicio(rutinaId, ejId, numSets, numReps, "", nuevoOrden);
+        RutinaEjercicio rutinaEjercicio = new RutinaEjercicio(rutinaId, ejId, numSets, numReps, nuevoOrden);
         rutinaViewModel.insertRutinaEjercicio(rutinaEjercicio, () -> {
             // Aqui mandamos ese mensaje para cuando se inserte correctamente la rutinaEjercicio y se cree las series correspondientes
             Toast.makeText(this, "Ejercicio añadido con sus correspondientes series y repeticiones!", android.widget.Toast.LENGTH_SHORT).show();
