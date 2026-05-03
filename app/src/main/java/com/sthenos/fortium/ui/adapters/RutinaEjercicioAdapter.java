@@ -1,9 +1,12 @@
 package com.sthenos.fortium.ui.adapters;
 
+import static java.security.AccessController.getContext;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.model.queries.EjercicioConDetalles;
 import com.sthenos.fortium.model.entities.RutinaEjercicio;
+import com.sthenos.fortium.utils.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +45,7 @@ public class RutinaEjercicioAdapter extends RecyclerView.Adapter<RutinaEjercicio
 
         holder.tvRepsCount.setText(ejercicio.rutinaEjercicio.getRepeticionesObjetivo() + " Reps");
 
-        // Por ahora dejamos la foto por defecto, en caso de que se quiera poner usar Picasso
+        ImageUtils.cargarImagenEjercicio(holder.itemView.getContext(), ejercicio.ejercicio.getImagenPath(), holder.ivExerciseImage, true);
 
         holder.btnDelete.setOnClickListener(v -> {
             if (deleteListener != null) {
@@ -76,6 +80,7 @@ public class RutinaEjercicioAdapter extends RecyclerView.Adapter<RutinaEjercicio
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvExerciseName, tvSetsCount, tvRepsCount;
         ImageButton btnDelete;
+        ImageView ivExerciseImage;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -83,6 +88,7 @@ public class RutinaEjercicioAdapter extends RecyclerView.Adapter<RutinaEjercicio
             tvSetsCount = itemView.findViewById(R.id.tvSetsCount);
             tvRepsCount = itemView.findViewById(R.id.tvRepsCount);
             btnDelete = itemView.findViewById(R.id.btnDeleteExercise);
+            ivExerciseImage = itemView.findViewById(R.id.ivExerciseImage);
         }
     }
 

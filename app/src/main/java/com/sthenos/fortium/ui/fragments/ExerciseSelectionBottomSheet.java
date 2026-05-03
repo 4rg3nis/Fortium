@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.model.entities.Ejercicio;
+import com.sthenos.fortium.utils.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,6 +99,8 @@ public class ExerciseSelectionBottomSheet extends BottomSheetDialogFragment {
             holder.tvName.setText(ejercicio.getNombre());
             holder.tvMuscle.setText(ejercicio.getGrupoMuscularPrincipal());
 
+            ImageUtils.cargarImagenEjercicio(getContext(), ejercicio.getImagenPath(), holder.ivImage, true);
+
             // Establecer el listener para cuando se seleccione un ejercicio en el listado.
             holder.itemView.setOnClickListener(v -> {
                 if (listener != null) {
@@ -116,11 +120,12 @@ public class ExerciseSelectionBottomSheet extends BottomSheetDialogFragment {
          */
         class ViewHolder extends RecyclerView.ViewHolder {
             TextView tvName, tvMuscle;
-
+            ImageView ivImage;
             ViewHolder(View itemView) {
                 super(itemView);
                 tvName = itemView.findViewById(R.id.tvExerciseName);
                 tvMuscle = itemView.findViewById(R.id.tvExerciseMuscle);
+                ivImage = itemView.findViewById(R.id.ivExerciseIcon);
             }
         }
     }

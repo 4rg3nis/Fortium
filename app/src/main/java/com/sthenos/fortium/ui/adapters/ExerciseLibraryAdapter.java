@@ -10,9 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.model.entities.Ejercicio;
+import com.sthenos.fortium.utils.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,11 +57,7 @@ public class ExerciseLibraryAdapter extends RecyclerView.Adapter<ExerciseLibrary
             modeloDeCarga = obtenerRecursoDesdeString( path);
         }
 
-        Glide.with(holder.itemView.getContext())
-                .asBitmap() // Obliga a que sea estático (imagen)
-                .load(modeloDeCarga)
-                .placeholder(R.drawable.ic_launcher_foreground)
-                .into(holder.ivExerciseImage);
+        ImageUtils.cargarImagenEjercicio(holder.itemView.getContext(), ejercicio.getImagenPath(), holder.ivExerciseImage, true);
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onExerciseClick(ejercicio);
@@ -144,7 +140,6 @@ public class ExerciseLibraryAdapter extends RecyclerView.Adapter<ExerciseLibrary
     class ExerciseViewHolder extends RecyclerView.ViewHolder {
         TextView tvName, tvMuscle;
         ImageView ivExerciseImage;
-        // TODO: Meter la foto del ejercicio.
         ExerciseViewHolder(View itemView) {
             super(itemView);
             ivExerciseImage = itemView.findViewById(R.id.ivExerciseImage);
