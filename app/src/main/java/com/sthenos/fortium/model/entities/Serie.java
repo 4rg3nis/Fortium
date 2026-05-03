@@ -45,8 +45,8 @@ public class Serie {
     @ColumnInfo(name="rpe_rir")
     private float rpeRir;
 
-    @ColumnInfo(name="tipoSerie")
-    private TipoSerie tipoSerie;
+    @ColumnInfo(name="nota")
+    private String nota;
 
     @ColumnInfo(name="tiempoDescanso")
     private int tiempoDescanso; // Segundos
@@ -54,26 +54,26 @@ public class Serie {
     @ColumnInfo(name="ordenEnSesion")
     private int ordenEnSesion;
 
-    public Serie(int id, int sesionId, int ejercicioId, float peso, int repeticiones, float rpeRir, TipoSerie tipoSerie, int tiempoDescanso, int ordenEnSesion) {
+    public Serie(int id, int sesionId, int ejercicioId, float peso, int repeticiones, float rpeRir, String nota, int tiempoDescanso, int ordenEnSesion) {
         this.id = id;
         this.sesionId = sesionId;
         this.ejercicioId = ejercicioId;
         this.peso = peso;
         this.repeticiones = repeticiones;
         this.rpeRir = rpeRir;
-        this.tipoSerie = tipoSerie;
+        this.nota = nota;
         this.tiempoDescanso = tiempoDescanso;
         this.ordenEnSesion = ordenEnSesion;
     }
 
     @Ignore
-    public Serie(int sesionId, int ejercicioId, float peso, int repeticiones, float rpeRir, TipoSerie tipoSerie, int tiempoDescanso, int ordenEnSesion) {
+    public Serie(int sesionId, int ejercicioId, float peso, int repeticiones, float rpeRir, String nota, int tiempoDescanso, int ordenEnSesion) {
         this.sesionId = sesionId;
         this.ejercicioId = ejercicioId;
         this.peso = peso;
         this.repeticiones = repeticiones;
         this.rpeRir = rpeRir;
-        this.tipoSerie = tipoSerie;
+        this.nota = nota;
         this.tiempoDescanso = tiempoDescanso;
         this.ordenEnSesion = ordenEnSesion;
     }
@@ -126,12 +126,12 @@ public class Serie {
         this.rpeRir = rpeRir;
     }
 
-    public TipoSerie getTipoSerie() {
-        return tipoSerie;
+    public String getNota() {
+        return nota;
     }
 
-    public void setTipoSerie(TipoSerie tipoSerie) {
-        this.tipoSerie = tipoSerie;
+    public void setNota(String nota) {
+        this.nota = nota;
     }
 
     public int getTiempoDescanso() {

@@ -106,14 +106,18 @@ public interface SeriesDao {
     /**
      * Obtiene el listado detallado de todas las series realizadas en una sesión específica.
      *
-     * Combina los datos técnicos de la serie (peso, reps) con la información del ejercicio
-     * (nombre) para mostrar un resumen entendible de lo que se hizo en ese entrenamiento.
+     * Combina los datos de la serie (peso, repeticiones y la nota específica escrita
+     * durante el entrenamiento) con la información básica del ejercicio (nombre).
      *
      * @param sesionId El ID único de la sesión que queremos consultar.
-     * @return Una lista de objetos SerieHistorial, ordenados tal cual se hicieron.
+     * @return Una lista de objetos SerieHistorial con la información capturada en la sesión,
+     * ordenados por su orden de ejecución.
      */
-    @Query("SELECT Ejercicios.id as ejercicioId, Ejercicios.nombre as nombreEjercicio, Series.peso, Series.repeticiones, Series.ordenEnSesion " +
-            "FROM Series INNER JOIN Ejercicios ON Series.ejercicioId = Ejercicios.id " +
+    @Query("SELECT Ejercicios.id as ejercicioId, Ejercicios.nombre as nombreEjercicio, " +
+            "Series.peso, Series.repeticiones, Series.ordenEnSesion, " +
+            "Series.nota as notaEjercicio " +
+            "FROM Series " +
+            "INNER JOIN Ejercicios ON Series.ejercicioId = Ejercicios.id " +
             "WHERE Series.sesionId = :sesionId ORDER BY Series.ordenEnSesion ASC")
     LiveData<List<SerieHistorial>> getSeriesDeSesion(int sesionId);
 

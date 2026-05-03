@@ -125,4 +125,5 @@ public class RutinaViewModel extends AndroidViewModel {
             }
         }).start();
     }
+
 }

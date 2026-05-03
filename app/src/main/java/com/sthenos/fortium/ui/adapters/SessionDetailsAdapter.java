@@ -33,6 +33,7 @@ public class SessionDetailsAdapter extends RecyclerView.Adapter<SessionDetailsAd
             if (!mapa.containsKey(s.ejercicioId)) {
                 EjercicioAgrupado ej = new EjercicioAgrupado();
                 ej.nombreEjercicio = s.nombreEjercicio;
+                ej.notas = s.notaEjercicio;
                 mapa.put(s.ejercicioId, ej);
             }
             mapa.get(s.ejercicioId).series.add(s);
@@ -53,6 +54,17 @@ public class SessionDetailsAdapter extends RecyclerView.Adapter<SessionDetailsAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         EjercicioAgrupado ejercicio = ejercicios.get(position);
         holder.tvNombreEjercicio.setText(ejercicio.nombreEjercicio);
+
+        // Lógica para mostrar u ocultar la nota
+        String nota = ejercicio.notas;
+
+        if (nota != null && !nota.trim().isEmpty()) {
+            holder.tvNotasEjercicio.setVisibility(View.VISIBLE);
+            holder.tvNotasEjercicio.setText("Nota: " + nota);
+        } else {
+            // Si el usuario no escribió nota en esta serie, ocultamos el texto para que no ocupe espacio
+            holder.tvNotasEjercicio.setVisibility(View.GONE);
+        }
 
         // Limpiamos para el siguiente ejercicio
         holder.llContenedorSeries.removeAllViews();
@@ -102,12 +114,13 @@ public class SessionDetailsAdapter extends RecyclerView.Adapter<SessionDetailsAd
      * Clase interna para el ViewHolder
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvNombreEjercicio;
+        TextView tvNombreEjercicio, tvNotasEjercicio;
         LinearLayout llContenedorSeries;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvNombreEjercicio = itemView.findViewById(R.id.tvDetalleNombreEjercicio);
+            tvNotasEjercicio = itemView.findViewById(R.id.tvNotasEjercicio);
             llContenedorSeries = itemView.findViewById(R.id.llContenedorSeries);
         }
     }
@@ -115,8 +128,9 @@ public class SessionDetailsAdapter extends RecyclerView.Adapter<SessionDetailsAd
     /**
      * Clase interna para agrupar los datos
      */
-    public static class EjercicioAgrupado {
-        public String nombreEjercicio;
-        public List<SerieHistorial> series = new ArrayList<>();
+    private static class EjercicioAgrupado {
+        private String nombreEjercicio;
+        private String notas;
+        private List<SerieHistorial> series = new ArrayList<>();
     }
 }
