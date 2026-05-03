@@ -42,7 +42,7 @@ public class RutinaDetalleActivity extends AppCompatActivity {
 
     private int rutinaId;
     private int ejercicioCount = 0;
-    private TextView tvRoutineName, tvTotalExercises, tvTotalSets, tvRoutineDesc, tvRoutineDate;
+    private TextView tvRoutineName, tvRoutineDesc, tvRoutineDate;
     private RecyclerView rvEjerciciosRutina;
     private RutinaEjercicioAdapter rutinaEjercicioAdapter;
     private RutinaViewModel rutinaViewModel;
@@ -215,7 +215,6 @@ public class RutinaDetalleActivity extends AppCompatActivity {
         rutinaViewModel.getEjerciciosDeRutina(rutinaId).observe(this, lista -> {
             if(lista != null) {
                 ejercicioCount = lista.size();
-                tvTotalExercises.setText(String.valueOf(ejercicioCount));
             }
         });
 
@@ -232,8 +231,6 @@ public class RutinaDetalleActivity extends AppCompatActivity {
      */
     private void initComponents() {
         tvRoutineName = findViewById(R.id.tvRoutineName);
-        tvTotalExercises = findViewById(R.id.tvTotalExercises);
-        tvTotalSets = findViewById(R.id.tvTotalSets);
         tvRoutineDesc = findViewById(R.id.tvRoutineDesc);
         tvRoutineDate = findViewById(R.id.tvRoutineDate);
         btnBack = findViewById(R.id.btnBack);
