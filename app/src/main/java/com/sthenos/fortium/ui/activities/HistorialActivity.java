@@ -3,6 +3,7 @@ package com.sthenos.fortium.ui.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -27,6 +28,7 @@ import com.sthenos.fortium.ui.viewmodels.EntrenamientoViewModel;
 public class HistorialActivity extends AppCompatActivity {
 
     private ImageButton btnBack;
+    private LinearLayout tvEmptyHistorial;
     private RecyclerView rvCompleto;
     private EntrenamientoViewModel entrenamientoViewModel;
 
@@ -51,7 +53,6 @@ public class HistorialActivity extends AppCompatActivity {
      * Carga el historial de sesiones desde la base de datos en un RecyclerView
      */
     private void cargarHistorial() {
-        RecyclerView rvCompleto = findViewById(R.id.rvHistorialCompleto);
         rvCompleto.setLayoutManager(new LinearLayoutManager(this));
 
         HistorialAdapter adapter = new HistorialAdapter(true, new HistorialAdapter.OnItemClickListener() {
@@ -79,8 +80,18 @@ public class HistorialActivity extends AppCompatActivity {
         rvCompleto.setAdapter(adapter);
 
         entrenamientoViewModel.getHistorialCompleto().observe(this, sesiones -> {
-            if (sesiones != null) {
+            if (sesiones != null && !sesiones.isEmpty()) {
+                // Hay sesiones: Le pasamos los datos al adaptador
                 adapter.setSesiones(sesiones);
+
+                // Mostramos la lista y ocultamos el mensaje
+                rvCompleto.setVisibility(android.view.View.VISIBLE);
+                tvEmptyHistorial.setVisibility(android.view.View.GONE);
+            } else {
+                // No hay sesiones (lista vacía)
+                // Ocultamos la lista y mostramos el mensaje
+                rvCompleto.setVisibility(android.view.View.GONE);
+                tvEmptyHistorial.setVisibility(android.view.View.VISIBLE);
             }
         });
     }
@@ -93,6 +104,9 @@ public class HistorialActivity extends AppCompatActivity {
     private void initComponents() {
         btnBack = findViewById(R.id.btnBack);
         rvCompleto = findViewById(R.id.rvHistorialCompleto);
+        rvCompleto = findViewById(R.id.rvHistorialCompleto);
+        tvEmptyHistorial = findViewById(R.id.viewEmptyState);
+
 
         entrenamientoViewModel = new ViewModelProvider(this).get(EntrenamientoViewModel.class);
     }

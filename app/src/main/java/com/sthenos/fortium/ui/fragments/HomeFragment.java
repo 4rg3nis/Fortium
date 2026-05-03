@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.sthenos.fortium.R;
-import com.sthenos.fortium.model.entities.Rutina;
-import com.sthenos.fortium.model.enums.UnidadMedida;
 import com.sthenos.fortium.model.queries.HistorialSesion;
 import com.sthenos.fortium.model.queries.RutinaResumen;
 import com.sthenos.fortium.ui.activities.DetallesSesionActivity;
@@ -40,11 +37,9 @@ import com.sthenos.fortium.ui.viewmodels.UsuarioViewModel;
 import com.sthenos.fortium.utils.Converters;
 import com.sthenos.fortium.utils.JsonExporter;
 
-import java.io.OutputStream;
-
 public class HomeFragment extends Fragment {
 
-    private TextView tvSaludo, tvPeso, tvViewAll, tvEmptyHistorial, tvVerHistorialCompleto;
+    private TextView tvSaludo, tvPeso, tvViewAll, tvEmptyHistorialSesion, tvVerHistorialCompleto, tvEmptyHistorialRutina;
     private RecyclerView rvRutinas;
     private RutinaViewModel rutinaViewModel;
     private MaterialButton btnEmpezarEntrenamiento;
@@ -114,11 +109,11 @@ public class HomeFragment extends Fragment {
 
                 // Mostrar lista, ocultar mensaje de vacío
                 rvHistorial.setVisibility(View.VISIBLE);
-                tvEmptyHistorial.setVisibility(View.GONE);
+                tvEmptyHistorialSesion.setVisibility(View.GONE);
             } else {
                 // Ocultar lista, mostrar mensaje de vacío
                 rvHistorial.setVisibility(View.GONE);
-                tvEmptyHistorial.setVisibility(View.VISIBLE);
+                tvEmptyHistorialSesion.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -126,13 +121,19 @@ public class HomeFragment extends Fragment {
     private void setObservers() {
         rutinaViewModel.getRutinasConResumen().observe(getViewLifecycleOwner(), rutinas -> {
             if (rutinas != null && !rutinas.isEmpty()) {
-
                 // Calculamos el límite para no pasarnos del tamaño real de la lista
                 int limite = Math.min(rutinas.size(), 3);
 
                 // Le pasamos al adaptador solo el trocito recortado de la lista
                 adapterRutina.setRutinas(rutinas.subList(0, limite));
 
+                // Mostrar lista, ocultar mensaje de vacío
+                rvRutinas.setVisibility(View.VISIBLE);
+                tvEmptyHistorialRutina.setVisibility(View.GONE);
+            } else {
+                // Ocultar lista, mostrar mensaje de vacío
+                rvRutinas.setVisibility(View.GONE);
+                tvEmptyHistorialRutina.setVisibility(View.VISIBLE);
             }
         });
         usuarioViewModel.getUsuarioActual().observe(getViewLifecycleOwner(), usuario -> {
@@ -188,7 +189,8 @@ public class HomeFragment extends Fragment {
         rvRutinas = view.findViewById(R.id.rvRutinas);
         btnEmpezarEntrenamiento = view.findViewById(R.id.btnEmpezarEntrenamiento);
         btnSettings = view.findViewById(R.id.btnSettings);
-        tvEmptyHistorial = view.findViewById(R.id.tvEmptyHistorial);
+        tvEmptyHistorialSesion = view.findViewById(R.id.tvEmptyHistorialSesion);
+        tvEmptyHistorialRutina = view.findViewById(R.id.tvEmptyHistorialRutina);
         tvVerHistorialCompleto = view.findViewById(R.id.tvVerHistorialCompleto);
 
         rutinaViewModel = new ViewModelProvider(this).get(RutinaViewModel.class);

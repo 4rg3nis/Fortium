@@ -45,11 +45,8 @@ public class RoutinesFragment extends Fragment {
 
     private RecyclerView rvLibraryRoutines;
     private RutinaViewModel rutinaViewModel;
-    private UsuarioViewModel usuarioViewModel;
 
     private LinearLayout layoutEmptyState;
-    private TextInputEditText etSearchRoutines;
-    private ImageButton btnFilter;
     private TextView btnImportJSON;
     private ExtendedFloatingActionButton fabCreateRoutine;
     private RutinaAdapter adapter;
@@ -58,14 +55,11 @@ public class RoutinesFragment extends Fragment {
     private ActivityResultLauncher<Intent> importarRutinaLauncher;
     private String jsonAExportar = "";
 
-    public RoutinesFragment() {
-        // Required empty public constructor
-    }
+    public RoutinesFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_routines, container, false);
     }
 
@@ -98,12 +92,9 @@ public class RoutinesFragment extends Fragment {
     private void initComponents(View view) {
         layoutEmptyState = view.findViewById(R.id.layoutEmptyState);
         rvLibraryRoutines = view.findViewById(R.id.rvLibraryRoutines);
-        etSearchRoutines = view.findViewById(R.id.etSearchRoutines);
-        btnFilter = view.findViewById(R.id.btnFilter);
         btnImportJSON = view.findViewById(R.id.btnImportJSON);
         fabCreateRoutine = view.findViewById(R.id.fabCreateRoutine);
 
-        usuarioViewModel = new ViewModelProvider(this).get(UsuarioViewModel.class);
         rutinaViewModel = new ViewModelProvider(this).get(RutinaViewModel.class);
 
         initExportImport();
@@ -195,11 +186,6 @@ public class RoutinesFragment extends Fragment {
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("application/json");
             importarRutinaLauncher.launch(intent);
-        });
-
-        // Botón Filtro
-        btnFilter.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Próximamente: Filtros", Toast.LENGTH_SHORT).show();
         });
     }
 

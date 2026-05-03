@@ -20,6 +20,7 @@ import java.util.Map;
 public class SessionDetailsAdapter extends RecyclerView.Adapter<SessionDetailsAdapter.ViewHolder> {
 
     private List<EjercicioAgrupado> ejercicios = new ArrayList<>();
+    private String  unidad = "kg";
 
     /**
      * Agrupa las series individuales por ejercicio (usando su ID) para mostrarlas en bloques organizados
@@ -54,6 +55,7 @@ public class SessionDetailsAdapter extends RecyclerView.Adapter<SessionDetailsAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         EjercicioAgrupado ejercicio = ejercicios.get(position);
         holder.tvNombreEjercicio.setText(ejercicio.nombreEjercicio);
+        holder.tvPesoUnidad.setText(unidad.toUpperCase());
 
         // Lógica para mostrar u ocultar la nota
         String nota = ejercicio.notas;
@@ -110,11 +112,16 @@ public class SessionDetailsAdapter extends RecyclerView.Adapter<SessionDetailsAd
     @Override
     public int getItemCount() { return ejercicios.size(); }
 
+    public void setUnits(String unidad) {
+        this.unidad = unidad;
+        notifyDataSetChanged();
+    }
+
     /**
      * Clase interna para el ViewHolder
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvNombreEjercicio, tvNotasEjercicio;
+        TextView tvNombreEjercicio, tvNotasEjercicio, tvPesoUnidad;
         LinearLayout llContenedorSeries;
 
         public ViewHolder(@NonNull View itemView) {
@@ -122,6 +129,7 @@ public class SessionDetailsAdapter extends RecyclerView.Adapter<SessionDetailsAd
             tvNombreEjercicio = itemView.findViewById(R.id.tvDetalleNombreEjercicio);
             tvNotasEjercicio = itemView.findViewById(R.id.tvNotasEjercicio);
             llContenedorSeries = itemView.findViewById(R.id.llContenedorSeries);
+            tvPesoUnidad = itemView.findViewById(R.id.tvPesoUnidad);
         }
     }
 
