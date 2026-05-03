@@ -17,7 +17,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -26,6 +25,7 @@ import com.sthenos.fortium.R;
 import com.sthenos.fortium.model.entities.Ejercicio;
 import com.sthenos.fortium.model.enums.Equipo;
 import com.sthenos.fortium.ui.viewmodels.EjercicioViewModel;
+import com.sthenos.fortium.utils.ImageUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -53,11 +53,7 @@ public class ExerciseFormActivity extends AppCompatActivity {
                         // Actualizamos nuestra variable global
                         currentImagePath = rutaSegura;
 
-                        // Le decimos a Glide que nos muestre la foto que acabamos de copiar
-                        Glide.with(this)
-                                .load(currentImagePath)
-                                .centerCrop()
-                                .into(ivExercisePreview);
+                        ImageUtils.cargarImagenEjercicio(this, currentImagePath, ivExercisePreview, false);
                     } else {
                         Toast.makeText(this, "Error al procesar la imagen", Toast.LENGTH_SHORT).show();
                     }
@@ -123,20 +119,7 @@ public class ExerciseFormActivity extends AppCompatActivity {
 
                 currentImagePath = ejercicio.getImagenPath();
 
-                Object fuenteDeImagen;
-
-                if (currentImagePath != null && currentImagePath.startsWith("/")) {
-                    // Es una ruta absoluta del almacenamiento interno
-                    fuenteDeImagen = currentImagePath;
-                } else {
-                    // Es un nombre de archivo de la carpeta drawable
-                    fuenteDeImagen = obtenerRecursoDesdeString(currentImagePath);
-                }
-
-                Glide.with(this)
-                        .load(fuenteDeImagen)
-                        .centerCrop()
-                        .into(ivExercisePreview);
+                ImageUtils.cargarImagenEjercicio(this, ejercicio.getImagenPath(), ivExercisePreview, false);
 
                 // Rellenamos los campos automáticamente
                 etName.setText(ejercicio.getNombre());
@@ -158,25 +141,6 @@ public class ExerciseFormActivity extends AppCompatActivity {
                 setupDropdowns();
             }
         });
-    }
-
-    /**
-     * Traduce "archivo.gif" -> R.drawable.archivo
-     * @param nombreArchivo Nombre del archivo.
-     * @return Recurso de la imagen.
-     */
-    private int obtenerRecursoDesdeString(String nombreArchivo) {
-        if (nombreArchivo == null || nombreArchivo.isEmpty()) {
-            return R.drawable.ic_launcher_foreground;
-        }
-
-        // Le quitamos la extensión
-        String nombreLimpio = nombreArchivo.replaceFirst("[.][^.]+$", "");
-
-        int recursoId = getResources().getIdentifier(nombreLimpio, "drawable", getPackageName());
-
-        // Si recursoId es 0, significa que no lo encontró.
-        return recursoId != 0 ? recursoId : R.drawable.ic_launcher_foreground;
     }
 
     /**
