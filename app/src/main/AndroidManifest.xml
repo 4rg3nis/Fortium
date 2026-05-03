@@ -14,31 +14,31 @@
         android:theme="@style/Theme.Fortium"
         tools:targetApi="31">
         <activity
-            android:name=".ui.activities.DetallesSesionActivity"
+            android:name=".ui.sesion.DetallesSesionActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.HistorialActivity"
+            android:name=".ui.sesion.SesionHistorialActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.SettingsActivity"
+            android:name=".ui.settings.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.ExerciseFormActivity"
+            android:name=".ui.exercises.ExerciseFormActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.WorkoutActivity"
+            android:name=".ui.workout.WorkoutActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.RutinaDetalleActivity"
+            android:name=".ui.routines.RutinaDetalleActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.CreateUserActivity"
+            android:name=".ui.onboarding.CreateUserActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.WelcomeActivity"
+            android:name=".ui.onboarding.WelcomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
