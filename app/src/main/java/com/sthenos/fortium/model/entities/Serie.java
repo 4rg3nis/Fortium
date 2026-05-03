@@ -7,8 +7,6 @@ import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import com.sthenos.fortium.model.enums.TipoSerie;
-
 @Entity(tableName = "Series", foreignKeys = {
         @ForeignKey(
                 entity = Sesion.class,

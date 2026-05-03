@@ -9,7 +9,7 @@ import androidx.lifecycle.LiveData;
 import com.sthenos.fortium.data.local.FortiumDatabase;
 import com.sthenos.fortium.data.local.dao.SeriesDao;
 import com.sthenos.fortium.data.local.dao.SesionesDao;
-import com.sthenos.fortium.model.Resource;
+import com.sthenos.fortium.utils.Resource;
 import com.sthenos.fortium.model.queries.DistribucionMuscular;
 import com.sthenos.fortium.model.queries.EjercicioConDetalles;
 import com.sthenos.fortium.model.queries.HistorialSesion;

@@ -4,8 +4,6 @@ import androidx.room.TypeConverter;
 
 import com.sthenos.fortium.model.enums.Equipo;
 import com.sthenos.fortium.model.enums.Genero;
-import com.sthenos.fortium.model.enums.TipoMedida;
-import com.sthenos.fortium.model.enums.TipoSerie;
 import com.sthenos.fortium.model.enums.UnidadMedida;
 
 /**
@@ -20,26 +18,6 @@ public class Converters {
     @TypeConverter
     public static Equipo toEquipo(String value) {
         return value == null ? null : Equipo.valueOf(value);
-    }
-
-    @TypeConverter
-    public static String fromTipoMedida(TipoMedida tipo) {
-        return tipo == null ? null : tipo.name();
-    }
-
-    @TypeConverter
-    public static TipoMedida toTipoMedida(String value) {
-        return value == null ? null : TipoMedida.valueOf(value);
-    }
-
-    @TypeConverter
-    public static String fromTipoSerie(TipoSerie tipoSerie){
-        return tipoSerie == null ? null : tipoSerie.name();
-    }
-
-    @TypeConverter
-    public static TipoSerie toTipoSerie(String value){
-        return value == null ? null : TipoSerie.valueOf(value);
     }
 
     @TypeConverter
