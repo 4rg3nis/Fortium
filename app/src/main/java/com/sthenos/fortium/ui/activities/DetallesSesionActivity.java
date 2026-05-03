@@ -18,6 +18,8 @@ import com.google.android.material.card.MaterialCardView;
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.ui.adapters.SessionDetailsAdapter;
 import com.sthenos.fortium.ui.viewmodels.EntrenamientoViewModel;
+import com.sthenos.fortium.ui.viewmodels.UsuarioViewModel;
+import com.sthenos.fortium.utils.Converters;
 
 import java.util.Locale;
 
@@ -35,6 +37,8 @@ public class DetallesSesionActivity extends AppCompatActivity {
     private int sesionId;
     private EntrenamientoViewModel entrenamientoViewModel;
     private SessionDetailsAdapter adapter;
+    private UsuarioViewModel usuarioViewModel;
+    private String unidad = "kg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +98,21 @@ public class DetallesSesionActivity extends AppCompatActivity {
                 adapter.setDatosBrutos(series);
             }
         });
+
+        usuarioViewModel.getUsuarioActual().observe(this, usuario -> {
+            if (usuario != null) {
+                unidad = Converters.fromUnitMeasure(usuario.getUnidadmedida()).toLowerCase();
+                setUnits();
+                adapter.setUnits(unidad);
+            }
+        });
+    }
+
+    /**
+     * Establecer las unidades de medida.
+     */
+    private void setUnits() {
+        tvDetalleVolumen.setText(String.format(Locale.getDefault(), "%.1f %s", 0.0, unidad));
     }
 
     /**
@@ -115,5 +134,6 @@ public class DetallesSesionActivity extends AppCompatActivity {
         rvDetalleEjercicios.setLayoutManager(new LinearLayoutManager(this));
         adapter = new SessionDetailsAdapter();
         rvDetalleEjercicios.setAdapter(adapter);
+        usuarioViewModel = new ViewModelProvider(this).get(UsuarioViewModel.class);
     }
 }
