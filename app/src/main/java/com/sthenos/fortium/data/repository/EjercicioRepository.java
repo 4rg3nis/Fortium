@@ -5,10 +5,8 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 
 import com.sthenos.fortium.data.local.FortiumDatabase;
-import com.sthenos.fortium.data.local.dao.EjercicioMusculosSecundariosDao;
 import com.sthenos.fortium.data.local.dao.EjerciciosDao;
 import com.sthenos.fortium.model.entities.Ejercicio;
-import com.sthenos.fortium.model.entities.EjercicioMusculosSecundario;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -19,14 +17,12 @@ public class EjercicioRepository {
     private static volatile EjercicioRepository instance;
 
     private final EjerciciosDao ejerciciosDao;
-    private final EjercicioMusculosSecundariosDao ejercicioMusculosSecundariosDao;
     private final LiveData<List<Ejercicio>> allEjercicios;
     private final ExecutorService executorService;
 
     private EjercicioRepository(Application application) {
         FortiumDatabase db = FortiumDatabase.getInstance(application);
         ejerciciosDao = db.ejerciciosDao();
-        ejercicioMusculosSecundariosDao = db.ejercicioMusculosSecundariosDao();
         allEjercicios = ejerciciosDao.getAll();
         executorService = Executors.newFixedThreadPool(2);
     }
