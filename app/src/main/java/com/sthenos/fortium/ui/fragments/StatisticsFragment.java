@@ -168,6 +168,8 @@ public class StatisticsFragment extends Fragment {
         consultaActiva1RM.observe(getViewLifecycleOwner(), progresos -> {
             if (progresos == null || progresos.isEmpty()) {
                 chart.clear(); // Si nunca lo ha entrenado, vaciamos la gráfica
+                chart.setNoDataText("Aún no has registrado series para este ejercicio.");
+                chart.setNoDataTextColor(Color.LTGRAY);
                 chart.invalidate(); // Refrescar la gráfica
                 return;
             }
