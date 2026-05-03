@@ -91,6 +91,7 @@
                 android:textSize="12sp" />
 
             <TextView
+                android:id="@+id/tvUnidadMedida"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"

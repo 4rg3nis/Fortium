@@ -40,6 +40,8 @@ import com.sthenos.fortium.ui.fragments.ExerciseSelectionBottomSheet;
 import com.sthenos.fortium.ui.viewmodels.EjercicioViewModel;
 import com.sthenos.fortium.ui.viewmodels.EntrenamientoViewModel;
 import com.sthenos.fortium.ui.viewmodels.RutinaViewModel;
+import com.sthenos.fortium.ui.viewmodels.UsuarioViewModel;
+import com.sthenos.fortium.utils.Converters;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -68,6 +70,9 @@ public class WorkoutActivity extends AppCompatActivity {
     private List<Serie> seriesCompletadasHoy;
     private String fechaInicioString;
     private MaterialCardView cardRestTimer;
+    private String unidad;
+
+    private UsuarioViewModel  usuarioViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +90,14 @@ public class WorkoutActivity extends AppCompatActivity {
         setupListeners();
         setupViewModel();
         setupTimeExercise();
+    }
+
+    /**
+     * Configuramos el volumen y el número de series.
+     */
+    private void setVolumeAndSet() {
+        tvLiveVolumen.setText(String.format(Locale.getDefault(), "0 %s", unidad));
+        tvLiveSeries.setText("0");
     }
 
     /**
@@ -140,6 +153,14 @@ public class WorkoutActivity extends AppCompatActivity {
         ejercicioViewModel.getAllEjercicios().observe(this, ejercicios -> {
             if (ejercicios != null) {
                 ejerciciosDisponibles = ejercicios;
+            }
+        });
+
+        usuarioViewModel.getUsuarioActual().observe(this, usuario -> {
+            if (usuario != null) {
+                unidad = Converters.fromUnitMeasure(usuario.getUnidadmedida()).toLowerCase();
+                setVolumeAndSet();
+                adapter.setUnidad(unidad);
             }
         });
     }
@@ -288,6 +309,7 @@ public class WorkoutActivity extends AppCompatActivity {
         ejercicioViewModel = new ViewModelProvider(this).get(EjercicioViewModel.class);
         entrenamientoViewModel = new ViewModelProvider(this).get(EntrenamientoViewModel.class);
         rutinaViewModel = new ViewModelProvider(this).get(RutinaViewModel.class);
+        usuarioViewModel = new ViewModelProvider(this).get(UsuarioViewModel.class);
     }
 
     private void initAdapter() {
@@ -331,6 +353,6 @@ public class WorkoutActivity extends AppCompatActivity {
         }
 
         tvLiveSeries.setText(String.valueOf(seriesCompletadasHoy.size()));
-        tvLiveVolumen.setText(String.format(Locale.getDefault(), "%.1f kg", volumenTotal));
+        tvLiveVolumen.setText(String.format(Locale.getDefault(), "%.1f %s", volumenTotal, unidad));
     }
 }
