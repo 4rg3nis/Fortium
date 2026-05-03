@@ -9,7 +9,6 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.sthenos.fortium.data.local.dao.EjercicioMusculosSecundariosDao;
 import com.sthenos.fortium.data.local.dao.EjerciciosDao;
 import com.sthenos.fortium.data.local.dao.RutinasDao;
 import com.sthenos.fortium.data.local.dao.RutinasEjerciciosDao;
@@ -17,14 +16,12 @@ import com.sthenos.fortium.data.local.dao.SeriesDao;
 import com.sthenos.fortium.data.local.dao.SesionesDao;
 import com.sthenos.fortium.data.local.dao.UsuariosDao;
 import com.sthenos.fortium.model.entities.Ejercicio;
-import com.sthenos.fortium.model.entities.EjercicioMusculosSecundario;
 import com.sthenos.fortium.model.entities.Rutina;
 import com.sthenos.fortium.model.entities.RutinaEjercicio;
 import com.sthenos.fortium.model.entities.Serie;
 import com.sthenos.fortium.model.entities.Sesion;
 import com.sthenos.fortium.model.entities.Usuario;
 import com.sthenos.fortium.model.enums.Equipo;
-import com.sthenos.fortium.model.enums.TipoMedida;
 import com.sthenos.fortium.utils.Converters;
 
 import java.util.concurrent.ExecutorService;
@@ -34,7 +31,7 @@ import java.util.concurrent.Executors;
  * Clase que representa la base de datos de la aplicación.
  */
 // Definimos las entidades, la versión y si queremos exportar el esquema
-@Database(entities = {Ejercicio.class , Rutina.class, Sesion.class, EjercicioMusculosSecundario.class, Serie.class, Usuario.class, RutinaEjercicio.class}, version = 1, exportSchema = false)
+@Database(entities = {Ejercicio.class , Rutina.class, Sesion.class, Serie.class, Usuario.class, RutinaEjercicio.class}, version = 1, exportSchema = false)
 @TypeConverters({Converters.class}) // Registramos los conversores
 public abstract class FortiumDatabase extends RoomDatabase {
 
@@ -45,7 +42,6 @@ public abstract class FortiumDatabase extends RoomDatabase {
     public abstract SesionesDao sesionesDao();
     public abstract UsuariosDao usuariosDao();
     public abstract RutinasEjerciciosDao rutinasEjerciciosDao();
-    public abstract EjercicioMusculosSecundariosDao ejercicioMusculosSecundariosDao();
 
     // Patrón Singleton
     private static volatile FortiumDatabase INSTANCE;
