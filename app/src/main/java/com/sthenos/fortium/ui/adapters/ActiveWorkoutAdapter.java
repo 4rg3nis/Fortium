@@ -39,6 +39,9 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
 
     private Map<Integer, List<String>> ultimosRecords = new HashMap<>();
 
+    private String unidad = "kg";
+
+
     public ActiveWorkoutAdapter(Context context, OnSetActionListener listener) {
         this.context = context;
         this.listener = listener;
@@ -53,6 +56,11 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
         notifyDataSetChanged();
     }
 
+    public void setUnidad(String unidad) {
+        this.unidad = unidad;
+        notifyDataSetChanged(); // Refrescamos para que cambien las cabeceras
+    }
+
     @NonNull
     @Override
     public ActiveWorkoutAdapter.ExerciseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -64,6 +72,10 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
     public void onBindViewHolder(@NonNull ActiveWorkoutAdapter.ExerciseViewHolder holder, int position) {
         EjercicioConDetalles item = listaEjercicios.get(position);
         holder.tvExerciseName.setText(item.ejercicio.getNombre());
+
+        if (holder.tvUnidadMedida != null) {
+            holder.tvUnidadMedida.setText(unidad);
+        }
 
         // Pongo el texto formateado en el botón.
         int tiempoActualSegundos = tiemposDescanso.get(position);
@@ -194,6 +206,7 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
         tvRepsInput.setHint(String.valueOf(repeticionesObjetivo));
 
         EditText etWeightInput = filaView.findViewById(R.id.etWeightInput);
+        etWeightInput.setHint(unidad);
         EditText etRpeInput = filaView.findViewById(R.id.etRpeInput);
         EditText etRepsInput = filaView.findViewById(R.id.etRepsInput);
 
@@ -295,7 +308,7 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
     }
 
     class ExerciseViewHolder extends RecyclerView.ViewHolder {
-        TextView tvExerciseName, btnAddSet, btnRestTimerConfig;
+        TextView tvExerciseName, btnAddSet, btnRestTimerConfig, tvUnidadMedida;
         EditText etExerciseNotes;
         LinearLayout layoutSetsContainer;
 
@@ -306,6 +319,7 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
             btnAddSet = itemView.findViewById(R.id.btnAddSet);
             btnRestTimerConfig = itemView.findViewById(R.id.btnRestTimerConfig);
             etExerciseNotes = itemView.findViewById(R.id.etExerciseNotes);
+            tvUnidadMedida = itemView.findViewById(R.id.tvUnidadMedida);
         }
     }
 

@@ -25,6 +25,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.model.entities.Rutina;
+import com.sthenos.fortium.model.enums.UnidadMedida;
 import com.sthenos.fortium.model.queries.HistorialSesion;
 import com.sthenos.fortium.model.queries.RutinaResumen;
 import com.sthenos.fortium.ui.activities.DetallesSesionActivity;
@@ -36,6 +37,7 @@ import com.sthenos.fortium.ui.adapters.RutinaAdapter;
 import com.sthenos.fortium.ui.viewmodels.EntrenamientoViewModel;
 import com.sthenos.fortium.ui.viewmodels.RutinaViewModel;
 import com.sthenos.fortium.ui.viewmodels.UsuarioViewModel;
+import com.sthenos.fortium.utils.Converters;
 import com.sthenos.fortium.utils.JsonExporter;
 
 import java.io.OutputStream;
@@ -135,7 +137,7 @@ public class HomeFragment extends Fragment {
         });
         usuarioViewModel.getUsuarioActual().observe(getViewLifecycleOwner(), usuario -> {
             if (usuario != null) {
-                setPeso(usuario.getPesoActual());
+                setPeso(usuario.getPesoActual(), Converters.fromUnitMeasure(usuario.getUnidadmedida()));
                 setSaludo(usuario.getNombre());
             }
         });
@@ -171,8 +173,8 @@ public class HomeFragment extends Fragment {
         rvRutinas.setAdapter(adapterRutina);
     }
 
-    private void setPeso(Double peso) {
-        tvPeso.setText(peso + " kg");
+    private void setPeso(Double peso, String unidad) {
+        tvPeso.setText(peso + " " +unidad.toLowerCase());
     }
 
     private void setSaludo(String nombre) {
