@@ -29,10 +29,11 @@ import java.util.concurrent.Executors;
 
 /**
  * Clase que representa la base de datos de la aplicación.
+ * @author Argenis
  */
 // Definimos las entidades, la versión y si queremos exportar el esquema
-@Database(entities = {Ejercicio.class , Rutina.class, Sesion.class, Serie.class, Usuario.class, RutinaEjercicio.class}, version = 1, exportSchema = false)
-@TypeConverters({Converters.class}) // Registramos los conversores
+@Database(entities = {Ejercicio.class , Rutina.class, Sesion.class, Serie.class, Usuario.class, RutinaEjercicio.class}, version = 2, exportSchema = false)
+@TypeConverters({Converters.class}) // Registramos el conversor
 public abstract class FortiumDatabase extends RoomDatabase {
 
     // Declaramos los DAOs como métodos abstractos
@@ -49,7 +50,7 @@ public abstract class FortiumDatabase extends RoomDatabase {
     private static final ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(4);
 
 
-    // Patrón Singleton seguro para hilos (Thread-safe)
+    // Patrón Singleton seguro para hilos
     public static FortiumDatabase getInstance(final Context context) {
         if (INSTANCE == null) {
             synchronized (FortiumDatabase.class) {
