@@ -148,6 +148,8 @@ public class ExerciseFragment extends Fragment {
      * @param view Vista.
      */
     private void initComponents(View view) {
+        etSearch = view.findViewById(R.id.etSearchExercise);
         chipGroupActiveFilters = view.findViewById(R.id.chipGroupActiveFilters);
+        btnFilters = view.findViewById(R.id.btnOpenFilters);
     }
 }
