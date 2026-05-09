@@ -31,9 +31,9 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.model.entities.Rutina;
 import com.sthenos.fortium.model.queries.RutinaResumen;
-import com.sthenos.fortium.utils.JsonExporter;
-import com.sthenos.fortium.utils.JsonImporter;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 public class RoutinesFragment extends Fragment {
@@ -90,7 +90,7 @@ public class RoutinesFragment extends Fragment {
         btnImportJSON = view.findViewById(R.id.btnImportJSON);
         fabCreateRoutine = view.findViewById(R.id.fabCreateRoutine);
 
-        rutinaViewModel = new ViewModelProvider(this).get(RutinaViewModel.class);
+        rutinaViewModel = new ViewModelProvider(requireActivity()).get(RutinaViewModel.class);
 
         initExportImport();
     }
@@ -101,13 +101,15 @@ public class RoutinesFragment extends Fragment {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         Uri uri = result.getData().getData();
                         if (uri != null && !jsonAExportar.isEmpty()) {
-                            boolean exito = JsonExporter.exportarStringAJson(requireContext(), uri, jsonAExportar);
+                            rutinaViewModel.exportarRutinaArchivo(uri, jsonAExportar, exito -> {
+                                if (!isAdded()) return; // Protección contra crasheos
 
-                            if (exito) {
-                                Toast.makeText(getContext(), "¡Rutina exportada con éxito!", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(getContext(), "Error al escribir el archivo", Toast.LENGTH_SHORT).show();
-                            }
+                                if (exito) {
+                                    Toast.makeText(requireContext(), "¡Rutina exportada con éxito!", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(requireContext(), "Error al escribir el archivo", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
                     }
                 }
@@ -118,16 +120,14 @@ public class RoutinesFragment extends Fragment {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         Uri uri = result.getData().getData();
                         if (uri != null) {
-                            String jsonLeido = JsonImporter.leerArchivoComoString(requireContext(), uri);
-
-                            if (jsonLeido != null && !jsonLeido.isEmpty()) {
-                                rutinaViewModel.importarRutinaFromJson(jsonLeido,
-                                        () -> Toast.makeText(getContext(), "¡Rutina importada con éxito!",Toast.LENGTH_SHORT).show(),
-                                        (error) -> Toast.makeText(getContext(), "Error al importar: " + error, Toast.LENGTH_LONG).show()
-                                );
-                            } else {
-                                Toast.makeText(getContext(), "No se pudo leer el archivo JSON", Toast.LENGTH_SHORT).show();
-                            }
+                            rutinaViewModel.importarRutinaUri(uri,
+                                    () -> {
+                                        if (isAdded()) Toast.makeText(requireContext(), "¡Rutina importada con éxito!", Toast.LENGTH_SHORT).show();
+                                    },
+                                    (error) -> {
+                                        if (isAdded()) Toast.makeText(requireContext(), "Error al importar: " + error, Toast.LENGTH_LONG).show();
+                                    }
+                            );
                         }
                     }
                 }
@@ -167,6 +167,13 @@ public class RoutinesFragment extends Fragment {
                         .setNegativeButton("Cancelar", null)
                         .show();
             }
+
+            @Override
+            public void onRutinaClick(RutinaResumen rutina) {
+                Intent intent = new Intent(requireContext(), RutinaDetalleActivity.class);
+                intent.putExtra("rutinaId", rutina.rutina.getId());
+                startActivity(intent);
+            }
         });
         rvLibraryRoutines.setAdapter(adapter);
     }
@@ -205,19 +212,15 @@ public class RoutinesFragment extends Fragment {
             String desc = tietRoutineDesc.getText().toString().trim();
 
             if (title.isEmpty()) {
-                tietRoutineTitle.setError("Required");
+                tietRoutineTitle.setError("Requerido");
                 return;
             }
 
 
-            String fechaHoy = new java.text.SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new java.util.Date());
-
-
-            Rutina nuevaRutina = new Rutina(title, desc, fechaHoy);
 
             // Aqui insertamos la rutina, y como todavía sqlite no creó la rutina y el id es '0' pues directamente hacemos
             // aqui el cambio de activity
-            rutinaViewModel.insert(nuevaRutina, idGenerado -> {
+            rutinaViewModel.crearYGuardarRutina(title, desc, idGenerado -> {
                 dialog.dismiss();
                 Toast.makeText(getContext(), "Rutina creada con éxito!", Toast.LENGTH_SHORT).show();
 

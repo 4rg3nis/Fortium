@@ -9,6 +9,7 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.Update;
 
+import com.sthenos.fortium.model.entities.Serie;
 import com.sthenos.fortium.model.queries.EjercicioConDetalles;
 import com.sthenos.fortium.model.entities.RutinaEjercicio;
 
@@ -16,7 +17,7 @@ import java.util.List;
 
 @Dao
 public interface RutinasEjerciciosDao {
-    // OPERACIONES BÁSICAS (CRUD)
+    // Operaciones basicas
 
     // Inserta una nueva relación entre una rutina y un ejercicio.
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -30,11 +31,18 @@ public interface RutinasEjerciciosDao {
     @Delete
     void delete(RutinaEjercicio rutinaEjercicio);
 
-    // CONSULTAS PERSONALIZADAS (QUERIES)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertAll(List<RutinaEjercicio> series);
+
+    // Consultas personalizadas
 
     // Obtiene todas las relaciones de rutina-ejercicio registradas.
     @Query("SELECT * FROM RutinaEjercicios")
     LiveData<List<RutinaEjercicio>> getAll();
+
+
+    @Query("SELECT * FROM RutinaEjercicios")
+    List<RutinaEjercicio> getAllSync();
 
     // Busca una relación específica por su ID único.
     @Query("SELECT * FROM RutinaEjercicios WHERE id = :id LIMIT 1")

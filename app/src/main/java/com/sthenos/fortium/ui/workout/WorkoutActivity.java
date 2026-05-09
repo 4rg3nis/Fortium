@@ -60,8 +60,7 @@ public class WorkoutActivity extends AppCompatActivity {
     private EjercicioViewModel ejercicioViewModel;
     private ActiveWorkoutAdapter adapter;
     private int rutinaId = -1;
-    private List<Ejercicio> ejerciciosDisponibles;
-    private List<Serie> seriesCompletadasHoy;
+    private List<Ejercicio> ejerciciosDisponibles = new ArrayList<>();
     private String fechaInicioString;
     private MaterialCardView cardRestTimer;
     private String unidad;
@@ -157,6 +156,14 @@ public class WorkoutActivity extends AppCompatActivity {
                 adapter.setUnidad(unidad);
             }
         });
+
+        entrenamientoViewModel.getVolumenEnVivo().observe(this, volumen -> {
+            tvLiveVolumen.setText(String.format(Locale.getDefault(), "%.1f %s", volumen, unidad));
+        });
+
+        entrenamientoViewModel.getCantidadSeriesEnVivo().observe(this, series -> {
+            tvLiveSeries.setText(String.valueOf(series));
+        });
     }
 
     /**
@@ -174,7 +181,10 @@ public class WorkoutActivity extends AppCompatActivity {
 
         // Finalizar Sesión
         btnFinish.setOnClickListener(v -> {
-            if (seriesCompletadasHoy.isEmpty()) {
+
+            List<Serie> seriesHechas = entrenamientoViewModel.getSeriesCompletadasEnVivo();
+
+            if (seriesHechas.isEmpty()) {
                 Toast.makeText(this, "No has completado ninguna serie", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -190,32 +200,21 @@ public class WorkoutActivity extends AppCompatActivity {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
             String fechaFinString = sdf.format(new java.util.Date());
 
-            // Recalculamos el volumen total sumando todas las series completadas.
-            // Se hace aquí para garantizar la integridad de los datos
-            // antes de guardar la sesión en la base de datos.
-            double volumenFinal = 0.0;
-            for (Serie s : seriesCompletadasHoy) {
-                volumenFinal += (s.getPeso() * s.getRepeticiones());
-            }
-
-            // Esto es para cuando se inicia una sesion sin rutina previa ( Entrenamiento rapido)
             Integer idRutinaParaBD = (rutinaId == -1) ? null : rutinaId;
 
-            // Creamos la sesión con todos los datos integrados
-            Sesion sesionHoy = new Sesion(
+            entrenamientoViewModel.finalizarYGuardarSesion(
                     idRutinaParaBD,
                     fechaInicioString,
                     fechaFinString,
-                    seriesCompletadasHoy.size(),
-                    volumenFinal,
-                    notas
+                    notas,
+                    seriesHechas,
+                    () -> {
+                        if (!isFinishing() && !isDestroyed()) {
+                            Toast.makeText(this, "¡Entrenamiento guardado con éxito!", Toast.LENGTH_LONG).show();
+                            finish();
+                        }
+                    }
             );
-
-            // Mandamos a guardar todo
-            entrenamientoViewModel.guardarEntrenamientoCompleto(sesionHoy, seriesCompletadasHoy, () -> {
-                Toast.makeText(this, "¡Entrenamiento guardado con éxito!", Toast.LENGTH_LONG).show();
-                finish(); // Volvemos al menú principal
-            });
         });
 
         // Añadir nuevo ejercicio
@@ -229,18 +228,8 @@ public class WorkoutActivity extends AppCompatActivity {
             bottomSheet.setEjercicios(ejerciciosDisponibles);
 
             bottomSheet.setListener(ejercicioSeleccionado -> {
-                EjercicioConDetalles ejercicioExtra = new EjercicioConDetalles();
-                ejercicioExtra.ejercicio = ejercicioSeleccionado;
-
-                int nuevoOrden = adapter.getItemCount() + 1;
-
-                ejercicioExtra.rutinaEjercicio = new RutinaEjercicio(
-                        rutinaId,
-                        ejercicioSeleccionado.getId(),
-                        1,
-                        0,
-                        nuevoOrden
-                );
+                int ordenActual = adapter.getItemCount() + 1;
+                EjercicioConDetalles ejercicioExtra = entrenamientoViewModel.construirEjercicioExtra(ejercicioSeleccionado, rutinaId, ordenActual);
 
                 adapter.addEjercicioEnVivo(ejercicioExtra);
                 Toast.makeText(this, ejercicioSeleccionado.getNombre() + " añadido", Toast.LENGTH_SHORT).show();
@@ -298,7 +287,6 @@ public class WorkoutActivity extends AppCompatActivity {
         rvActiveExercises.setAdapter(adapter);
 
         ejerciciosDisponibles = new ArrayList<>();
-        seriesCompletadasHoy = new ArrayList<>();
 
         ejercicioViewModel = new ViewModelProvider(this).get(EjercicioViewModel.class);
         entrenamientoViewModel = new ViewModelProvider(this).get(EntrenamientoViewModel.class);
@@ -310,43 +298,14 @@ public class WorkoutActivity extends AppCompatActivity {
         adapter = new ActiveWorkoutAdapter(this, new ActiveWorkoutAdapter.OnSetActionListener() {
             @Override
             public void onSetCompleted(int tiempoDescanso, int ejercicioId, float peso, int reps, float rpe, String nota) {
-                int ordenActual = seriesCompletadasHoy.size() + 1;
-
-                Serie nuevaSerie = new Serie(
-                        0,
-                        ejercicioId,
-                        peso,
-                        reps,
-                        rpe,
-                        nota,
-                        tiempoDescanso,
-                        ordenActual
-                );
-
-                seriesCompletadasHoy.add(nuevaSerie);
-
-                actualizarStatsEnVivo();
-
+                entrenamientoViewModel.registrarSerieCompletada(ejercicioId, peso, reps, rpe, nota, tiempoDescanso);
                 entrenamientoViewModel.iniciarTemporizador(tiempoDescanso);
             }
 
             @Override
             public void onSetUnchecked(int ejercicioId, float peso, int reps) {
-                seriesCompletadasHoy.removeIf(s ->
-                        s.getEjercicioId() == ejercicioId && s.getPeso() == peso && s.getRepeticiones() == reps);
-
-                actualizarStatsEnVivo();
+                entrenamientoViewModel.desmarcarSerie(ejercicioId, peso, reps);
             }
         });
-    }
-
-    private void actualizarStatsEnVivo() {
-        double volumenTotal = 0;
-        for (Serie s : seriesCompletadasHoy) {
-            volumenTotal += (s.getPeso() * s.getRepeticiones());
-        }
-
-        tvLiveSeries.setText(String.valueOf(seriesCompletadasHoy.size()));
-        tvLiveVolumen.setText(String.format(Locale.getDefault(), "%.1f %s", volumenTotal, unidad));
     }
 }

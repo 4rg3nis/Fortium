@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData;
 import com.sthenos.fortium.data.local.FortiumDatabase;
 import com.sthenos.fortium.data.local.dao.SeriesDao;
 import com.sthenos.fortium.data.local.dao.SesionesDao;
-import com.sthenos.fortium.utils.Resource;
 import com.sthenos.fortium.model.queries.DistribucionMuscular;
 import com.sthenos.fortium.model.queries.EjercicioConDetalles;
 import com.sthenos.fortium.model.queries.HistorialSesion;
@@ -30,6 +29,7 @@ public class EntrenamientoRepository {
     private final SeriesDao seriesDao;
     private final SesionesDao sesionesDao;
     private final ExecutorService executorService;
+    private final Handler mainHandler;
 
     private static volatile EntrenamientoRepository instance;
 
@@ -38,6 +38,7 @@ public class EntrenamientoRepository {
         seriesDao = db.seriesDao();
         sesionesDao = db.sesionesDao();
         executorService = Executors.newFixedThreadPool(2);
+        mainHandler = new Handler(Looper.getMainLooper());
     }
 
     public static EntrenamientoRepository getInstance(Application application){
@@ -85,32 +86,6 @@ public class EntrenamientoRepository {
         return seriesDao.getSeriesDeSesion(sesionId);
     }
 
-    public interface RepositoryCallback<T> {
-        void onComplete(Resource<T> result);
-    }
-
-    public void insertSesion(Sesion sesion, RepositoryCallback<Void> callback) {
-        // Notificamos que empezamos a "cargar"
-        callback.onComplete(Resource.loading(null));
-
-        executorService.execute(() -> {
-            try {
-                // Intentamos insertar en Room
-                sesionesDao.insert(sesion);
-
-                // Respuesta consistente de Éxito
-                callback.onComplete(Resource.success(null));
-
-            } catch (android.database.sqlite.SQLiteConstraintException e) {
-                // Manejo de error específico (ej. llave foránea rota)
-                callback.onComplete(Resource.error("Error de integridad en base de datos: " + e.getMessage(), null));
-            } catch (Exception e) {
-                // Manejo de error genérico
-                callback.onComplete(Resource.error("Error al guardar la sesión: " + e.getMessage(), null));
-            }
-        });
-    }
-
     /**
      * Guarda un entrenamiento completo (Sesión). Primero lo que hace es guardar la sesión en la base de datos y optener la ID generada.
      * Luego, con la series de la lista, la modificamos una a una para añadirle el ID de la sesión.
@@ -132,9 +107,9 @@ public class EntrenamientoRepository {
 
             seriesDao.insertAll(seriesRealizadas);
 
-            new Handler(Looper.getMainLooper()).post(() -> {
-                if (onSuccess != null) onSuccess.run();
-            });
+            if (onSuccess != null) {
+                mainHandler.post(onSuccess);
+            }
         });
     }
 
@@ -162,7 +137,9 @@ public class EntrenamientoRepository {
                     recordsTemporales.put(id, records);
                 }
             }
-            callback.accept(recordsTemporales);
+            if (callback != null) {
+                mainHandler.post(() -> callback.accept(recordsTemporales));
+            }
         });
     }
 

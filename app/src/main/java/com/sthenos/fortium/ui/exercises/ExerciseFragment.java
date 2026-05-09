@@ -47,7 +47,7 @@ public class ExerciseFragment extends Fragment {
 
         initComponents(view);
         setupRecyclerView(view);
-        setupViewModel();
+        setupViewModelYObservers();
         setupListeners(view);
     }
 
@@ -80,17 +80,11 @@ public class ExerciseFragment extends Fragment {
      */
     private void abrirBottomSheetFiltros() {
         ExerciseFilterBottomSheet bottomSheet = new ExerciseFilterBottomSheet();
-        bottomSheet.setListener(musculoSeleccionado -> {
-            filtroMusculoActual = musculoSeleccionado;
-            adapter.filtrar(textoBusquedaActual, filtroMusculoActual);
-            // Refresca la UI de filtros activos
-            actualizarChipVisual();
-        });
         bottomSheet.show(getChildFragmentManager(), "Filtros");
     }
 
     /**
-     * Actualiza la vista de los chips de los filtros.
+     * Actualiza la vista de los chips de los filtros. Metiendolo en la vista o remiviendolo de la vista.
      */
     private void actualizarChipVisual() {
         // Limpiamos los filtros visuales previos para redibujar desde cero
@@ -103,9 +97,7 @@ public class ExerciseFragment extends Fragment {
 
             // Si el usuario le da a la X del chip, quitamos el filtro
             chip.setOnCloseIconClickListener(v -> {
-                filtroMusculoActual = null;
-                chipGroupActiveFilters.removeAllViews();
-                adapter.filtrar(textoBusquedaActual, filtroMusculoActual);
+                viewModel.setFiltroMusculo(null);
             });
             // Añade el chip configurado al contenedor para que sea visible en la interfaz
             chipGroupActiveFilters.addView(chip);
@@ -115,12 +107,22 @@ public class ExerciseFragment extends Fragment {
     /**
      * Configura el view model.
      */
-    private void setupViewModel() {
+    private void setupViewModelYObservers() {
         viewModel = new ViewModelProvider(requireActivity()).get(EjercicioViewModel.class);
         viewModel.getAllEjercicios().observe(getViewLifecycleOwner(), ejercicios -> {
             if (ejercicios != null) {
                 adapter.setEjercicios(ejercicios);
+                // Si la bbdd se actualizara, filtramos el recycler view.
+                adapter.filtrar(textoBusquedaActual, filtroMusculoActual);
             }
+        });
+
+        viewModel.getFiltroMusculo().observe(getViewLifecycleOwner(), filtro -> {
+            filtroMusculoActual = filtro;
+            if (adapter != null) {
+                adapter.filtrar(textoBusquedaActual, filtroMusculoActual);
+            }
+            actualizarChipVisual();
         });
     }
 
@@ -131,7 +133,7 @@ public class ExerciseFragment extends Fragment {
     private void setupRecyclerView(View view) {
         RecyclerView rvExerciseLibrary = view.findViewById(R.id.rvExerciseLibrary);
         rvExerciseLibrary.setLayoutManager(new LinearLayoutManager(requireContext()));
-        adapter = new ExerciseLibraryAdapter(requireContext());
+        adapter = new ExerciseLibraryAdapter();
         adapter.setListener(ejercicio -> {
             Intent intent = new Intent(requireContext(), ExerciseFormActivity.class);
 

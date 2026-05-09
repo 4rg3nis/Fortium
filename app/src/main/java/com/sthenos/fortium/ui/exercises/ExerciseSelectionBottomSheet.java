@@ -37,9 +37,8 @@ public class ExerciseSelectionBottomSheet extends BottomSheetDialogFragment {
         void onExerciseSelected(Ejercicio ejercicio);
     }
 
+    private ExerciseLibraryAdapter adapter;
     private OnExerciseSelectedListener listener;
-    private RecyclerView rvExercises;
-    private SelectableExerciseAdapter adapter;
     private List<Ejercicio> ejerciciosDisponibles = new ArrayList<>();
 
     // Constructor vacío requerido por Android
@@ -60,7 +59,7 @@ public class ExerciseSelectionBottomSheet extends BottomSheetDialogFragment {
     public void setEjercicios(List<Ejercicio> ejercicios) {
         this.ejerciciosDisponibles = ejercicios;
         if (adapter != null) {
-            adapter.notifyDataSetChanged();
+            adapter.setEjercicios(ejercicios);
         }
     }
 
@@ -74,59 +73,21 @@ public class ExerciseSelectionBottomSheet extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        rvExercises = view.findViewById(R.id.rvSelectableExercises);
+        RecyclerView rvExercises = view.findViewById(R.id.rvSelectableExercises);
         rvExercises.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adapter = new SelectableExerciseAdapter();
-        rvExercises.setAdapter(adapter);
-    }
+        adapter = new ExerciseLibraryAdapter();
+        // Si ya teníamos la lista antes de que se creara la vista, se la pasamos
+        adapter.setEjercicios(ejerciciosDisponibles);
 
-    /**
-     * Adaptador para el listado de ejercicios.
-     */
-    private class SelectableExerciseAdapter extends RecyclerView.Adapter<SelectableExerciseAdapter.ViewHolder> {
-
-        @NonNull
-        @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_exercise_selectable, parent, false);
-            return new ViewHolder(v);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            Ejercicio ejercicio = ejerciciosDisponibles.get(position);
-            holder.tvName.setText(ejercicio.getNombre());
-            holder.tvMuscle.setText(ejercicio.getGrupoMuscularPrincipal());
-
-            ImageUtils.cargarImagenEjercicio(getContext(), ejercicio.getImagenPath(), holder.ivImage, true);
-
-            // Establecer el listener para cuando se seleccione un ejercicio en el listado.
-            holder.itemView.setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onExerciseSelected(ejercicio);
-                }
-                dismiss(); // Cerramos la vista
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return ejerciciosDisponibles.size();
-        }
-
-        /**
-         * ViewHolder para el listado de ejercicios.
-         */
-        class ViewHolder extends RecyclerView.ViewHolder {
-            TextView tvName, tvMuscle;
-            ImageView ivImage;
-            ViewHolder(View itemView) {
-                super(itemView);
-                tvName = itemView.findViewById(R.id.tvExerciseName);
-                tvMuscle = itemView.findViewById(R.id.tvExerciseMuscle);
-                ivImage = itemView.findViewById(R.id.ivExerciseIcon);
+        // Usamos el listener de nuestro
+        adapter.setListener(ejercicio -> {
+            if (listener != null) {
+                listener.onExerciseSelected(ejercicio);
             }
-        }
+            dismiss(); // Cerramos la vista
+        });
+
+        rvExercises.setAdapter(adapter);
     }
 }

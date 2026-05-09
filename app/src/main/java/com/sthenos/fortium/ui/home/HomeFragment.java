@@ -20,11 +20,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.model.queries.HistorialSesion;
 import com.sthenos.fortium.model.queries.RutinaResumen;
+import com.sthenos.fortium.ui.routines.RutinaDetalleActivity;
 import com.sthenos.fortium.ui.sesion.DetallesSesionActivity;
 import com.sthenos.fortium.ui.sesion.SesionHistorialActivity;
 import com.sthenos.fortium.ui.settings.SettingsActivity;
@@ -52,6 +54,7 @@ public class HomeFragment extends Fragment {
 
     private ActivityResultLauncher<Intent> exportarRutinaLauncher;
     private String jsonAExportar = "";
+    private String unidadPeso = "kg";
 
     public HomeFragment() {}
 
@@ -83,7 +86,7 @@ public class HomeFragment extends Fragment {
         historialAdapter = new SesionHistorialAdapter(false, new SesionHistorialAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(HistorialSesion sesion) {
-                Intent intent = new android.content.Intent(getContext(), DetallesSesionActivity.class);
+                Intent intent = new Intent(getContext(), DetallesSesionActivity.class);
                 intent.putExtra("sesionId", sesion.sesionId);
                 startActivity(intent);
             }
@@ -96,12 +99,13 @@ public class HomeFragment extends Fragment {
                         .setPositiveButton("Eliminar", (dialog, which) -> {
                             // Llamamos al ViewModel para que la fulmine
                             entrenamientoViewModel.eliminarSesionCompleta(sesion.sesionId);
-                            android.widget.Toast.makeText(getContext(), "Sesión eliminada", android.widget.Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Sesión eliminada", Toast.LENGTH_SHORT).show();
                         })
                         .setNegativeButton("Cancelar", null)
                         .show();
             }
         });
+        historialAdapter.setUnidadPeso(unidadPeso);
         rvHistorial.setAdapter(historialAdapter);
 
         entrenamientoViewModel.getHistorialReciente().observe(getViewLifecycleOwner(), sesiones -> {
@@ -139,7 +143,8 @@ public class HomeFragment extends Fragment {
         });
         usuarioViewModel.getUsuarioActual().observe(getViewLifecycleOwner(), usuario -> {
             if (usuario != null) {
-                setPeso(usuario.getPesoActual(), Converters.fromUnitMeasure(usuario.getUnidadmedida()));
+                unidadPeso = Converters.fromUnitMeasure(usuario.getUnidadmedida());
+                setPeso(usuario.getPesoActual(), unidadPeso);
                 setSaludo(usuario.getNombre());
             }
         });
@@ -162,10 +167,10 @@ public class HomeFragment extends Fragment {
         });
 
         tvViewAll.setOnClickListener(v -> {
-            Fragment selectedFragment = new RoutinesFragment();;
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.nav_host_fragment, selectedFragment)
-                    .commit();
+            BottomNavigationView bottomNav = requireActivity().findViewById(R.id.bottomNav);
+            if (bottomNav != null) {
+                bottomNav.setSelectedItemId(R.id.nav_routines);
+            }
         });
     }
 
@@ -194,9 +199,9 @@ public class HomeFragment extends Fragment {
         tvEmptyHistorialRutina = view.findViewById(R.id.tvEmptyHistorialRutina);
         tvVerHistorialCompleto = view.findViewById(R.id.tvVerHistorialCompleto);
 
-        rutinaViewModel = new ViewModelProvider(this).get(RutinaViewModel.class);
-        usuarioViewModel = new ViewModelProvider(this).get(UsuarioViewModel.class);
-        entrenamientoViewModel = new ViewModelProvider(this).get(EntrenamientoViewModel.class);
+        rutinaViewModel = new ViewModelProvider(requireActivity()).get(RutinaViewModel.class);
+        usuarioViewModel = new ViewModelProvider(requireActivity()).get(UsuarioViewModel.class);
+        entrenamientoViewModel = new ViewModelProvider(requireActivity()).get(EntrenamientoViewModel.class);
 
         setUpAdpaters();
 
@@ -251,6 +256,13 @@ public class HomeFragment extends Fragment {
                         })
                         .setNegativeButton("Cancelar", null)
                         .show();
+            }
+
+            @Override
+            public void onRutinaClick(RutinaResumen rutina) {
+                Intent intent = new Intent(requireContext(), RutinaDetalleActivity.class);
+                intent.putExtra("rutinaId", rutina.rutina.getId());
+                startActivity(intent);
             }
         });
     }

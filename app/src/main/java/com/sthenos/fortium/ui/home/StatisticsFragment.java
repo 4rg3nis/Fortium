@@ -77,8 +77,8 @@ public class StatisticsFragment extends Fragment {
         setupObservers();
         configurarEstiloGrafica();
         cargarEjercicios();
-        cargarPieChart(view);
-        cargarBarChart(view);
+        cargarPieChart();
+        cargarBarChart();
     }
 
     /**
@@ -120,7 +120,6 @@ public class StatisticsFragment extends Fragment {
         xAxis.setTextColor(Color.LTGRAY);
         xAxis.setDrawGridLines(false);
 
-        // Ejes Y
         chart.getAxisLeft().setTextColor(Color.WHITE);
         chart.getAxisRight().setEnabled(false); // Solo mostramos números a la izquierda
     }
@@ -180,54 +179,45 @@ public class StatisticsFragment extends Fragment {
                 return;
             }
 
-            ArrayList<Entry> puntos = new ArrayList<>();
-            ArrayList<String> etiquetasFechas = new ArrayList<>();
-
-            String genero = Converters.fromGenero(usuario.getGenero());
-            String fechaNacimiento = usuario.getFechaNacimiento();
             int edad = usuarioViewModel.calcularEdad(usuario);
-//            double pesoCuerpo = usuario.getPesoActual();
-//            double altura = usuario.getAltura();
 
-            for (int i = 0; i < progresos.size(); i++) {
-                Progreso1RM p = progresos.get(i);
+            entrenamientoViewModel.procesarDatosGrafica1RM(progresos, usuario, edad, resultadoProcesado -> {
 
-                // Aplicamos la fórmula científica a cada punto de la gráfica
-                // TODO: Lo del ajuste Antropométrico con (pesoCuerpo, altura)
-                double valorCientifico = Calculador1RM.calcular1RMFinal(p.pesoMaximo, p.reps, p.rpe, genero, edad);
-                puntos.add(new Entry(i, (float) valorCientifico));
+                List<Float> valoresY = (List<Float>) resultadoProcesado.get("valoresY");
+                List<String> etiquetasFechas = (List<String>) resultadoProcesado.get("etiquetasX");
 
-                // Formateamos la fecha quitando la hora.
-                etiquetasFechas.add(p.fecha.substring(0, 10));
-            }
+                ArrayList<Entry> puntos = new ArrayList<>();
+                for (int i = 0; i < valoresY.size(); i++) {
+                    puntos.add(new Entry(i, valoresY.get(i)));
+                }
 
-            // Damos estilo a la línea
-            LineDataSet dataSet = new LineDataSet(puntos, "Peso Máximo (kg)");
-            dataSet.setColor(Color.parseColor("#4CAF50"));
-            dataSet.setCircleColor(Color.parseColor("#4CAF50"));
-            dataSet.setLineWidth(3f);
-            dataSet.setCircleRadius(5f);
-            dataSet.setValueTextColor(Color.WHITE);
-            dataSet.setValueTextSize(10f);
+                // Damos estilo a la línea
+                LineDataSet dataSet = new LineDataSet(puntos, "Peso Máximo (kg)");
+                dataSet.setColor(Color.parseColor("#4CAF50"));
+                dataSet.setCircleColor(Color.parseColor("#4CAF50"));
+                dataSet.setLineWidth(3f);
+                dataSet.setCircleRadius(5f);
+                dataSet.setValueTextColor(Color.WHITE);
+                dataSet.setValueTextSize(10f);
 
-            // Damos estilo a la gráfica entera.
-            LineData lineData = new LineData(dataSet);
-            chart.setData(lineData);
-            chart.invalidate(); // Refrescar la gráfica
-            chart.animateX(800); // Animar cada vez que cambian los datos
+                // Damos estilo a la gráfica entera.
+                LineData lineData = new LineData(dataSet);
+                chart.setData(lineData);
+                chart.invalidate(); // Refrescar la gráfica
+                chart.animateX(800);
 
-            // Configuramos el eje X poniendole las fechas.
-            XAxis xAxis = chart.getXAxis();
-            xAxis.setValueFormatter(new IndexAxisValueFormatter(etiquetasFechas));
-            xAxis.setGranularity(1f);
+                // Configuramos el eje X poniendole las fechas.
+                XAxis xAxis = chart.getXAxis();
+                xAxis.setValueFormatter(new IndexAxisValueFormatter(etiquetasFechas));
+                xAxis.setGranularity(1f);
+            });
         });
     }
 
     /**
      * Carga la gráfica de distribución de musculos.
-     * @param view
      */
-    private void cargarPieChart(View view) {
+    private void cargarPieChart() {
         LocalDateTime hace30Dias = LocalDateTime.now().minusDays(30);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String fechaFiltro = hace30Dias.format(formatter);
@@ -254,9 +244,9 @@ public class StatisticsFragment extends Fragment {
             pieChart.animateY(1400);
             pieChart.invalidate();
 
-            // Configuramos la leyenda (lo de abajo)
+            // Configuramos la leyenda
             Legend l = pieChart.getLegend();
-            l.setTextColor(Color.WHITE); // Pone el texto en blanco
+            l.setTextColor(Color.WHITE);
             l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
             l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
             l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
@@ -267,10 +257,8 @@ public class StatisticsFragment extends Fragment {
 
     /**
      * Carga la gráfica de volumen.
-     * @param view
      */
-    private void cargarBarChart(View view) {
-        // Estilo General
+    private void cargarBarChart() {
         barChart.getDescription().setEnabled(false);
         barChart.getLegend().setTextColor(Color.WHITE);
         barChart.setDrawGridBackground(false);
@@ -307,9 +295,12 @@ public class StatisticsFragment extends Fragment {
 
                 // Formateamos la fecha
                 String fechaCorta = pv.getFecha();
-                if (fechaCorta.length() > 5) {
-                    fechaCorta = fechaCorta.substring(0, 10);
-                    fechaCorta = fechaCorta.substring(8, 10) + "/" + fechaCorta.substring(5, 7);
+                try {
+                    if (fechaCorta != null && fechaCorta.length() >= 10) {
+                        fechaCorta = fechaCorta.substring(8, 10) + "/" + fechaCorta.substring(5, 7);
+                    }
+                } catch (Exception e) {
+                    fechaCorta = "N/A"; // Valor por defecto si el formato es incorrecto
                 }
                 etiquetasFechas.add(fechaCorta);
             }

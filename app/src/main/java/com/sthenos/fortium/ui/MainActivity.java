@@ -38,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         }
 
+        setUpNav();
+    }
+
+    private void setUpNav() {
         bottomNav.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
             int id = item.getItemId();
@@ -60,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
     }
+
     private void initComponents() {
         bottomNav = findViewById(R.id.bottomNav);
     }

@@ -5,6 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -15,31 +19,19 @@ import com.sthenos.fortium.R;
  * @author Argenis
  */
 public class ExerciseFilterBottomSheet extends BottomSheetDialogFragment {
-    private OnFilterAppliedListener listener;
-    private String filtroActual = null;
 
-    /**
-     * Listener para cuando se aplique un filtro.
-     */
-    public interface OnFilterAppliedListener {
-        /**
-         * Cuando se aplique un filtro.
-         * @param musculoSeleccionado Grupo muscular seleccionado.
-         */
-        void onFilterApplied(String musculoSeleccionado);
-    }
-
-    /**
-     * Establece el listener.
-     * @param listener Listener para cuando se aplique un filtro.
-     */
-    public void setListener(OnFilterAppliedListener listener) {
-        this.listener = listener;
-    }
+    private EjercicioViewModel viewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.bottom_sheet_exercise_filters, container, false);
+        return inflater.inflate(R.layout.bottom_sheet_exercise_filters, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        viewModel = new ViewModelProvider(requireActivity()).get(EjercicioViewModel.class);
 
         ChipGroup chipGroup = view.findViewById(R.id.chipGroupFilterMuscle);
 
@@ -49,22 +41,18 @@ public class ExerciseFilterBottomSheet extends BottomSheetDialogFragment {
             // el filtro es nulo, de lo contrario es el texto del chip seleccionado.
             if (selectedId != View.NO_ID) {
                 Chip chipSeleccionado = view.findViewById(selectedId);
-                filtroActual = chipSeleccionado.getText().toString();
+                viewModel.setFiltroMusculo(chipSeleccionado.getText().toString());
             } else {
-                filtroActual = null;
+                viewModel.setFiltroMusculo(null);
             }
 
-            if (listener != null) listener.onFilterApplied(filtroActual);
             dismiss();
         });
         // Botón para limpiar los filtros.
         view.findViewById(R.id.btnClearFilters).setOnClickListener(v -> {
             chipGroup.clearCheck();
-            filtroActual = null;
-            if (listener != null) listener.onFilterApplied(null);
+            viewModel.setFiltroMusculo(null); // Limpiamos el filtro
             dismiss();
         });
-
-        return view;
     }
 }

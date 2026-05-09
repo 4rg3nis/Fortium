@@ -1,7 +1,7 @@
 package com.sthenos.fortium.ui.exercises;
 
-import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
@@ -24,11 +24,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.model.entities.Ejercicio;
 import com.sthenos.fortium.model.enums.Equipo;
+import com.sthenos.fortium.utils.Converters;
 import com.sthenos.fortium.utils.ImageUtils;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 
 public class ExerciseFormActivity extends AppCompatActivity {
 
@@ -46,16 +43,14 @@ public class ExerciseFormActivity extends AppCompatActivity {
             registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
                 if (uri != null) {
                     // El usuario ha elegido una foto. Hacemos la copia de seguridad.
-                    String rutaSegura = copiarImagenAInterno(uri);
-
-                    if (rutaSegura != null) {
-                        // Actualizamos nuestra variable global
-                        currentImagePath = rutaSegura;
-
-                        ImageUtils.cargarImagenEjercicio(this, currentImagePath, ivExercisePreview, false);
-                    } else {
-                        Toast.makeText(this, "Error al procesar la imagen", Toast.LENGTH_SHORT).show();
-                    }
+                    ImageUtils.copiarImagenAInternoAsync(this, uri, rutaSegura -> {
+                        if (rutaSegura != null) {
+                            currentImagePath = rutaSegura;
+                            ImageUtils.cargarImagenEjercicio(this, currentImagePath, ivExercisePreview, false);
+                        } else {
+                            Toast.makeText(this, "Error al procesar la imagen", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             });
 
@@ -133,7 +128,7 @@ public class ExerciseFormActivity extends AppCompatActivity {
                     activarModoSoloLectura();
                 } else {
                     // Si es un ejercicio creado por el usuario, mostramos el botón de borrar
-                    btnDelete.setVisibility(android.view.View.VISIBLE);
+                    btnDelete.setVisibility(View.VISIBLE);
                 }
 
                 // Reseteamos los adaptadores para que no se bloqueen
@@ -154,40 +149,22 @@ public class ExerciseFormActivity extends AppCompatActivity {
             String descripcion = etDescription.getText().toString().trim();
             String equipo = dropEquipment.getText().toString().trim();
 
-            String imagenPathAGuardar = currentImagePath;
-
-            if (nombre.isEmpty() || musculo.isEmpty()) {
-                Toast.makeText(this, "Nombre y Músculo son obligatorios", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            try {
-                String equipoFormateado = equipo.replace(" ", "_").toUpperCase();
-                Equipo equipoEnum = Equipo.valueOf(equipoFormateado);
-
-                if (ejercicioIdActual != -1 && ejercicioAEditar != null) {
-                    // Modo edición
-                    ejercicioAEditar.setImagenPath(imagenPathAGuardar);
-                    ejercicioAEditar.setNombre(nombre);
-                    ejercicioAEditar.setGrupoMuscularPrincipal(musculo);
-                    ejercicioAEditar.setDescripcionTecnica(descripcion);
-                    ejercicioAEditar.setEquipo(equipoEnum);
-
-                    viewModel.updateEjercicio(ejercicioAEditar);
-                    Toast.makeText(this, "Ejercicio actualizado", Toast.LENGTH_SHORT).show();
-
-                } else {
-                    // Modo creación
-                    Ejercicio nuevoEjercicio = new Ejercicio(nombre, musculo, false, descripcion, equipoEnum, imagenPathAGuardar);
-
-                    viewModel.insertEjercicio(nuevoEjercicio);
-                    Toast.makeText(this, "Ejercicio creado", Toast.LENGTH_SHORT).show();
-                }
-
-                finish(); // Cerramos la pantalla
-            } catch (IllegalArgumentException e) {
-                Toast.makeText(this, "Equipo no válido", Toast.LENGTH_SHORT).show();
-            }
+            viewModel.guardarEjercicio(
+                    ejercicioIdActual,
+                    ejercicioAEditar,
+                    nombre,
+                    musculo,
+                    descripcion,
+                    equipo,
+                    currentImagePath,
+                    () -> {
+                        Toast.makeText(this, "Ejercicio guardado con éxito", Toast.LENGTH_SHORT).show();
+                        finish(); // Cerramos la pantalla
+                    },
+                    (mensajeError) -> {
+                        Toast.makeText(this, mensajeError, Toast.LENGTH_SHORT).show();
+                    }
+            );
         });
 
         btnUploadMedia.setOnClickListener(v -> {
@@ -231,41 +208,6 @@ public class ExerciseFormActivity extends AppCompatActivity {
     }
 
     /**
-     * Copia la imagen seleccionada a la carpeta interna del dispositivo.
-     * @param uri Uri de la imagen.
-     * @return Ruta de la imagen copiada.
-     */
-    private String copiarImagenAInterno(Uri uri) {
-        try {
-            // Copiamos la imagen a la carpeta interna del dispositivo
-            InputStream inputStream = getContentResolver().openInputStream(uri);
-
-            String extension = getContentResolver().getType(uri);
-            extension = extension != null ? extension.split("/")[1] : "jpg";
-
-            // Creamos un nombre único basado en la fecha/hora
-            String fileName = "img_ejercicio_" + System.currentTimeMillis() + "." + extension;
-            File archivoDestino = new File(getFilesDir(), fileName);
-
-            FileOutputStream outputStream = new FileOutputStream(archivoDestino);
-
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = inputStream.read(buffer)) > 0) {
-                outputStream.write(buffer, 0, length);
-            }
-
-            outputStream.close();
-            inputStream.close();
-
-            return archivoDestino.getAbsolutePath();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
      * Activa el modo solo lectura. Esto solo es para los ejercicios que son del sistema. No se podrán ni modificar ni borrar.
      */
     private void activarModoSoloLectura() {
@@ -280,8 +222,8 @@ public class ExerciseFormActivity extends AppCompatActivity {
         etDescription.setEnabled(false);
 
         // Escondemos los botones de acción
-        btnUploadMedia.setVisibility(android.view.View.GONE);
-        btnSave.setVisibility(android.view.View.GONE);
-        btnDelete.setVisibility(android.view.View.GONE);
+        btnUploadMedia.setVisibility(View.GONE);
+        btnSave.setVisibility(View.GONE);
+        btnDelete.setVisibility(View.GONE);
     }
 }

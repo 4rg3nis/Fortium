@@ -14,7 +14,7 @@ import java.util.List;
 
 @Dao
 public interface UsuariosDao {
-    // OPERACIONES BÁSICAS (CRUD).
+    // Operaciones básicas
 
     // Inserta un nuevo usuario.
     @ Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -28,7 +28,7 @@ public interface UsuariosDao {
     @Delete
     void delete(Usuario usuario);
 
-    // CONSULTAS PERSONALIZADAS (QUERIES).
+    // Consultas personalizadas
 
     // Obtiene al usuario.
     @Query("SELECT * FROM Usuarios WHERE id = :id LIMIT 1")
@@ -36,7 +36,7 @@ public interface UsuariosDao {
 
     // Obtiene todos los usuarios registrados.
     @Query("SELECT * FROM Usuarios")
-    LiveData<List<Usuario>> getAll(); // en principio no usaré esta.
+    LiveData<List<Usuario>> getAll();
 
     // Borra todos los usuarios de la base de datos.
     @Query("DELETE FROM Usuarios")

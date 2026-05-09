@@ -23,6 +23,7 @@ public class RutinaRepository {
     private final RutinasDao rutinasDao;
     private final RutinasEjerciciosDao rutinasEjerciciosDao;
     private final ExecutorService executorService;
+    private final Handler mainHandler;
 
     private static volatile RutinaRepository instance;
 
@@ -31,6 +32,7 @@ public class RutinaRepository {
         rutinasDao = db.rutinasDao();
         rutinasEjerciciosDao = db.rutinasEjerciciosDao();
         executorService = Executors.newFixedThreadPool(2);
+        mainHandler = new Handler(Looper.getMainLooper());
     }
 
     public static RutinaRepository getInstance(Application application){
@@ -61,7 +63,7 @@ public class RutinaRepository {
             int idGenerado = (int) idLong;
 
             // Notificamos al hilo principal
-            new Handler(Looper.getMainLooper()).post(() -> {
+            mainHandler.post(() -> {
                 if (listener != null && idGenerado > 0) {
                     Log.d("RutinaRepository", "Guardado correctamente");
                     listener.onSuccess(idGenerado);
@@ -91,9 +93,9 @@ public class RutinaRepository {
         executorService.execute(() -> {
             rutinasEjerciciosDao.insert(rutinaEjercicio);
             // Regreso al hilo principal para ejecutar la acción de éxito
-            new Handler(Looper.getMainLooper()).post(() -> {
-                if(onSuccess != null) onSuccess.run(); // Para volver la hilo principal.
-            });
+            if (onSuccess != null) {
+                mainHandler.post(onSuccess);
+            }
         });
     }
 

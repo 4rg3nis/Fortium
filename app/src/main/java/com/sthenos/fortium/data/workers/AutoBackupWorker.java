@@ -30,6 +30,7 @@ public class AutoBackupWorker extends Worker {
     @Override
     public Result doWork() {
         Context context = getApplicationContext();
+
         // Acceso a preferencias para obtener la ubicación del backup
         SharedPreferences prefs = context.getSharedPreferences("FortiumApp", Context.MODE_PRIVATE);
 
@@ -73,6 +74,7 @@ public class AutoBackupWorker extends Worker {
                 try (OutputStream out = context.getContentResolver().openOutputStream(archivoBackup.getUri())) {
                     if (out != null) {
                         out.write(jsonString.getBytes());
+                        out.flush(); // Añadir esto asegura que los datos salgan del buffer al archivo
                     }
                 }
                 Log.d("FortiumBackup", "Copia automática exitosa.");

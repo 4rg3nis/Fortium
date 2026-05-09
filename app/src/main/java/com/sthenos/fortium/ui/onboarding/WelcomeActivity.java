@@ -1,7 +1,6 @@
 package com.sthenos.fortium.ui.onboarding;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.os.Bundle;
@@ -11,11 +10,13 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.button.MaterialButton;
 import com.sthenos.fortium.R;
@@ -25,20 +26,21 @@ import com.sthenos.fortium.utils.JsonImporter;
 public class WelcomeActivity extends AppCompatActivity {
     private MaterialButton btnSetUp, btnImportData;
     private TextView tvRadiant;
+    private WelcomeViewModel viewModel;
 
-    private final ActivityResultLauncher<String[]> importLauncher = registerForActivityResult(new androidx.activity.result.contract.ActivityResultContracts.OpenDocument(), uri -> {
+    private final ActivityResultLauncher<String[]> importLauncher = registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
         if (uri != null) {
             Toast.makeText(this, "Importando datos, por favor espera...", Toast.LENGTH_LONG).show();
 
-            JsonImporter.ejecutarImportacionCompleta(this, uri, new JsonImporter.ImportCallback() {
+            viewModel.importarDatos(uri, new JsonImporter.ImportCallback() {
                 @Override
                 public void onSuccess() {
                     runOnUiThread(() -> {
-                        Toast.makeText(getApplicationContext(), "¡Datos restaurados con éxito!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(WelcomeActivity.this, "¡Datos restaurados con éxito!", Toast.LENGTH_LONG).show();
 
                         // Reiniciamos la app para aplicar cambios
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                         finish();
                     });
@@ -46,7 +48,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
                 @Override
                 public void onError(String mensaje) {
-                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), mensaje, Toast.LENGTH_LONG).show());
+                    runOnUiThread(() -> Toast.makeText(WelcomeActivity.this, mensaje, Toast.LENGTH_LONG).show());
                 }
             });
         }
@@ -56,12 +58,13 @@ public class WelcomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SharedPreferences prefs = getSharedPreferences("FortiumApp", MODE_PRIVATE);
-        if(prefs.getBoolean("perfilCreado", false)){
+        viewModel = new ViewModelProvider(this).get(WelcomeViewModel.class);
+
+        if (viewModel.isPerfilCreado()) {
             Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
-            return; // Para que no ejecute lo de abajo.
+            return;
         }
 
         EdgeToEdge.enable(this);
@@ -92,19 +95,16 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private void setColorRadiant() {
-        tvRadiant.post(new Runnable() {
-            @Override
-            public void run() {
-                int colorInicio = ContextCompat.getColor(WelcomeActivity.this, R.color.blue_800);
-                int colorFin = ContextCompat.getColor(WelcomeActivity.this, R.color.blue_400);
-                Shader shader = new LinearGradient(
-                        0,0,tvRadiant.getWidth(),0,
-                        colorInicio, colorFin,
-                        Shader.TileMode.CLAMP
-                );
-                tvRadiant.getPaint().setShader(shader);
-                tvRadiant.invalidate();
-            }
+        tvRadiant.post(() ->{
+            int colorInicio = ContextCompat.getColor(WelcomeActivity.this, R.color.blue_800);
+            int colorFin = ContextCompat.getColor(WelcomeActivity.this, R.color.blue_400);
+            Shader shader = new LinearGradient(
+                    0,0,tvRadiant.getWidth(),0,
+                    colorInicio, colorFin,
+                    Shader.TileMode.CLAMP
+            );
+            tvRadiant.getPaint().setShader(shader);
+            tvRadiant.invalidate();
         });
     }
 
