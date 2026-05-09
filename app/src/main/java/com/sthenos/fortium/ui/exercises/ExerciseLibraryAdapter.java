@@ -27,10 +27,8 @@ public class ExerciseLibraryAdapter extends RecyclerView.Adapter<ExerciseLibrary
     private List<Ejercicio> listaMostrada = new ArrayList<>();
     private OnExerciseClickListener listener;
 
-    private Context context;
+    public ExerciseLibraryAdapter() {
 
-    public ExerciseLibraryAdapter(Context context) {
-        this.context = context;
     }
 
     @NonNull
@@ -43,45 +41,14 @@ public class ExerciseLibraryAdapter extends RecyclerView.Adapter<ExerciseLibrary
     @Override
     public void onBindViewHolder(@NonNull ExerciseLibraryAdapter.ExerciseViewHolder holder, int position) {
         Ejercicio ejercicio = listaMostrada.get(position);
-        String path = ejercicio.getImagenPath();
         holder.tvName.setText(ejercicio.getNombre());
         holder.tvMuscle.setText(ejercicio.getGrupoMuscularPrincipal());
-
-        Object modeloDeCarga; // Esto puede ser un numero o un texto
-
-        if (path != null && (path.startsWith("/") || path.startsWith("content://"))) {
-            // Es una foto de la galeria
-            modeloDeCarga = path;
-        } else {
-            // Es un ejercicio del sistema
-            modeloDeCarga = obtenerRecursoDesdeString( path);
-        }
 
         ImageUtils.cargarImagenEjercicio(holder.itemView.getContext(), ejercicio.getImagenPath(), holder.ivExerciseImage, true);
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onExerciseClick(ejercicio);
         });
-    }
-
-    /**
-     * Traduce "archivo.gif" -> R.drawable.archivo
-     * @param nombreArchivo Nombre del archivo.
-     * @return Recurso de la imagen.
-     */
-    private int obtenerRecursoDesdeString(String nombreArchivo) {
-        if (nombreArchivo == null || nombreArchivo.isEmpty()) {
-            return R.drawable.ic_launcher_foreground;
-        }
-
-        // Le quitamos la extensión
-        String nombreLimpio = nombreArchivo.replaceFirst("[.][^.]+$", "");
-
-        // Buscamos su DNI en la carpeta drawable
-        int recursoId = context.getResources().getIdentifier(nombreLimpio, "drawable", context.getPackageName());
-
-        // Si recursoId es 0, significa que no lo encontró.
-        return recursoId != 0 ? recursoId : R.drawable.ic_launcher_foreground;
     }
 
     @Override

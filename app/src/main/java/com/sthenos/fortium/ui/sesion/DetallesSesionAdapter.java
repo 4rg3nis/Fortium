@@ -1,6 +1,8 @@
 package com.sthenos.fortium.ui.sesion;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +19,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class SessionDetailsAdapter extends RecyclerView.Adapter<SessionDetailsAdapter.ViewHolder> {
+public class DetallesSesionAdapter extends RecyclerView.Adapter<DetallesSesionAdapter.ViewHolder> {
 
     private List<EjercicioAgrupado> ejercicios = new ArrayList<>();
     private String  unidad = "kg";
@@ -102,9 +104,9 @@ public class SessionDetailsAdapter extends RecyclerView.Adapter<SessionDetailsAd
     private TextView crearTextView(Context context, String texto) {
         TextView tv = new TextView(context);
         tv.setText(texto);
-        tv.setTextColor(android.graphics.Color.WHITE);
+        tv.setTextColor(Color.WHITE);
         tv.setTextSize(16f);
-        tv.setGravity(android.view.Gravity.CENTER);
+        tv.setGravity(Gravity.CENTER);
         tv.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
         return tv;
     }

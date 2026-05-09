@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
@@ -49,7 +50,6 @@ public class CreateUserActivity extends AppCompatActivity {
             return insets;
         });
         initComponents();
-        //usuarioViewModel.borrarTodos();
         setListeners();
     }
 
@@ -72,39 +72,46 @@ public class CreateUserActivity extends AppCompatActivity {
         String fecha = etDate.getText().toString().trim();
         String strPeso = etWeight.getText().toString();
         String strHeight = etHeight.getText().toString();
-        double peso = strPeso.isEmpty() ? 0 : Double.parseDouble(strPeso);
-        double altura = strHeight.isEmpty() ? 0 : Double.parseDouble(strHeight);
+
+        double peso = 0;
+        double altura = 0;
+        try {
+            if (!strPeso.isEmpty()) peso = Double.parseDouble(strPeso);
+            if (!strHeight.isEmpty()) altura = Double.parseDouble(strHeight);
+        } catch (NumberFormatException e) {
+            // Si el usuario escribe algo raro, el valor se queda en 0 y saltará la validación
+        }
 
         if(nombre.isEmpty()){
-            tilName.setError("Full name is required");
+            tilName.setError("Nombre requerido");
             isValido = false;
         } else{
             tilName.setError(null);
         }
 
         if(apellidos.isEmpty()){
-            tilLastName.setError("Last name is required");
+            tilLastName.setError("Apellido requerido");
             isValido = false;
         } else{
             tilLastName.setError(null);
         }
 
         if(fecha.isEmpty()){
-            tilDate.setError("Date is required");
+            tilDate.setError("Fecha de nacimiento requerido");
             isValido = false;
         } else{
             tilDate.setError(null);
         }
 
         if(peso <= 0){
-            tilWeight.setError("Weight must be > 0");
+            tilWeight.setError("El peso debe de ser mayor a 0");
             isValido = false;
         } else{
             tilWeight.setError(null);
         }
 
         if(altura <= 0){
-            tilHeight.setError("Height must be > 0");
+            tilHeight.setError("La altura debe de ser mayor a 0");
             isValido = false;
         } else {
             tilHeight.setError(null);
@@ -138,15 +145,10 @@ public class CreateUserActivity extends AppCompatActivity {
         int selectedWeightId = toggleWeight.getCheckedButtonId();
         if (selectedWeightId == R.id.btn_lb) medida = Converters.toUnitMeasure("LB");
 
-        usuarioViewModel.guardarUsuario(new Usuario(nombre, apellidos, fecha, peso, altura, genero, medida));
-        guardarDatosSharedPref(nombre);
-        Toast.makeText(this, "Usuario creado correctamente", Toast.LENGTH_SHORT).show();
-        cambiarActividad();
-    }
-
-    private void guardarDatosSharedPref(String name) {
-        SharedPreferences prefs = getSharedPreferences("FortiumApp", MODE_PRIVATE);
-        prefs.edit().putBoolean("perfilCreado", true).apply();
+        usuarioViewModel.registrarNuevoUsuario(nombre, apellidos, fecha, peso, altura, genero, medida, () -> {
+            Toast.makeText(this, "Usuario creado correctamente", Toast.LENGTH_SHORT).show();
+            cambiarActividad();
+        });
     }
 
     private void cambiarActividad() {
@@ -178,7 +180,7 @@ public class CreateUserActivity extends AppCompatActivity {
     }
 
     private void initComponents() {
-        usuarioViewModel = new UsuarioViewModel(getApplication());
+        usuarioViewModel = new ViewModelProvider(this).get(UsuarioViewModel.class);
         etDate = findViewById(R.id.etDate);
         etWeight = findViewById(R.id.etWeight);
         etHeight = findViewById(R.id.etHeight);

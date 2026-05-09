@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 public class UsuarioRepository {
     private  final UsuariosDao usuariosDao;
     private  final ExecutorService executorService;
-    private static UsuarioRepository instance;
+    private static volatile UsuarioRepository instance;
 
     private UsuarioRepository(Application application){
         FortiumDatabase db = FortiumDatabase.getInstance(application);

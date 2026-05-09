@@ -15,7 +15,7 @@ import java.util.List;
 
 @Dao
 public interface RutinasDao {
-    // OPERACIONES BÁSICAS (CRUD)
+    // Operaciones básicas
 
     // Inserta una nueva rutina. Si ya existe una con el mismo ID, lo reemplaza.
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -24,7 +24,7 @@ public interface RutinasDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertRutinaExport(Rutina rutina);
 
-    // Permite insertar una lista completa de rutinas (útil para la carga inicial).
+    // Permite insertar una lista completa de rutinas
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<Rutina> rutina);
 
@@ -37,7 +37,7 @@ public interface RutinasDao {
     @Delete
     void delete(Rutina rutina);
 
-    // CONSULTAS PERSONALIZADAS (QUERIES)
+    // Consulñtas personalizadas
 
     // Obtiene todas las rutinas registradas.
     @Query("SELECT * FROM Rutinas")

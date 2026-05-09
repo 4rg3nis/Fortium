@@ -18,7 +18,7 @@ import java.util.List;
 
 @Dao
 public interface SeriesDao {
-    // OPERACIONES BÁSICAS (CRUD)
+    // Operaciones basicas
 
     // Insertar una nueva serie, en caso de que exista la reemplaza
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -35,7 +35,7 @@ public interface SeriesDao {
     @Delete
     void delete(Serie serie);
 
-    // CONSULTAS PERSONALIZADAS (QUERIES)
+    // Consultas personalizadas
 
     // Obtener todas las series registradas
     @Query("SELECT * FROM Series")
@@ -44,14 +44,6 @@ public interface SeriesDao {
     // Obtener una serie específica por su ID
     @Query("SELECT * FROM Series WHERE id = :id LIMIT 1")
     Serie getById(int id);
-
-    // Obtener todas las series de una sesión específica
-    @Query("SELECT * FROM Series WHERE sesionId = :sesionId")
-    LiveData<List<Serie>> getBySesionId(int sesionId);
-
-    // Obtener todas las series de un ejercicio específico
-    @Query("SELECT * FROM Series WHERE ejercicioId = :ejercicioId")
-    LiveData<List<Serie>> getByEjercicioId(int ejercicioId);
 
     /**
      * Obtiene el historial de récords personales por sesión para un ejercicio específico.

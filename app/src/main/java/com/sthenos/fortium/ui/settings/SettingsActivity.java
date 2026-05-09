@@ -33,6 +33,7 @@ import com.sthenos.fortium.data.local.FortiumDatabase;
 import com.sthenos.fortium.model.dto.ExportData;
 import com.sthenos.fortium.model.entities.Ejercicio;
 import com.sthenos.fortium.model.entities.Rutina;
+import com.sthenos.fortium.model.entities.RutinaEjercicio;
 import com.sthenos.fortium.model.entities.Serie;
 import com.sthenos.fortium.model.entities.Sesion;
 import com.sthenos.fortium.model.entities.Usuario;
@@ -96,7 +97,15 @@ public class SettingsActivity extends AppCompatActivity {
         // Lanzador para crear un nuevo archivo JSON (Exportar)
         exportLauncher = registerForActivityResult(new ActivityResultContracts.CreateDocument("application/json"), uri -> {
             if (uri != null) {
-                ejecutarExportacionBackup(uri);
+                Toast.makeText(this, "Generando copia de seguridad...", Toast.LENGTH_SHORT).show();
+                usuarioViewModel.ejecutarExportacionBackupCompleto(uri, exito -> {
+                    if (isDestroyed()) return;
+                    if (exito) {
+                        Toast.makeText(SettingsActivity.this, "¡Copia de seguridad guardada con éxito!", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(SettingsActivity.this, "Error al escribir el archivo JSON.", Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
 
@@ -113,7 +122,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                             // Reiniciamos la app para aplicar cambios
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
                             finish();
                         });
@@ -226,22 +235,18 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         btnSaveProfile.setOnClickListener(v -> {
-            if (usuarioActual != null) {
-                try {
-                    double peso = Double.parseDouble(etWeight.getText().toString());
-                    double altura = Double.parseDouble(etHeight.getText().toString());
-                    String genero = dropGender.getText().toString();
+            String pesoStr = etWeight.getText().toString();
+            String alturaStr = etHeight.getText().toString();
+            String generoTexto = dropGender.getText().toString();
 
-                    usuarioActual.setPesoActual(peso);
-                    usuarioActual.setAltura(altura);
-                    usuarioActual.setGenero(Genero.valueOf(genero));
-
-                    usuarioViewModel.updateUsuario(usuarioActual);
-                    Toast.makeText(this, "Perfil actualizado correctamente", Toast.LENGTH_SHORT).show();
-                } catch (NumberFormatException e) {
-                    Toast.makeText(this, "Por favor, introduce números válidos", Toast.LENGTH_SHORT).show();
-                }
-            }
+            usuarioViewModel.actualizarPerfilUsuario(
+                    usuarioActual,
+                    pesoStr,
+                    alturaStr,
+                    generoTexto,
+                    () -> Toast.makeText(this, "Perfil actualizado correctamente", Toast.LENGTH_SHORT).show(),
+                    mensajeError -> Toast.makeText(this, mensajeError, Toast.LENGTH_SHORT).show()
+            );
         });
 
         // BOTÓN EXPORTAR
@@ -287,10 +292,7 @@ public class SettingsActivity extends AppCompatActivity {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             String dateString = sdf.format(new Date(selection));
 
-            usuarioActual.setFechaNacimiento(dateString);
-
-            int nuevaEdad = usuarioViewModel.calcularEdad(usuarioActual);
-
+            int nuevaEdad = usuarioViewModel.calcularEdadDesdeString(dateString);
             etAge.setText(String.valueOf(nuevaEdad));
         });
     }
@@ -321,50 +323,4 @@ public class SettingsActivity extends AppCompatActivity {
 
         usuarioViewModel = new ViewModelProvider(this).get(UsuarioViewModel.class);
     }
-
-    /**
-     * Ejecuta la exportación de la base de datos.
-     *
-     * @param uri Ruta del archivo donde se exportará la base de datos.
-     */
-    private void ejecutarExportacionBackup(Uri uri) {
-
-        Toast.makeText(this, "Generando copia de seguridad...", Toast.LENGTH_SHORT).show();
-
-        new Thread(() -> {
-            try {
-                // Obtener la instancia de tu base de datos
-                FortiumDatabase db = FortiumDatabase.getInstance(getApplicationContext());
-
-                // Extraer todos los datos de forma síncrona
-                Usuario usuario = db.usuariosDao().getUsuario();
-                List<Ejercicio> ejercicios = db.ejerciciosDao().getAllEjerciciosSync();
-                List<Sesion> sesiones = db.sesionesDao().getAllSesionesSync();
-                List<Serie> series = db.seriesDao().getAllSeriesSync();
-                List<Rutina> rutinas = db.rutinasDao().getAllExport();
-
-                // Empaquetar todos los datos en el contenedor que creamos
-                ExportData backupData = new ExportData(usuario, ejercicios, rutinas, sesiones, series);
-
-                // Convertir a JSON y guardar en el archivo que eligió el usuario
-                boolean exito = JsonExporter.exportarAJson(SettingsActivity.this, uri, backupData);
-
-                // Volver al hilo principal para avisar al usuario
-                runOnUiThread(() -> {
-                    if (exito) {
-                        Toast.makeText(SettingsActivity.this, "¡Copia de seguridad guardada con éxito!", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(SettingsActivity.this, "Error al escribir el archivo JSON.", Toast.LENGTH_LONG).show();
-                    }
-                });
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                runOnUiThread(() ->
-                        Toast.makeText(SettingsActivity.this, "Error crítico al exportar la base de datos.", Toast.LENGTH_SHORT).show()
-                );
-            }
-        }).start();
-    }
-
 }

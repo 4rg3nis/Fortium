@@ -50,16 +50,13 @@ public class EjercicioRepository {
         });
     }
 
-    public void updateEjercicio(Ejercicio ejercicio) throws UnsupportedOperationException {
-        if (ejercicio.isEsPredefinido()) {
-            throw new UnsupportedOperationException("Seguridad: No se pueden modificar los ejercicios predefinidos.");
-        }
+    public void updateEjercicio(Ejercicio ejercicio) {
         executorService.execute(() -> {
             ejerciciosDao.update(ejercicio);
         });
     }
 
-    public void deleteEjercicio(Ejercicio ejercicio) throws UnsupportedOperationException {
+    public void deleteEjercicio(Ejercicio ejercicio) {
         executorService.execute(() -> {
             ejerciciosDao.delete(ejercicio);
         });

@@ -240,27 +240,32 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
                     return;
                 }
 
-                float peso = pesoStr.isEmpty() ? 0.0f : Float.parseFloat(pesoStr);
-                int reps = repsStr.isEmpty() ? 0 : Integer.parseInt(repsStr);
-                float rpe = rpeStr.isEmpty() ? 0.0f : Float.parseFloat(rpeStr);
+                try {
+                    float peso = pesoStr.isEmpty() ? 0.0f : Float.parseFloat(pesoStr);
+                    int reps = repsStr.isEmpty() ? 0 : Integer.parseInt(repsStr);
+                    float rpe = rpeStr.isEmpty() ? 0.0f : Float.parseFloat(rpeStr);
 
-                if (rpe > 10.0f) {
-                    android.widget.Toast.makeText(context, "El RPE máximo es 10", android.widget.Toast.LENGTH_SHORT).show();
+                    if (rpe > 10.0f) {
+                        Toast.makeText(context, "El RPE máximo es 10", Toast.LENGTH_SHORT).show();
+                        btnCheck.setChecked(false);
+                        return;
+                    }
+
+                    etWeightInput.setEnabled(false);
+                    etRepsInput.setEnabled(false);
+                    etRpeInput.setEnabled(false);
+
+                    if (listener != null) {
+                        int tiempoParaEsteEjercicio = tiemposDescanso.get(positionEjercicio);
+                        int idEjercicioReaL = listaEjercicios.get(positionEjercicio).ejercicio.getId();
+
+                        String notaStr = etExerciseNotes.getText().toString().trim();
+
+                        listener.onSetCompleted(tiempoParaEsteEjercicio, idEjercicioReaL, peso, reps, rpe, notaStr);
+                    }
+                } catch (NumberFormatException e) {
+                    Toast.makeText(context, "Por favor, introduce números válidos", Toast.LENGTH_SHORT).show();
                     btnCheck.setChecked(false);
-                    return;
-                }
-
-                etWeightInput.setEnabled(false);
-                etRepsInput.setEnabled(false);
-                etRpeInput.setEnabled(false);
-
-                if (listener != null) {
-                    int tiempoParaEsteEjercicio = tiemposDescanso.get(positionEjercicio);
-                    int idEjercicioReaL = listaEjercicios.get(positionEjercicio).ejercicio.getId();
-
-                    String notaStr = etExerciseNotes.getText().toString().trim();
-
-                    listener.onSetCompleted(tiempoParaEsteEjercicio, idEjercicioReaL, peso, reps, rpe, notaStr);
                 }
             } else {
                 etWeightInput.setEnabled(true);
@@ -268,14 +273,17 @@ public class ActiveWorkoutAdapter extends RecyclerView.Adapter<ActiveWorkoutAdap
                 etRpeInput.setEnabled(true);
 
                 if (listener != null) {
-                    String pesoStr = etWeightInput.getText().toString();
-                    String repsStr = etRepsInput.getText().toString();
+                    try {
+                        String pesoStr = etWeightInput.getText().toString();
+                        String repsStr = etRepsInput.getText().toString();
 
-                    float peso = pesoStr.isEmpty() ? 0.0f : Float.parseFloat(pesoStr);
-                    int reps = repsStr.isEmpty() ? 0 : Integer.parseInt(repsStr);
-                    int idEjercicioReaL = listaEjercicios.get(positionEjercicio).ejercicio.getId();
+                        float peso = pesoStr.isEmpty() ? 0.0f : Float.parseFloat(pesoStr);
+                        int reps = repsStr.isEmpty() ? 0 : Integer.parseInt(repsStr);
+                        int idEjercicioReaL = listaEjercicios.get(positionEjercicio).ejercicio.getId();
 
-                    listener.onSetUnchecked(idEjercicioReaL, peso, reps);
+                        listener.onSetUnchecked(idEjercicioReaL, peso, reps);
+                    } catch (NumberFormatException e) {
+                    }
                 }
             }
         });

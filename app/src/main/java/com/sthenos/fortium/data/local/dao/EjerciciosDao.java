@@ -15,13 +15,13 @@ import java.util.List;
 
 @Dao
 public interface EjerciciosDao {
-    // OPERACIONES BÁSICAS (CRUD)
+    // Operaciones básicas
 
     // Inserta un nuevo ejercicio. Si ya existe uno con el mismo ID, lo reemplaza.
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Ejercicio ejercicio);
 
-    // Permite insertar una lista completa de ejercicios (útil para la carga inicial)
+    // Permite insertar una lista completa de ejercicios
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<Ejercicio> ejercicios);
 
@@ -33,7 +33,7 @@ public interface EjerciciosDao {
     @Delete
     void delete(Ejercicio ejercicio);
 
-    // CONSULTAS PERSONALIZADAS (QUERIES)
+    // Consultas personalizadas
 
     // Obtiene todos los ejercicios registrados
     @Query("SELECT * FROM Ejercicios")
@@ -42,14 +42,6 @@ public interface EjerciciosDao {
     // Busca un ejercicio específico por su ID único
     @Query("SELECT * FROM Ejercicios WHERE id = :id LIMIT 1")
     LiveData<Ejercicio> getById(int id);
-
-    // Filtra los ejercicios por un grupo muscular específico
-    @Query("SELECT * FROM Ejercicios WHERE grupoMuscularPrincipal = :grupoMuscular")
-    LiveData<List<Ejercicio>> getByGrupoMuscular(String grupoMuscular);
-
-    // Filtra para obtener solo los ejercicios predefinidos del sistema
-    @Query("SELECT * FROM Ejercicios WHERE esPredefinido = 1")
-    LiveData<List<Ejercicio>> getPredefinidos();
 
     @Query("SELECT * FROM Ejercicios")
     List<Ejercicio> getAllEjerciciosSync();

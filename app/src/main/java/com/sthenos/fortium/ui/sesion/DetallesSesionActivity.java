@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.sthenos.fortium.R;
-import com.sthenos.fortium.ui.workout.EntrenamientoViewModel;
 import com.sthenos.fortium.ui.settings.UsuarioViewModel;
+import com.sthenos.fortium.ui.workout.EntrenamientoViewModel;
 import com.sthenos.fortium.utils.Converters;
 
 import java.util.Locale;
@@ -35,9 +35,10 @@ public class DetallesSesionActivity extends AppCompatActivity {
 
     private int sesionId;
     private EntrenamientoViewModel entrenamientoViewModel;
-    private SessionDetailsAdapter adapter;
+    private DetallesSesionAdapter adapter;
     private UsuarioViewModel usuarioViewModel;
     private String unidad = "kg";
+    private double volumenActual = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,11 +78,13 @@ public class DetallesSesionActivity extends AppCompatActivity {
                 String[] partesFecha = sesion.getFechaInicio().split(" ");
                 if (partesFecha.length >= 2) {
                     tvDetalleFecha.setText(partesFecha[0].replace("-", "/"));
+
                     tvDetalleTiempo.setText(partesFecha[1].substring(0, 5));
                 }
-                // TODO: Cambiar por lo que haya elegido el usurio.
-                tvDetalleVolumen.setText(String.format(Locale.getDefault(), "%.1f kg", sesion.getVolumenTotal()));
+                volumenActual = sesion.getVolumenTotal();
+                setUnits();
                 tvDetalleSeries.setText(String.valueOf(sesion.getCantidadSeries()));
+
 
                 if (sesion.getNotas() != null && !sesion.getNotas().trim().isEmpty()) {
                     cardDetalleNotas.setVisibility(View.VISIBLE);
@@ -101,8 +104,8 @@ public class DetallesSesionActivity extends AppCompatActivity {
         usuarioViewModel.getUsuarioActual().observe(this, usuario -> {
             if (usuario != null) {
                 unidad = Converters.fromUnitMeasure(usuario.getUnidadmedida()).toLowerCase();
-                setUnits();
                 adapter.setUnits(unidad);
+                setUnits();
             }
         });
     }
@@ -111,7 +114,7 @@ public class DetallesSesionActivity extends AppCompatActivity {
      * Establecer las unidades de medida.
      */
     private void setUnits() {
-        tvDetalleVolumen.setText(String.format(Locale.getDefault(), "%.1f %s", 0.0, unidad));
+        tvDetalleVolumen.setText(String.format(Locale.getDefault(), "%.1f %s", volumenActual, unidad));
     }
 
     /**
@@ -131,7 +134,7 @@ public class DetallesSesionActivity extends AppCompatActivity {
         entrenamientoViewModel = new ViewModelProvider(this).get(EntrenamientoViewModel.class);
 
         rvDetalleEjercicios.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new SessionDetailsAdapter();
+        adapter = new DetallesSesionAdapter();
         rvDetalleEjercicios.setAdapter(adapter);
         usuarioViewModel = new ViewModelProvider(this).get(UsuarioViewModel.class);
     }

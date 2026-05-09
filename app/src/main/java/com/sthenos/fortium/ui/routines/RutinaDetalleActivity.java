@@ -25,7 +25,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.model.entities.Ejercicio;
-import com.sthenos.fortium.model.entities.RutinaEjercicio;
 import com.sthenos.fortium.ui.workout.WorkoutActivity;
 import com.sthenos.fortium.ui.exercises.ExerciseSelectionBottomSheet;
 import com.sthenos.fortium.ui.exercises.EjercicioViewModel;
@@ -90,16 +89,7 @@ public class RutinaDetalleActivity extends AppCompatActivity {
                 return;
             }
 
-            ExerciseSelectionBottomSheet bottomSheet = new ExerciseSelectionBottomSheet();
-
-            // Pasamos la lista de ejercicios disponibles al BottomSheet.
-            bottomSheet.setEjercicios(ejerciciosDisponibles);
-
-            // Establecemos el listener para cuando se seleccione un ejercicio.
-            bottomSheet.setListener(ejercicioSeleccionado -> {
-                // Una vez selecionado un ejercicio mostramos un dialogo para establecer las series y repeticiones.
-                showConfigureExerciseDialog(ejercicioSeleccionado);
-            });
+            ExerciseSelectionBottomSheet bottomSheet = getExerciseSelectionBottomSheet();
 
             // Mostramos el BottomSheet.
             bottomSheet.show(getSupportFragmentManager(), "ExerciseSheet");
@@ -108,7 +98,7 @@ public class RutinaDetalleActivity extends AppCompatActivity {
         // Establecemos el listener para cuando se elimine un ejercicio de la rutina.
         rutinaEjercicioAdapter.setOnDeleteListener(ejercicio -> {
             rutinaViewModel.deleteEjercioFromRutina(ejercicio);
-            Toast.makeText(this, "Ejercicio eliminado", android.widget.Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Ejercicio eliminado", Toast.LENGTH_SHORT).show();
             ejercicioCount--;
         });
 
@@ -117,6 +107,24 @@ public class RutinaDetalleActivity extends AppCompatActivity {
             intent.putExtra("rutinaId", rutinaId);
             startActivity(intent);
         });
+    }
+
+    /**
+     * Crea un BottomSheet para seleccionar un ejercicio.
+     * @return El BottomSheet creado.
+     */
+    private ExerciseSelectionBottomSheet getExerciseSelectionBottomSheet() {
+        ExerciseSelectionBottomSheet bottomSheet = new ExerciseSelectionBottomSheet();
+
+        // Pasamos la lista de ejercicios disponibles al BottomSheet.
+        bottomSheet.setEjercicios(ejerciciosDisponibles);
+
+        // Establecemos el listener para cuando se seleccione un ejercicio.
+        bottomSheet.setListener(ejercicioSeleccionado -> {
+            // Una vez selecionado un ejercicio mostramos un dialogo para establecer las series y repeticiones.
+            showConfigureExerciseDialog(ejercicioSeleccionado);
+        });
+        return bottomSheet;
     }
 
     /**
@@ -150,17 +158,21 @@ public class RutinaDetalleActivity extends AppCompatActivity {
             String repsStr = etReps.getText().toString().trim();
 
             if (setsStr.isEmpty() || repsStr.isEmpty()) {
-                Toast.makeText(this, "Rellena ambos campos", android.widget.Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Rellena ambos campos", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            int numSets = Integer.parseInt(setsStr);
-            int numReps = Integer.parseInt(repsStr);
+            try {
+                int numSets = Integer.parseInt(setsStr);
+                int numReps = Integer.parseInt(repsStr);
 
-            guardarEjercicioEnRutina(ejercicio.getId(), numSets, numReps);
+                guardarEjercicioEnRutina(ejercicio.getId(), numSets, numReps);
 
-            dialog.dismiss();
-            Toast.makeText(this, "Ejercicio añadido", android.widget.Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                Toast.makeText(this, "Ejercicio añadido", Toast.LENGTH_SHORT).show();
+            } catch (NumberFormatException e) {
+                Toast.makeText(this, "Por favor, introduce números válidos", Toast.LENGTH_SHORT).show();
+            }
         });
 
         dialog.show();
@@ -173,12 +185,8 @@ public class RutinaDetalleActivity extends AppCompatActivity {
      * @param numReps El numero de repeticiones que se eligió.
      */
     private void guardarEjercicioEnRutina(long ejercicioId, int numSets, int numReps) {
-        int nuevoOrden = ejercicioCount + 1; // Orden del nuevo ejercicio
-        int ejId = (int) ejercicioId;
-        RutinaEjercicio rutinaEjercicio = new RutinaEjercicio(rutinaId, ejId, numSets, numReps, nuevoOrden);
-        rutinaViewModel.insertRutinaEjercicio(rutinaEjercicio, () -> {
-            // Aqui mandamos ese mensaje para cuando se inserte correctamente la rutinaEjercicio y se cree las series correspondientes
-            Toast.makeText(this, "Ejercicio añadido con sus correspondientes series y repeticiones!", android.widget.Toast.LENGTH_SHORT).show();
+        rutinaViewModel.addEjercicioARutina(rutinaId, ejercicioId, numSets, numReps, ejercicioCount, () -> {
+            Toast.makeText(this, "Ejercicio añadido con sus correspondientes series y repeticiones!", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -214,13 +222,7 @@ public class RutinaDetalleActivity extends AppCompatActivity {
         rutinaViewModel.getEjerciciosDeRutina(rutinaId).observe(this, lista -> {
             if(lista != null) {
                 ejercicioCount = lista.size();
-            }
-        });
-
-        // Observa la lista de ejercicios de la rutina seleccionada.
-        rutinaViewModel.getEjerciciosDeRutina(rutinaId).observe(this, ejercicios -> {
-            if (ejercicios != null) {
-                rutinaEjercicioAdapter.setEjercicios(ejercicios);
+                rutinaEjercicioAdapter.setEjercicios(lista);
             }
         });
     }

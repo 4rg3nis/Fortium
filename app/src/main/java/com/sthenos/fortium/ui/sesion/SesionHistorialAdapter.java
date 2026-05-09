@@ -22,6 +22,7 @@ public class SesionHistorialAdapter extends RecyclerView.Adapter<SesionHistorial
     private List<HistorialSesion> sesiones = new ArrayList<>();
     private final boolean enActivity;
     private OnItemClickListener listener;
+    private String unidadPeso = "kg";
 
     /**
      * Interfaz para manejar los clics en los elementos del RecyclerView.
@@ -39,6 +40,12 @@ public class SesionHistorialAdapter extends RecyclerView.Adapter<SesionHistorial
          */
         void onItemLongClick(HistorialSesion sesion);
 
+    }
+
+    public void setUnidadPeso(String unidad) {
+        this.unidadPeso = unidad;
+        // Si la unidad cambia en tiempo real, refrescamos los items visibles
+        notifyItemRangeChanged(0, sesiones.size());
     }
 
     public SesionHistorialAdapter(boolean enActivity, OnItemClickListener listener) {
@@ -77,7 +84,7 @@ public class SesionHistorialAdapter extends RecyclerView.Adapter<SesionHistorial
 
         // Totales de Volumen y Series
         holder.tvSeries.setText(sesion.cantidadSeries + " Series");
-        holder.tvVolumen.setText(String.format("%.1f kg", sesion.volumenTotal));
+        holder.tvVolumen.setText(String.format("%.1f %s", sesion.volumenTotal, unidadPeso));
 
         // Lógica de las Notas
         if (sesion.notas != null && !sesion.notas.trim().isEmpty()) {

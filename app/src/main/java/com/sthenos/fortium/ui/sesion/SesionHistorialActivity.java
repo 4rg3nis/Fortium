@@ -2,8 +2,10 @@ package com.sthenos.fortium.ui.sesion;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.sthenos.fortium.R;
 import com.sthenos.fortium.model.queries.HistorialSesion;
+import com.sthenos.fortium.ui.settings.UsuarioViewModel;
 import com.sthenos.fortium.ui.workout.EntrenamientoViewModel;
+import com.sthenos.fortium.utils.Converters;
 
 /**
  * Actividad que muestra el historial completo de sesiones.
@@ -29,6 +33,8 @@ public class SesionHistorialActivity extends AppCompatActivity {
     private LinearLayout tvEmptyHistorial;
     private RecyclerView rvCompleto;
     private EntrenamientoViewModel entrenamientoViewModel;
+    private UsuarioViewModel usuarioViewModel;
+    private String unidadPeso = "kg";
 
 
     @Override
@@ -56,7 +62,7 @@ public class SesionHistorialActivity extends AppCompatActivity {
         SesionHistorialAdapter adapter = new SesionHistorialAdapter(true, new SesionHistorialAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(HistorialSesion sesion) {
-                Intent intent = new android.content.Intent(SesionHistorialActivity.this, DetallesSesionActivity.class);
+                Intent intent = new Intent(SesionHistorialActivity.this, DetallesSesionActivity.class);
                 intent.putExtra("sesionId", sesion.sesionId);
                 startActivity(intent);
             }
@@ -69,7 +75,7 @@ public class SesionHistorialActivity extends AppCompatActivity {
                         .setPositiveButton("Eliminar", (dialog, which) -> {
                             // Llamamos al ViewModel para que la fulmine
                             entrenamientoViewModel.eliminarSesionCompleta(sesion.sesionId);
-                            android.widget.Toast.makeText(SesionHistorialActivity.this, "Sesión eliminada", android.widget.Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SesionHistorialActivity.this, "Sesión eliminada", Toast.LENGTH_SHORT).show();
                         })
                         .setNegativeButton("Cancelar", null)
                         .show();
@@ -83,13 +89,20 @@ public class SesionHistorialActivity extends AppCompatActivity {
                 adapter.setSesiones(sesiones);
 
                 // Mostramos la lista y ocultamos el mensaje
-                rvCompleto.setVisibility(android.view.View.VISIBLE);
-                tvEmptyHistorial.setVisibility(android.view.View.GONE);
+                rvCompleto.setVisibility(View.VISIBLE);
+                tvEmptyHistorial.setVisibility(View.GONE);
             } else {
                 // No hay sesiones (lista vacía)
                 // Ocultamos la lista y mostramos el mensaje
-                rvCompleto.setVisibility(android.view.View.GONE);
-                tvEmptyHistorial.setVisibility(android.view.View.VISIBLE);
+                rvCompleto.setVisibility(View.GONE);
+                tvEmptyHistorial.setVisibility(View.VISIBLE);
+            }
+        });
+
+        usuarioViewModel.getUsuarioActual().observe(this, usuario -> {
+            if (usuario != null) {
+                unidadPeso = Converters.fromUnitMeasure(usuario.getUnidadmedida());
+                adapter.setUnidadPeso(unidadPeso);
             }
         });
     }
@@ -102,10 +115,9 @@ public class SesionHistorialActivity extends AppCompatActivity {
     private void initComponents() {
         btnBack = findViewById(R.id.btnBack);
         rvCompleto = findViewById(R.id.rvHistorialCompleto);
-        rvCompleto = findViewById(R.id.rvHistorialCompleto);
         tvEmptyHistorial = findViewById(R.id.viewEmptyState);
 
-
         entrenamientoViewModel = new ViewModelProvider(this).get(EntrenamientoViewModel.class);
+        usuarioViewModel = new ViewModelProvider(this).get(UsuarioViewModel.class);
     }
 }

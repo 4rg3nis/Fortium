@@ -52,9 +52,7 @@ public class RutinaAdapter extends RecyclerView.Adapter<RutinaAdapter.RutinaView
         }
 
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(v.getContext(), RutinaDetalleActivity.class);
-            intent.putExtra("rutinaId", resumen.rutina.getId());
-            v.getContext().startActivity(intent);
+            if(opcionesListener != null) opcionesListener.onRutinaClick(resumen);
         });
 
         holder.btnRoutineOptions.setOnClickListener(v -> {
@@ -75,7 +73,6 @@ public class RutinaAdapter extends RecyclerView.Adapter<RutinaAdapter.RutinaView
         PopupMenu popup = new PopupMenu(v.getContext(), holder.btnRoutineOptions);
         popup.inflate(R.menu.menu_rutina_options);
 
-        // Escuchamos qué opción ha tocado el usuario
         popup.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
 
@@ -89,7 +86,6 @@ public class RutinaAdapter extends RecyclerView.Adapter<RutinaAdapter.RutinaView
             return false;
         });
 
-        // Mostramos el menú
         popup.show();
     }
 
@@ -111,7 +107,7 @@ public class RutinaAdapter extends RecyclerView.Adapter<RutinaAdapter.RutinaView
             if (dias == 1) return "Ayer";
             return "Hace " + dias + " días";
         } catch (Exception e) {
-            return fechaSql; // Si falla el parseo, devolvemos la fecha en bruto
+            return fechaSql; // Si falla el parseo, devolvemos la fecha
         }
     }
 
@@ -146,5 +142,6 @@ public class RutinaAdapter extends RecyclerView.Adapter<RutinaAdapter.RutinaView
     public interface OnRutinaOpcionesListener {
         void onExportar(RutinaResumen rutina);
         void onEliminar(RutinaResumen rutina);
+        void onRutinaClick(RutinaResumen rutina);
     }
 }

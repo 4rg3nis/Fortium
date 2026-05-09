@@ -9,6 +9,7 @@ import com.sthenos.fortium.model.dto.ExportData;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.concurrent.Executors;
 
 /**
  * Clase para importar datos desde un archivo JSON.
@@ -59,7 +60,7 @@ public class JsonImporter {
      * @param callback Interfaz para avisar a la Activity de lo que ha pasado.
      */
     public static void ejecutarImportacionCompleta(Context context, Uri uri, ImportCallback callback) {
-        new Thread(() -> {
+        Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 // Leer el archivo
                 ExportData backup = importarDeJson(context, uri);
@@ -76,6 +77,8 @@ public class JsonImporter {
                     if (backup.rutinas != null) db.rutinasDao().insertAll(backup.rutinas);
                     if (backup.sesiones != null) db.sesionesDao().insertAll(backup.sesiones);
                     if (backup.series != null) db.seriesDao().insertAll(backup.series);
+                    if (backup.rutinasEjercicios != null)
+                        db.rutinasEjerciciosDao().insertAll(backup.rutinasEjercicios);
 
                     // Marcar el perfil como creado para que no pida registro nunca más
                     SharedPreferences prefs = context.getSharedPreferences("FortiumApp", Context.MODE_PRIVATE);
@@ -87,14 +90,15 @@ public class JsonImporter {
                     }
 
                 } else {
-                    if (callback != null) callback.onError("El archivo JSON no es válido o está corrupto.");
+                    if (callback != null)
+                        callback.onError("El archivo JSON no es válido o está corrupto.");
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
                 if (callback != null) callback.onError("Error crítico al importar los datos.");
             }
-        }).start();
+        });
     }
 
     /**

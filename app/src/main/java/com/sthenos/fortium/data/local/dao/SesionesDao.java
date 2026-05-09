@@ -16,7 +16,7 @@ import java.util.List;
 
 @Dao
 public interface SesionesDao {
-    // OPERACIONES BÁSICAS (CRUD)
+    // Operaciones basicas
 
     // Insertar una nueva sesión
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -33,7 +33,7 @@ public interface SesionesDao {
     @Delete
     void delete(Sesion sesion);
 
-    // CONSULTAS PERSONALIZADAS (QUERIES)
+    // Consultas personalizadas
 
     // Obtener todas las sesiones registradas
     @Query("SELECT * FROM Sesiones")

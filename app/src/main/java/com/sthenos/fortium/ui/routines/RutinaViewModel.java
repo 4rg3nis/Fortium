@@ -1,6 +1,7 @@
 package com.sthenos.fortium.ui.routines;
 
 import android.app.Application;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -15,26 +16,33 @@ import com.sthenos.fortium.model.entities.Rutina;
 import com.sthenos.fortium.model.entities.RutinaEjercicio;
 import com.sthenos.fortium.model.dto.RutinaExportData;
 import com.sthenos.fortium.model.queries.RutinaResumen;
+import com.sthenos.fortium.utils.JsonExporter;
+import com.sthenos.fortium.utils.JsonImporter;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 public class RutinaViewModel extends AndroidViewModel {
     private final RutinaRepository repository;
-    private final LiveData<List<Rutina>> allRutinas;
+
+    private final ExecutorService executorService;
+
+    private final Handler mainHandler;
 
     public RutinaViewModel(@NonNull Application application) {
         super(application);
         repository = RutinaRepository.getInstance(application);
-        allRutinas = repository.getRutinas();
+        executorService = Executors.newSingleThreadExecutor();
+        mainHandler = new Handler(Looper.getMainLooper());
     }
 
     public void insert(Rutina rutina) {
         repository.insert(rutina);
-    }
-
-    public LiveData<List<Rutina>> getAllRutinas() {
-        return allRutinas;
     }
 
     public LiveData<Rutina> getRutinaById(int id) {
@@ -78,11 +86,10 @@ public class RutinaViewModel extends AndroidViewModel {
             exportData.rutina = rutina;
             exportData.ejercicios = listaEjercicios;
 
-            // Convertimos a JSON
             String jsonFinal = new Gson().toJson(exportData);
 
             // Volvemos al hilo principal para avisar a la pantalla
-            new Handler(Looper.getMainLooper()).post(() -> {
+            mainHandler.post(() -> {
                 onJsonReady.accept(jsonFinal);
             });
         }).start();
@@ -95,7 +102,7 @@ public class RutinaViewModel extends AndroidViewModel {
      * @param onError Callback que se ejecuta en caso de error.
      */
     public void importarRutinaFromJson(String jsonString, Runnable onSuccess, Consumer<String> onError) {
-        new Thread(() -> {
+        executorService.execute(() -> {
             try {
                 RutinaExportData data = new Gson().fromJson(jsonString, RutinaExportData.class);
 
@@ -110,7 +117,7 @@ public class RutinaViewModel extends AndroidViewModel {
                 long nuevoIdRutina = repository.insertarRutinaExport(data.rutina);
 
                 // Asignamos ese nuevo id a todos los ejercicios y reseteamos sus propios ids
-                for (com.sthenos.fortium.model.entities.RutinaEjercicio ejercicio : data.ejercicios) {
+                for (RutinaEjercicio ejercicio : data.ejercicios) {
                     ejercicio.setId(0); // Para que Room cree una fila nueva
                     ejercicio.setRutinaId((int) nuevoIdRutina); // Lo enlazamos a la nueva rutina
                 }
@@ -118,12 +125,56 @@ public class RutinaViewModel extends AndroidViewModel {
                 // Guardamos todos los ejercicios de golpe
                 repository.insertRutinaEjercicioExport(data.ejercicios);
 
-                new Handler(Looper.getMainLooper()).post(onSuccess);
+                mainHandler.post(onSuccess);
             } catch (Exception e) {
                 e.printStackTrace();
-                new Handler(Looper.getMainLooper()).post(() -> onError.accept(e.getMessage()));
+                mainHandler.post(() -> onError.accept(e.getMessage()));
             }
-        }).start();
+        });
     }
 
+    /**
+     * Exporta una rutina a un archivo que elija el usuario con el explorador de archivos.
+     * @param uri Ruta del archivo donde se exportará la rutina.
+     * @param jsonExportar JSON a exportar.
+     * @param callback Callback que se ejecuta cuando se haya completado la exportación.
+     */
+    public void exportarRutinaArchivo(Uri uri, String jsonExportar, Consumer<Boolean> callback) {
+        executorService.execute(() -> {
+            boolean exito = JsonExporter.exportarStringAJson(getApplication().getApplicationContext(), uri, jsonExportar);
+            mainHandler.post(() -> callback.accept(exito));
+        });
+    }
+
+    /**
+     * Importa una rutina desde un archivo que elija el usuario con el explorador de archivos.
+     * @param uri Ruta del archivo que contiene la rutina.
+     * @param onSuccess Callback que se ejecuta cuando se haya completado la importación.
+     * @param onError Callback que se ejecuta en caso de error.
+     */
+    public void importarRutinaUri(Uri uri, Runnable onSuccess, Consumer<String> onError) {
+        executorService.execute(() -> {
+            String jsonLeido = JsonImporter.leerArchivoComoString(getApplication(), uri);
+
+            mainHandler.post(() -> {
+                if (jsonLeido != null && !jsonLeido.isEmpty()) {
+                    importarRutinaFromJson(jsonLeido, onSuccess, onError);
+                } else {
+                    onError.accept("No se pudo leer el archivo JSON o está vacío.");
+                }
+            });
+        });
+    }
+
+    public void crearYGuardarRutina(String titulo, String descripcion, RutinaRepository.OnRutinaCreadaListener listener) {
+        String fechaHoy = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+        Rutina nuevaRutina = new Rutina(titulo, descripcion, fechaHoy);
+        repository.insert(nuevaRutina, listener);
+    }
+
+    public void addEjercicioARutina(int rutinaId, long ejercicioId, int numSets, int numReps, int ejercicioCountActual, Runnable onSuccess) {
+        int nuevoOrden = ejercicioCountActual + 1;
+        RutinaEjercicio rutinaEjercicio = new RutinaEjercicio(rutinaId, (int) ejercicioId, numSets, numReps, nuevoOrden);
+        repository.insertRutinaEjercicio(rutinaEjercicio, onSuccess);
+    }
 }

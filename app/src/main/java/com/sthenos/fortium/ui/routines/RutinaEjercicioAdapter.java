@@ -47,7 +47,6 @@ public class RutinaEjercicioAdapter extends RecyclerView.Adapter<RutinaEjercicio
 
         holder.btnDelete.setOnClickListener(v -> {
             if (deleteListener != null) {
-                // Le pasamos el objeto exacto que hay que borrar a la Activity
                 deleteListener.onDeleteClick(ejercicio.rutinaEjercicio);
             }
         });
@@ -58,7 +57,6 @@ public class RutinaEjercicioAdapter extends RecyclerView.Adapter<RutinaEjercicio
         return ejerciciosList.size();
     }
 
-    // Método vital para que la lista se refresque sola
     public void setEjercicios(List<EjercicioConDetalles> ejercicios) {
         this.ejerciciosList = ejercicios;
         notifyDataSetChanged(); // Refresca la interfaz
