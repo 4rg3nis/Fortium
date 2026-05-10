@@ -198,7 +198,7 @@ public class WorkoutActivity extends AppCompatActivity {
             }
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-            String fechaFinString = sdf.format(new java.util.Date());
+            String fechaFinString = sdf.format(new Date());
 
             Integer idRutinaParaBD = (rutinaId == -1) ? null : rutinaId;
 

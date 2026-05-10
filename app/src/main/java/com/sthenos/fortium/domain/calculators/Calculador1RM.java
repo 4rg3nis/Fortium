@@ -67,7 +67,7 @@ public class Calculador1RM {
      * - Género Femenino: Incluye un factor de corrección (1.02) en edades tempranas debido
      *   a la mayor capacidad de las mujeres para trabajar con porcentajes altos de carga.
      *
-     * @param genero String representativo del género (obtenido vía Converters).
+     * @param genero String representativo del género.
      * @param edad   Edad cronológica del usuario.
      * @return Coeficiente multiplicador (0.82 - 1.02).
      */
