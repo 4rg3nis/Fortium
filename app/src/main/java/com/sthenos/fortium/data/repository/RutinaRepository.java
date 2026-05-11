@@ -128,9 +128,7 @@ public class RutinaRepository {
     }
 
     public void insertRutinaEjercicioExport(List<RutinaEjercicio> ejercicios) {
-        executorService.execute(() -> {
-            rutinasEjerciciosDao.insertRutinaEjercicioExport(ejercicios);
-        });
+        rutinasEjerciciosDao.insertRutinaEjercicioExport(ejercicios);
     }
 
     public long insertarRutinaExport(Rutina rutina) {
