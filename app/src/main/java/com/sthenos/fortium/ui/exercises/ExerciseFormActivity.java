@@ -179,11 +179,16 @@ public class ExerciseFormActivity extends AppCompatActivity {
                     .setTitle("¿Eliminar " + ejercicioAEditar.getNombre() + "?")
                     .setMessage("Esta acción no se puede deshacer. ¿Estás seguro?")
                     .setPositiveButton("Eliminar", (dialog, which) -> {
-
-                        viewModel.deleteEjercicio(ejercicioAEditar);
-
-                        Toast.makeText(this, "Ejercicio eliminado", Toast.LENGTH_SHORT).show();
-                        finish(); // Cerramos la pantalla
+                        viewModel.deleteEjercicio(
+                                ejercicioAEditar,
+                                () -> {
+                                    Toast.makeText(this, "Ejercicio eliminado", Toast.LENGTH_SHORT).show();
+                                    finish(); // Cerramos la pantalla
+                                },
+                                mensajeError -> {
+                                    Toast.makeText(this, mensajeError, Toast.LENGTH_LONG).show();
+                                }
+                        );
                     })
                     .setNegativeButton("Cancelar", null)
                     .show();
