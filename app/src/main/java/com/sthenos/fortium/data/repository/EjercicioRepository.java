@@ -1,6 +1,8 @@
 package com.sthenos.fortium.data.repository;
 
 import android.app.Application;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.lifecycle.LiveData;
 
@@ -11,6 +13,7 @@ import com.sthenos.fortium.model.entities.Ejercicio;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 public class EjercicioRepository {
 
@@ -56,9 +59,16 @@ public class EjercicioRepository {
         });
     }
 
-    public void deleteEjercicio(Ejercicio ejercicio) {
+    public void deleteEjercicio(Ejercicio ejercicio, Runnable onSuccess, Consumer<String> onError) {
         executorService.execute(() -> {
-            ejerciciosDao.delete(ejercicio);
+            try {
+                ejerciciosDao.delete(ejercicio);
+                new Handler(Looper.getMainLooper()).post(onSuccess);
+            } catch (Exception e) {
+                new Handler(Looper.getMainLooper()).post(() ->
+                        onError.accept("No se puede borrar: Este ejercicio está en una rutina o ya tienes historial de entrenamiento guardado con él.")
+                );
+            }
         });
     }
 
