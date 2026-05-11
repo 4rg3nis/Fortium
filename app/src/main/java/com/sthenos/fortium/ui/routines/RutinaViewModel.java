@@ -53,10 +53,6 @@ public class RutinaViewModel extends AndroidViewModel {
         repository.insert(rutina, listener);
     }
 
-    public void insertRutinaEjercicio(RutinaEjercicio rutinaEjercicio, Runnable onSuccess){
-        repository.insertRutinaEjercicio(rutinaEjercicio, onSuccess);
-    }
-
     public LiveData<List<EjercicioConDetalles>> getEjerciciosDeRutina(int rutinaId) {
         return repository.getEjerciciosDeRutina(rutinaId);
     }
@@ -79,7 +75,7 @@ public class RutinaViewModel extends AndroidViewModel {
      * @param onJsonReady Callback que se ejecuta cuando se haya generado el JSON.
      */
     public void generarJsonDeRutina(Rutina rutina, Consumer<String> onJsonReady) {
-        new Thread(() -> {
+        executorService.execute(() -> {
             List<RutinaEjercicio> listaEjercicios = repository.getEjercicioRutinaExport(rutina.getId());
 
             RutinaExportData exportData = new RutinaExportData();
@@ -92,7 +88,7 @@ public class RutinaViewModel extends AndroidViewModel {
             mainHandler.post(() -> {
                 onJsonReady.accept(jsonFinal);
             });
-        }).start();
+        });
     }
 
     /**
