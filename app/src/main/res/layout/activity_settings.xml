@@ -239,6 +239,15 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLegalNotice"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/activitySettings_tv_aviso_legal"
+                android:layout_marginTop="16dp"/>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

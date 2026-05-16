@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
@@ -29,24 +30,15 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.textfield.TextInputEditText;
 import com.sthenos.fortium.R;
-import com.sthenos.fortium.data.local.FortiumDatabase;
-import com.sthenos.fortium.model.dto.ExportData;
-import com.sthenos.fortium.model.entities.Ejercicio;
-import com.sthenos.fortium.model.entities.Rutina;
-import com.sthenos.fortium.model.entities.RutinaEjercicio;
-import com.sthenos.fortium.model.entities.Serie;
-import com.sthenos.fortium.model.entities.Sesion;
 import com.sthenos.fortium.model.entities.Usuario;
 import com.sthenos.fortium.model.enums.Genero;
 import com.sthenos.fortium.ui.MainActivity;
 import com.sthenos.fortium.data.workers.AutoBackupWorker;
 import com.sthenos.fortium.utils.Converters;
-import com.sthenos.fortium.utils.JsonExporter;
 import com.sthenos.fortium.utils.JsonImporter;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -54,7 +46,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private TextInputEditText etWeight, etHeight, etAge;
     private AutoCompleteTextView dropGender;
-    private MaterialButton btnSaveProfile, btnExport, btnImport;
+    private MaterialButton btnSaveProfile, btnExport, btnImport, btnLegalNotice;
     private MaterialToolbar toolbar;
 
     private UsuarioViewModel usuarioViewModel;
@@ -269,7 +261,24 @@ public class SettingsActivity extends AppCompatActivity {
                     .show();
         });
 
+        btnLegalNotice.setOnClickListener(v -> mostrarAvisoLegal());
+    }
 
+    /**
+     * Muestra un diálogo emergente con el aviso legal de la aplicación.
+     */
+    private void mostrarAvisoLegal() {
+        // Usamos Html.fromHtml para que las etiquetas <b> (negritas) se pinten correctamente
+        CharSequence mensajeFormateado = Html.fromHtml(
+                getString(R.string.legal_notice_body),
+                Html.FROM_HTML_MODE_LEGACY
+        );
+
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.legal_notice_title)
+                .setMessage(mensajeFormateado)
+                .setPositiveButton("Entendido", null)
+                .show();
     }
 
     /**
@@ -320,6 +329,8 @@ public class SettingsActivity extends AppCompatActivity {
         btnExport = findViewById(R.id.btnExportJson);
         btnImport = findViewById(R.id.btnImportJson);
         switchAutoBackup = findViewById(R.id.switchAutoBackup);
+
+        btnLegalNotice = findViewById(R.id.btnLegalNotice);
 
         usuarioViewModel = new ViewModelProvider(this).get(UsuarioViewModel.class);
     }
