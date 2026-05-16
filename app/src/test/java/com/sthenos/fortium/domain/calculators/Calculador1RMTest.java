@@ -13,7 +13,7 @@ public class Calculador1RMTest {
     private static final double DELTA = 0.01;
 
     @Test
-    public void calcular1RM_conPocasRepeticiones_usaBrzyckiYFactorHombreJoven() {
+    public void TC01_calcular1RM_conPocasRepeticiones_usaBrzyckiYFactorHombreJoven() {
         // Given (Dado que... preparamos los datos iniciales)
         double pesoLevantado = 100.0;
         int reps = 10;
@@ -33,7 +33,7 @@ public class Calculador1RMTest {
     }
 
     @Test
-    public void calcular1RM_conMuchasRepeticionesYRIR_usaEpleyYFactorMujerAdulta() {
+    public void TC02_calcular1RM_conMuchasRepeticionesYRIR_usaEpleyYFactorMujerAdulta() {
         // Given (Dado un escenario de resistencia con Epley)
         double pesoLevantado = 50.0;
         int reps = 12;
@@ -53,7 +53,7 @@ public class Calculador1RMTest {
     }
 
     @Test
-    public void calcular1RM_conValoresInvalidos_devuelveCero() {
+    public void TC03_calcular1RM_conValoresInvalidos_devuelveCero() {
         // Given (Dado un usuario que introduce un peso de 0 por error)
         double pesoLevantado = 0.0;
         int reps = 10;

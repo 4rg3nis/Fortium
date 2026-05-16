@@ -52,7 +52,7 @@ public class UsuariosDaoTest {
     }
 
     @Test
-    public void insertarUsuario_y_obtenerUsuario_funcionaCorrectamente() {
+    public void TC04_insertarUsuario_y_obtenerUsuario_funcionaCorrectamente() {
         // Given (Dado un usuario nuevo que queremos guardar)
         Usuario usuarioDePrueba = new Usuario("Argenis", "Prueba", "01/01/2000", 75.0, 180.0, Genero.Masculino, UnidadMedida.KG);
 
@@ -66,7 +66,7 @@ public class UsuariosDaoTest {
     }
 
     @Test
-    public void actualizarUsuario_modificaLosDatosEnLaBD() {
+    public void TC05_actualizarUsuario_modificaLosDatosEnLaBD() {
         // Given (Dado un usuario que ya está guardado en la base de datos)
         Usuario usuarioOriginal = new Usuario("Argenis", "Prueba", "01/01/2000", 75.0, 180.0, Genero.Masculino, UnidadMedida.KG);
         usuariosDao.insert(usuarioOriginal);
@@ -83,7 +83,7 @@ public class UsuariosDaoTest {
     }
 
     @Test
-    public void borrarUsuario_loEliminaCompletamenteDeLaBD() {
+    public void TC06_borrarUsuario_loEliminaCompletamenteDeLaBD() {
         // Given (Dado un usuario ya guardado)
         Usuario usuario = new Usuario("Argenis", "Prueba", "01/01/2000", 75.0, 180.0, Genero.Masculino, UnidadMedida.KG);
         usuariosDao.insert(usuario);

@@ -26,7 +26,7 @@ public class CreateUserActivityTest {
             new ActivityScenarioRule<>(CreateUserActivity.class);
 
     @Test
-    public void escribirNombre_seMuestraCorrectamenteEnLaPantalla() {
+    public void TC10_escribirNombre_seMuestraCorrectamenteEnLaPantalla() {
         // Given: La pantalla se ha abierto sola gracias a la regla de arriba.
 
         // When: El robot invisible busca el campo "Nombre", escribe "Argenis" y esconde el teclado
@@ -39,7 +39,7 @@ public class CreateUserActivityTest {
     }
 
     @Test
-    public void elementosPrincipales_estanVisiblesAlAbrirLaPantalla() {
+    public void TC11_elementosPrincipales_estanVisiblesAlAbrirLaPantalla() {
         // Un test súper básico, comprobar que la pantalla no sale en blanco
 
         // Comprobamos que el botón de Guardar existe y está visible
