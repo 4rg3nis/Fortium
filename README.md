@@ -1,4 +1,4 @@
-# 🏋️‍♂️ Fortium — Sthenos Studio 🥇
+# Fortium
 ### *Tu fuerza, bajo control.*
 
 [![Android Nativo](https://img.shields.io/badge/Platform-Android-3DDC84?logo=android&logoColor=white&style=for-the-badge)](https://developer.android.com)
@@ -12,7 +12,7 @@ Este proyecto representa el **Proyecto de Fin de Grado Superior en Desarrollo de
 
 ---
 
-## 🚀 Destacados Técnicos (Por qué esto te interesa si eres Reclutador/Tech Lead)
+## Destacados Técnicos (Por qué esto te interesa si eres Reclutador/Tech Lead)
 
 Como desarrollador, diseñé Fortium aplicando las mejores prácticas de la industria móvil, asegurando un código limpio, desacoplado y altamente mantenible:
 
@@ -24,7 +24,7 @@ Como desarrollador, diseñé Fortium aplicando las mejores prácticas de la indu
 
 ---
 
-## ✨ Funcionalidades Principales
+## Funcionalidades Principales
 
 *   **Gestión de Rutinas Personalizadas (CRUD):** Creación y estructuración de planes de entrenamiento definiendo el orden secuencial exacto mediante relaciones de muchos a muchos ($N:M$) normalizadas.
 *   **Registro Atómico de Series en Tiempo Real:** Entrada optimizada de variables críticas como peso, repeticiones, y métricas de intensidad avanzada (**RPE** - *Rate of Perceived Exertion* y **RIR** - *Repetitions in Reserve*).
@@ -34,7 +34,7 @@ Como desarrollador, diseñé Fortium aplicando las mejores prácticas de la indu
 
 ---
 
-## 🛠️ Stack Tecnológico & Herramientas
+## Stack Tecnológico & Herramientas
 
 *   **Lenguaje Principal:** Java (JDK 21)
 *   **Entorno de Desarrollo:** Android Studio Ladybug (Target SDK 35 / Min SDK 26)
@@ -47,7 +47,7 @@ Como desarrollador, diseñé Fortium aplicando las mejores prácticas de la indu
 
 ---
 
-## 📐 Arquitectura de Software y Modelo de Datos
+## Arquitectura de Software y Modelo de Datos
 
 La aplicación está estructurada con un bajo acoplamiento y alta cohesión. A nivel de paquetes y bases de datos, el flujo sigue este estándar:
 
@@ -67,7 +67,7 @@ com.sthenos.fortium
 
 ---
 
-## 📋 Aseguramiento de la Calidad (Testing & Bugs Solucionados)
+## Aseguramiento de la Calidad (Testing & Bugs Solucionados)
 
 El proyecto cuenta con una batería de pruebas automatizadas que validan la resiliencia del software. Puedes consultar el histórico completo de control de errores directamente en mis [GitHub Issues](https://github.com/4rg3nis/Fortium/issues?q=is%3Aissue%20state%3Aclosed%20label%3Abug).
 
@@ -81,7 +81,7 @@ El proyecto cuenta con una batería de pruebas automatizadas que validan la resi
 
 ---
 
-## 💾 Despliegue e Instalación
+## Despliegue e Instalación
 
 Para compilar de forma local el código fuente de **Fortium**, asegúrate de contar con Android Studio Ladybug o superior y el JDK 21 configurado.
 
@@ -94,7 +94,7 @@ Para compilar de forma local el código fuente de **Fortium**, asegúrate de con
 
 ---
 
-## 📄 Licencia
+## Licencia
 
 Este proyecto está bajo la licencia **Creative Commons Reconocimiento-CompartirIgual 3.0 España (CC BY-SA 3.0 ES)**. Siéntete libre de auditar el código, clonarlo y proponer mejoras.
 
@@ -102,5 +102,3 @@ Este proyecto está bajo la licencia **Creative Commons Reconocimiento-Compartir
 
 ### 📬 ¿Interesado en mi perfil técnico? ¡Hablemos!
 Estoy graduado en **Desarrollo de Aplicaciones Multiplataforma (DAM)** y buscando incorporarme a un equipo donde pueda aportar mi pasión por el desarrollo nativo, la arquitectura limpia y las soluciones de alto rendimiento.
-
-*   **Desarrollador:** Argenis Javier Lora Bautista
