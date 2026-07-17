@@ -97,8 +97,3 @@ Para compilar de forma local el código fuente de **Fortium**, asegúrate de con
 ## Licencia
 
 Este proyecto está bajo la licencia **Creative Commons Reconocimiento-CompartirIgual 3.0 España (CC BY-SA 3.0 ES)**. Siéntete libre de auditar el código, clonarlo y proponer mejoras.
-
----
-
-### 📬 ¿Interesado en mi perfil técnico? ¡Hablemos!
-Estoy graduado en **Desarrollo de Aplicaciones Multiplataforma (DAM)** y buscando incorporarme a un equipo donde pueda aportar mi pasión por el desarrollo nativo, la arquitectura limpia y las soluciones de alto rendimiento.
